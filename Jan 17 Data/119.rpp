@@ -1,0 +1,1465 @@
+<REAPER_PROJECT 0.1 "6.68/win64" 1673998585
+  <NOTES 0 2
+  >
+  RIPPLE 0
+  GROUPOVERRIDE 0 0 0
+  AUTOXFADE 129
+  ENVATTACH 3
+  POOLEDENVATTACH 0
+  MIXERUIFLAGS 11 48
+  PEAKGAIN 1
+  FEEDBACK 0
+  PANLAW 1
+  PROJOFFS 0 0 0
+  MAXPROJLEN 0 600
+  GRID 3199 8 1 8 1 0 0 0
+  TIMEMODE 1 5 -1 30 0 0 -1
+  VIDEO_CONFIG 0 0 256
+  PANMODE 3
+  CURSOR 0
+  ZOOM 22.22054569049342 0 0
+  VZOOMEX 3 0
+  USE_REC_CFG 0
+  RECMODE 1
+  SMPTESYNC 0 30 100 40 1000 300 0 0 1 0 0
+  LOOP 0
+  LOOPGRAN 0 4
+  RECORD_PATH "" ""
+  <RECORD_CFG
+    ZXZhdxgAAA==
+  >
+  <APPLYFX_CFG
+  >
+  RENDER_FILE ""
+  RENDER_PATTERN ""
+  RENDER_FMT 0 2 0
+  RENDER_1X 0
+  RENDER_RANGE 1 0 0 18 1000
+  RENDER_RESAMPLE 3 0 1
+  RENDER_ADDTOPROJ 0
+  RENDER_STEMS 0
+  RENDER_DITHER 0
+  TIMELOCKMODE 1
+  TEMPOENVLOCKMODE 1
+  ITEMMIX 1
+  DEFPITCHMODE 589824 0
+  TAKELANE 0
+  SAMPLERATE 44100 0 0
+  <RENDER_CFG
+    ZXZhdxgAAA==
+  >
+  LOCK 1
+  <METRONOME 6 2
+    VOL 0.25 0.125
+    FREQ 800 1600 1
+    BEATLEN 4
+    SAMPLES "" ""
+    PATTERN 2863311530 2863311529
+    MULT 1
+  >
+  GLOBAL_AUTO -1
+  TEMPO 120 4 4
+  PLAYRATE 1 0 0.25 4
+  SELECTION 62.5 62
+  SELECTION2 62.5 62
+  MASTERAUTOMODE 0
+  MASTERTRACKHEIGHT 0 0
+  MASTERPEAKCOL 16576
+  MASTERMUTESOLO 0
+  MASTERTRACKVIEW 0 0.6667 0.5 0.5 0 -1 -1 0 0 0 -1 -1 0
+  MASTERHWOUT 0 0 1 0 0 0 0 -1
+  MASTER_NCH 2 2
+  MASTER_VOLUME 1 0 -1 -1 1
+  MASTER_PANMODE 3
+  MASTER_FX 1
+  MASTER_SEL 0
+  <MASTERPLAYSPEEDENV
+    EGUID {3735D696-A97F-48EE-8179-F33363BCA1F4}
+    ACT 0 -1
+    VIS 0 1 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 0 -1 -1
+  >
+  <TEMPOENVEX
+    EGUID {DFB48D83-D4DE-4454-8EDB-1B132EAA9732}
+    ACT 0 -1
+    VIS 1 0 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 1 -1 -1
+  >
+  <PROJBAY
+  >
+  <TRACK {E95D560B-931C-4DBE-A662-7132EE02FFEB}
+    NAME click
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    VOLPAN 1 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 -1 -1
+    SEL 0
+    REC 0 5088 0 0 0 0 0 0
+    VU 2
+    TRACKHEIGHT 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {E95D560B-931C-4DBE-A662-7132EE02FFEB}
+    PERF 0
+    MIDIOUT 42
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 23 51 870 502
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST: ReaControlMIDI (Cockos)" reacontrolmidi.dll 0 "" 1919118692<56535472636D64726561636F6E74726F> ""
+        ZG1jcu5e7f4AAAAAAAAAAOsAAAABAAAAAAAQAA==
+        /////wAAAAAAAAAAAAAAAAkAAAAMAAAAAQAAAP8/AAAAIAAAACAAAAAAAAA6AAAAQzpcVXNlcnNcQWRhbSBMdW9tYVxBcHBEYXRhXFJvYW1pbmdcUkVBUEVSXERhdGFc
+        R00ucmVhYmFuawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAE1ham9yAA0AAAAxMDIwMzQw
+        NTA2MDcAAQAAAAAAAAAAAAAAAAoAAAANAAAAAQAAAAAAAAAAAAAAAAAAAA==
+        AFByb2dyYW0gMQAQAAAA
+      >
+      FLOATPOS 0 0 0 0
+      FXID {522496CF-DE94-412C-9EA7-323F44CA8409}
+      WAK 0 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 16
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {E69B3A00-FD03-4FE2-BC9F-10047CD8C876}
+      IID 7
+      NAME "02-Recorded MIDI"
+      VOLPAN 1 0 1 -1
+      SOFFS 0 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {886B6509-D72C-4271-AAD2-B5BA43365471}
+      RECPASS 4
+      <SOURCE MIDI
+        HASDATA 1 960 QN
+        CCINTERP 32
+        POOLEDEVTS {77A31E8F-825E-4A8D-B0B5-5696CD8FDE90}
+        E 0 90 24 39
+        E 960 80 24 00
+        e 0 90 25 35
+        e 960 80 25 00
+        E 0 90 24 39
+        E 960 80 24 00
+        e 0 90 25 37
+        e 960 80 25 00
+        E 0 b0 7b 00
+        CCINTERP 32
+        CHASE_CC_TAKEOFFS 1
+        GUID {9FDE1677-2C97-4167-A38B-569985537326}
+        IGNTEMPO 0 120 4 4
+        SRCCOLOR 15
+        VELLANE -1 100 0
+        CFGEDITVIEW 0 0.061549 84 14 0 -1 0 0 0 0.5
+        KEYSNAP 0
+        TRACKSEL 0
+        EVTFILTER 0 -1 -1 -1 -1 0 0 0 0 -1 -1 -1 -1 0 -1 0 -1 -1
+        CFGEDIT 1 1 0 1 0 0 1 1 1 1 1 0.125 0 54 1506 849 0 0 0 0 0 0 0 0 0 0.5 0 0 1 64
+      >
+    >
+    <ITEM
+      POSITION 61
+      SNAPOFFS 0
+      LENGTH 2
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {2C55A7F8-A1ED-4BDB-9860-CBB09E1D06FB}
+      IID 7
+      NAME "02-Recorded MIDI"
+      VOLPAN 1 0 1 -1
+      SOFFS 0 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {1EE53FE3-0422-4F04-A473-D99EC9CCD524}
+      RECPASS 4
+      <SOURCE MIDI
+        HASDATA 1 960 QN
+        CCINTERP 32
+        POOLEDEVTS {2A9D394A-7B93-42D3-A7BF-3C2BF0960C76}
+        E 0 90 26 7f
+        E 480 80 26 00
+        E 0 90 26 7f
+        E 480 80 26 00
+        E 0 90 26 7f
+        E 480 80 26 00
+        E 0 90 26 7f
+        E 480 80 26 00
+        E 0 90 26 7f
+        E 480 80 26 00
+        E 1440 b0 7b 00
+        CCINTERP 32
+        CHASE_CC_TAKEOFFS 1
+        GUID {9FDE1677-2C97-4167-A38B-569985537326}
+        IGNTEMPO 0 120 4 4
+        SRCCOLOR 15
+        VELLANE -1 100 0
+        CFGEDITVIEW -12124.413153 0.044009 71 12 0 -1 0 0 0 0.5
+        KEYSNAP 0
+        TRACKSEL 0
+        EVTFILTER 0 -1 -1 -1 -1 0 0 0 0 -1 -1 -1 -1 0 -1 0 -1 -1
+        CFGEDIT 1 1 0 1 0 0 1 1 1 1 1 0.125 0 54 1506 849 0 0 0 0 0 0 0 0 0 0.5 0 0 1 64
+      >
+    >
+  >
+  <TRACK {8F5F772F-AA3B-4D64-92FD-0D3E78CD6AD5}
+    NAME "Trial 1"
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    VOLPAN 1 0 -1 -1 1
+    MUTESOLO 1 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 -1 -1
+    SEL 0
+    REC 0 5088 1 0 0 0 0 0
+    VU 2
+    TRACKHEIGHT 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {8F5F772F-AA3B-4D64-92FD-0D3E78CD6AD5}
+    PERF 0
+    MIDIOUT 42
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 23 51 870 502
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST: ReaControlMIDI (Cockos)" reacontrolmidi.dll 0 "" 1919118692<56535472636D64726561636F6E74726F> ""
+        ZG1jcu5e7f4AAAAAAAAAAOsAAAABAAAAAAAQAA==
+        /////wAAAAAAAAAAAAAAAAkAAAAMAAAAAQAAAP8/AAAAIAAAACAAAAAAAAA6AAAAQzpcVXNlcnNcQWRhbSBMdW9tYVxBcHBEYXRhXFJvYW1pbmdcUkVBUEVSXERhdGFc
+        R00ucmVhYmFuawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAE1ham9yAA0AAAAxMDIwMzQw
+        NTA2MDcAAQAAAAAAAAAAAAAAAAoAAAANAAAAAQAAAAAAAAAAAAAAAAAAAA==
+        AFByb2dyYW0gMQAQAAAA
+      >
+      FLOATPOS 0 0 0 0
+      FXID {D3FCA10C-AFD5-48FB-BAC5-10A35941C7A6}
+      WAK 0 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 66.49739583333333
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {D3C20FA3-88F2-4CCF-886E-D49AD8B2F8C5}
+      IID 9
+      NAME "02-Trial 1-Recorded MIDI"
+      VOLPAN 1 0 1 -1
+      SOFFS 0 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {F1438D76-2CEA-4674-B6D1-F70AC4ED1383}
+      RECPASS 5
+      <SOURCE MIDI
+        HASDATA 1 960 QN
+        CCINTERP 32
+        POOLEDEVTS {B64A996B-E41E-4AF7-BF9C-30695B824DFB}
+        E 2808 99 2f 5f
+        E 523 99 2f 00
+        E 1438 99 30 7f
+        E 568 99 30 00
+        E 1376 99 2f 5f
+        E 548 99 2f 00
+        E 1432 99 2f 60
+        E 503 99 2f 00
+        E 603 99 30 7f
+        E 533 99 30 00
+        E 287 99 2f 5f
+        E 472 99 2f 00
+        E 419 99 30 7f
+        E 561 99 30 00
+        E 358 99 2f 6c
+        E 516 99 2f 00
+        E 440 99 30 7f
+        E 497 99 30 00
+        E 414 99 2f 56
+        E 541 99 2f 00
+        E 1499 99 2f 60
+        E 533 99 2f 00
+        E 414 99 30 7f
+        E 541 99 30 00
+        E 383 99 2f 7f
+        E 553 99 2f 00
+        E 648 99 30 5a
+        E 521 99 30 00
+        E 347 99 2f 7f
+        E 535 99 2f 00
+        E 366 99 30 7f
+        E 510 99 30 00
+        E 425 99 2f 7f
+        E 513 99 2f 00
+        E 502 99 30 7f
+        E 549 99 30 00
+        E 345 99 2f 7f
+        E 535 99 2f 00
+        E 399 99 30 7f
+        E 537 99 30 00
+        E 395 99 2f 78
+        E 597 99 2f 00
+        E 412 99 30 7a
+        E 524 99 30 00
+        E 390 99 2f 7f
+        E 569 99 2f 00
+        E 441 99 30 7f
+        E 541 99 30 00
+        E 408 99 2f 7b
+        E 538 99 2f 00
+        E 401 99 30 71
+        E 535 99 30 00
+        E 486 99 2f 7f
+        E 495 99 2f 00
+        E 446 99 30 7f
+        E 507 99 30 00
+        E 467 99 2f 7f
+        E 514 99 2f 00
+        E 429 99 30 71
+        E 528 99 30 00
+        E 497 99 2f 7a
+        E 554 99 2f 00
+        E 337 99 30 7f
+        E 536 99 30 00
+        E 441 99 2f 72
+        E 495 99 2f 00
+        E 401 99 30 7f
+        E 599 99 30 00
+        E 459 99 2f 75
+        E 592 99 2f 00
+        E 386 99 30 7f
+        E 550 99 30 00
+        E 376 99 2f 6f
+        E 510 99 2f 00
+        E 449 99 30 7d
+        E 602 99 30 00
+        E 425 99 2f 7f
+        E 533 99 2f 00
+        E 452 99 30 7a
+        E 485 99 30 00
+        E 513 99 2f 7a
+        E 540 99 2f 00
+        E 508 99 30 72
+        E 492 99 30 00
+        E 442 99 2f 7f
+        E 492 99 2f 00
+        E 521 99 30 7d
+        E 548 99 30 00
+        E 369 99 2f 72
+        E 570 99 2f 00
+        E 477 99 30 7f
+        E 512 99 30 00
+        E 438 99 2f 7b
+        E 496 99 2f 00
+        E 517 99 30 7b
+        E 547 99 30 00
+        E 387 99 2f 6c
+        E 603 99 2f 00
+        E 397 99 30 7f
+        E 539 99 30 00
+        E 507 99 2f 7f
+        E 554 99 2f 00
+        E 446 99 30 66
+        E 500 99 30 00
+        E 349 99 2f 7f
+        E 533 99 2f 00
+        E 535 99 30 77
+        E 521 99 30 00
+        E 511 99 2f 77
+        E 541 99 2f 00
+        E 402 99 30 7f
+        E 535 99 30 00
+        E 483 99 2f 68
+        E 517 99 2f 00
+        E 435 99 30 7f
+        E 513 99 30 00
+        E 491 99 2f 6f
+        E 568 99 2f 00
+        E 459 99 30 6c
+        E 478 99 30 00
+        E 456 99 2f 63
+        E 535 99 2f 00
+        E 446 99 30 6c
+        E 491 99 30 00
+        E 565 99 2f 6e
+        E 497 99 2f 00
+        E 504 99 30 72
+        E 566 99 30 00
+        E 351 99 2f 60
+        E 504 99 2f 00
+        E 533 99 30 77
+        E 537 99 30 00
+        E 401 99 2f 62
+        E 537 99 2f 00
+        E 394 99 30 7d
+        E 606 99 30 00
+        E 535 99 2f 66
+        E 470 99 2f 00
+        E 506 99 30 7b
+        E 557 99 30 00
+        E 343 99 2f 68
+        E 532 99 2f 00
+        E 476 99 30 75
+        E 505 99 30 00
+        E 529 99 2f 5f
+        E 522 99 2f 00
+        E 443 99 30 7f
+        E 513 99 30 00
+        E 497 99 2f 7d
+        E 553 99 2f 00
+        E 435 99 30 6f
+        E 522 99 30 00
+        E 491 99 2f 77
+        E 562 99 2f 00
+        E 394 99 30 7a
+        E 584 99 30 00
+        E 546 99 2f 6c
+        E 527 99 2f 00
+        E 483 99 30 71
+        E 535 99 30 00
+        E 446 99 2f 68
+        E 535 99 2f 00
+        E 427 99 30 7f
+        E 516 99 30 00
+        E 483 99 2f 6e
+        E 502 99 2f 00
+        E 593 99 30 7f
+        E 538 99 30 00
+        E 480 99 2f 56
+        E 474 99 2f 00
+        E 490 99 30 75
+        E 564 99 30 00
+        E 461 99 2f 7a
+        E 535 99 2f 00
+        E 446 99 30 7a
+        E 491 99 30 00
+        E 510 99 2f 6c
+        E 547 99 2f 00
+        E 492 99 30 75
+        E 457 99 30 00
+        E 531 99 2f 6f
+        E 528 99 2f 00
+        E 457 99 30 72
+        E 535 99 30 00
+        E 425 99 2f 7d
+        E 511 99 2f 00
+        E 490 99 30 6f
+        E 446 99 30 00
+        E 535 99 2f 68
+        E 535 99 2f 00
+        E 479 99 30 6b
+        E 502 99 30 00
+        E 446 99 2f 7b
+        E 505 99 2f 00
+        E 543 99 30 71
+        E 512 99 30 00
+        E 490 99 2f 63
+        E 446 99 2f 00
+        E 505 99 30 6c
+        E 493 99 30 00
+        E 429 99 2f 72
+        E 510 99 2f 00
+        E 551 99 30 59
+        E 518 99 30 00
+        E 498 99 2f 7f
+        E 554 99 2f 00
+        E 467 99 30 6e
+        E 514 99 30 00
+        E 445 99 2f 72
+        E 511 99 2f 00
+        E 575 99 30 68
+        E 558 99 30 00
+        E 436 99 2f 68
+        E 547 99 2f 00
+        E 410 99 30 71
+        E 534 99 30 00
+        E 521 99 2f 6f
+        E 543 99 2f 00
+        E 485 99 30 75
+        E 501 99 30 00
+        E 576 99 2f 68
+        E 561 99 2f 00
+        E 484 99 30 6b
+        E 451 99 30 00
+        E 361 99 2f 62
+        E 514 99 2f 00
+        E 10157 b0 7b 00
+        CCINTERP 32
+        CHASE_CC_TAKEOFFS 1
+        GUID {1B471BE8-654A-4B74-90F7-C5F7DA66E1FF}
+        IGNTEMPO 0 120 4 4
+        SRCCOLOR 45
+      >
+    >
+  >
+  <TRACK {A7D28F60-46AF-4EB4-B0FA-87ECF68BBB86}
+    NAME "Trial 2"
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    VOLPAN 1 0 -1 -1 1
+    MUTESOLO 1 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 -1 -1
+    SEL 0
+    REC 0 5088 1 0 0 0 0 0
+    VU 2
+    TRACKHEIGHT 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {A7D28F60-46AF-4EB4-B0FA-87ECF68BBB86}
+    PERF 0
+    MIDIOUT 42
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 23 51 870 502
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST: ReaControlMIDI (Cockos)" reacontrolmidi.dll 0 "" 1919118692<56535472636D64726561636F6E74726F> ""
+        ZG1jcu5e7f4AAAAAAAAAAOsAAAABAAAAAAAQAA==
+        /////wAAAAAAAAAAAAAAAAkAAAAMAAAAAQAAAP8/AAAAIAAAACAAAAAAAAA6AAAAQzpcVXNlcnNcQWRhbSBMdW9tYVxBcHBEYXRhXFJvYW1pbmdcUkVBUEVSXERhdGFc
+        R00ucmVhYmFuawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAE1ham9yAA0AAAAxMDIwMzQw
+        NTA2MDcAAQAAAAAAAAAAAAAAAAoAAAANAAAAAQAAAAAAAAAAAAAAAAAAAA==
+        AFByb2dyYW0gMQAQAAAA
+      >
+      FLOATPOS 0 0 0 0
+      FXID {E775B1A7-23E2-45A6-8E03-9FEBEA453C55}
+      WAK 0 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 65.94010416666667
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {3DD33A42-CE6A-4905-879D-3A76FEB3CD65}
+      IID 10
+      NAME "03-Trial 2-Recorded MIDI"
+      VOLPAN 1 0 1 -1
+      SOFFS 0 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {F057C486-034A-4B44-A280-DDC1486B82B5}
+      RECPASS 6
+      <SOURCE MIDI
+        HASDATA 1 960 QN
+        CCINTERP 32
+        POOLEDEVTS {76F5923F-A20C-496C-A947-58D2209098BF}
+        E 1969 99 30 78
+        E 474 99 30 00
+        E 446 99 2f 7f
+        E 545 99 2f 00
+        E 511 99 30 7b
+        E 549 99 30 00
+        E 340 99 2f 7f
+        E 536 99 2f 00
+        E 431 99 30 6f
+        E 505 99 30 00
+        E 376 99 2f 7f
+        E 562 99 2f 00
+        E 514 99 30 60
+        E 556 99 30 00
+        E 299 99 2f 7f
+        E 562 99 2f 00
+        E 464 99 30 68
+        E 530 99 30 00
+        E 388 99 2f 6f
+        E 26 b9 04 2c
+        E 54 b9 04 30
+        E 469 99 2f 00
+        E 490 99 30 7f
+        E 575 99 30 00
+        E 347 99 2f 6e
+        E 523 99 2f 00
+        E 414 99 30 66
+        E 535 99 30 00
+        E 380 99 2f 7b
+        E 556 99 2f 00
+        E 490 99 30 60
+        E 573 99 30 00
+        E 331 99 2f 75
+        E 540 99 2f 00
+        E 494 99 30 62
+        E 559 99 30 00
+        E 291 99 2f 71
+        E 467 99 2f 00
+        E 526 99 30 66
+        E 537 99 30 00
+        E 363 99 2f 71
+        E 509 99 2f 00
+        E 609 99 30 62
+        E 569 99 30 00
+        E 259 99 2f 6c
+        E 616 99 2f 00
+        E 539 99 30 53
+        E 511 99 30 00
+        E 248 99 2f 77
+        E 509 99 2f 00
+        E 535 99 30 5c
+        E 531 99 30 00
+        E 331 99 2f 6e
+        E 540 99 2f 00
+        E 423 99 30 6b
+        E 515 99 30 00
+        E 368 99 2f 6f
+        E 506 99 2f 00
+        E 709 99 30 5a
+        E 538 99 30 00
+        E 253 99 2f 6b
+        E 501 99 2f 00
+        E 563 99 30 6e
+        E 622 99 30 00
+        E 342 99 2f 62
+        E 481 99 2f 00
+        E 667 99 30 7f
+        E 497 99 30 00
+        E 524 99 2f 77
+        E 541 99 2f 00
+        E 266 99 30 6f
+        E 492 99 30 00
+        E 481 99 2f 63
+        E 507 99 2f 00
+        E 609 99 30 59
+        E 524 99 30 00
+        E 381 99 2f 6e
+        E 559 99 2f 00
+        E 505 99 30 6e
+        E 563 99 30 00
+        E 302 99 2f 6c
+        E 562 99 2f 00
+        E 382 99 30 63
+        E 496 99 30 00
+        E 415 99 2f 6b
+        E 521 99 2f 00
+        E 652 99 30 6e
+        E 521 99 30 00
+        E 412 99 2f 5a
+        E 537 99 2f 00
+        E 478 99 30 6e
+        E 504 99 30 00
+        E 442 99 2f 60
+        E 514 99 2f 00
+        E 573 99 30 6c
+        E 552 99 30 00
+        E 495 99 2f 78
+        E 567 99 2f 00
+        E 477 99 30 68
+        E 512 99 30 00
+        E 401 99 2f 63
+        E 535 99 2f 00
+        E 535 99 30 48
+        E 528 99 30 00
+        E 408 99 2f 65
+        E 536 99 2f 00
+        E 490 99 30 53
+        E 573 99 30 00
+        E 363 99 2f 60
+        E 507 99 2f 00
+        E 474 99 30 71
+        E 508 99 30 00
+        E 423 99 2f 6c
+        E 533 99 2f 00
+        E 501 99 30 7f
+        E 552 99 30 00
+        E 376 99 2f 6e
+        E 559 99 2f 00
+        E 506 99 30 7f
+        E 495 99 30 00
+        E 407 99 2f 6f
+        E 532 99 2f 00
+        E 544 99 30 7b
+        E 526 99 30 00
+        E 396 99 2f 65
+        E 541 99 2f 00
+        E 491 99 30 7f
+        E 560 99 30 00
+        E 432 99 2f 66
+        E 566 99 2f 00
+        E 370 99 30 7f
+        E 568 99 30 00
+        E 403 99 2f 68
+        E 583 99 2f 00
+        E 398 99 30 7d
+        E 542 99 30 00
+        E 436 99 2f 63
+        E 518 99 2f 00
+        E 612 99 30 7f
+        E 567 99 30 00
+        E 333 99 2f 71
+        E 522 99 2f 00
+        E 482 99 30 7f
+        E 586 99 30 00
+        E 429 99 2f 6e
+        E 508 99 2f 00
+        E 437 99 30 7f
+        E 501 99 30 00
+        E 494 99 2f 72
+        E 507 99 2f 00
+        E 634 99 30 7f
+        E 496 99 30 00
+        E 469 99 2f 68
+        E 523 99 2f 00
+        E 537 99 30 7f
+        E 477 99 30 00
+        E 491 99 2f 60
+        E 566 99 2f 00
+        E 457 99 30 7f
+        E 537 99 30 00
+        E 526 99 2f 71
+        E 532 99 2f 00
+        E 436 99 30 75
+        E 501 99 30 00
+        E 502 99 2f 75
+        E 446 99 2f 00
+        E 663 99 30 7a
+        E 511 99 30 00
+        E 398 99 2f 7d
+        E 540 99 2f 00
+        E 473 99 30 7f
+        E 526 99 30 00
+        E 341 99 2f 72
+        E 471 99 2f 00
+        E 535 99 30 72
+        E 535 99 30 00
+        E 480 99 2f 77
+        E 501 99 2f 00
+        E 397 99 30 7f
+        E 557 99 30 00
+        E 502 99 2f 7d
+        E 552 99 2f 00
+        E 400 99 30 7f
+        E 580 99 30 00
+        E 489 99 2f 7a
+        E 536 99 2f 00
+        E 356 99 30 7f
+        E 509 99 30 00
+        E 516 99 2f 72
+        E 555 99 2f 00
+        E 454 99 30 7f
+        E 529 99 30 00
+        E 453 99 2f 6c
+        E 597 99 2f 00
+        E 399 99 30 7f
+        E 559 99 30 00
+        E 333 99 2f 78
+        E 533 99 2f 00
+        E 500 99 30 7f
+        E 571 99 30 00
+        E 402 99 2f 7f
+        E 146 99 2f 36
+        E 389 99 2f 00
+        E 114 99 2f 00
+        E 251 99 30 7f
+        E 571 99 30 00
+        E 535 99 2f 7f
+        E 534 99 2f 00
+        E 413 99 30 78
+        E 569 99 30 00
+        E 446 99 2f 6e
+        E 501 99 2f 00
+        E 466 99 30 7f
+        E 515 99 30 00
+        E 435 99 2f 7f
+        E 519 99 2f 00
+        E 506 99 30 7f
+        E 544 99 30 00
+        E 389 99 2f 7f
+        E 550 99 2f 00
+        E 390 99 30 7f
+        E 490 99 30 00
+        E 491 99 2f 7f
+        E 445 99 2f 00
+        E 507 99 30 75
+        E 563 99 30 00
+        E 441 99 2f 7f
+        E 150 99 2f 21
+        E 390 99 2f 00
+        E 77 99 2f 00
+        E 362 99 30 7f
+        E 512 99 30 00
+        E 382 99 2f 7f
+        E 598 99 2f 00
+        E 477 99 30 7f
+        E 535 99 30 00
+        E 470 99 2f 7f
+        E 525 99 2f 00
+        E 409 99 30 7f
+        E 528 99 30 00
+        E 493 99 2f 77
+        E 562 99 2f 00
+        E 9184 b0 7b 00
+        CCINTERP 32
+        CHASE_CC_TAKEOFFS 1
+        GUID {AD917DEE-7CA0-471C-90B4-84636215AD63}
+        IGNTEMPO 0 120 4 4
+        SRCCOLOR 48
+      >
+    >
+  >
+  <TRACK {08D340DD-341F-4515-9C94-2944D3A118C9}
+    NAME "Trial 3"
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    VOLPAN 1 0 -1 -1 1
+    MUTESOLO 1 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 -1 -1
+    SEL 0
+    REC 0 5088 1 0 0 0 0 0
+    VU 2
+    TRACKHEIGHT 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {08D340DD-341F-4515-9C94-2944D3A118C9}
+    PERF 0
+    MIDIOUT 42
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 23 51 870 502
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST: ReaControlMIDI (Cockos)" reacontrolmidi.dll 0 "" 1919118692<56535472636D64726561636F6E74726F> ""
+        ZG1jcu5e7f4AAAAAAAAAAOsAAAABAAAAAAAQAA==
+        /////wAAAAAAAAAAAAAAAAkAAAAMAAAAAQAAAP8/AAAAIAAAACAAAAAAAAA6AAAAQzpcVXNlcnNcQWRhbSBMdW9tYVxBcHBEYXRhXFJvYW1pbmdcUkVBUEVSXERhdGFc
+        R00ucmVhYmFuawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAE1ham9yAA0AAAAxMDIwMzQw
+        NTA2MDcAAQAAAAAAAAAAAAAAAAoAAAANAAAAAQAAAAAAAAAAAAAAAAAAAA==
+        AFByb2dyYW0gMQAQAAAA
+      >
+      FLOATPOS 0 0 0 0
+      FXID {F5491EB8-3403-40CD-9EC0-33ABF5C2A29B}
+      WAK 0 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 66.0328125
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {1ADD2E68-54A4-47C3-B053-9B9F0E3460A9}
+      IID 11
+      NAME "04-Trial 3-Recorded MIDI"
+      VOLPAN 1 0 1 -1
+      SOFFS 0 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {36737DFB-F340-4EF0-805A-C4F90B04D6F2}
+      RECPASS 7
+      <SOURCE MIDI
+        HASDATA 1 960 QN
+        CCINTERP 32
+        POOLEDEVTS {F4BD9373-D962-403F-BED0-492C9EDD3A6E}
+        E 1049 99 2f 37
+        E 540 99 2f 00
+        E 1272 99 2f 7f
+        E 534 99 2f 00
+        E 431 99 30 78
+        E 552 99 30 00
+        E 417 99 2f 75
+        E 540 99 2f 00
+        E 377 99 30 77
+        E 559 99 30 00
+        E 454 99 2f 7f
+        E 533 99 2f 00
+        E 401 99 30 7f
+        E 535 99 30 00
+        E 515 99 2f 72
+        E 551 99 2f 00
+        E 386 99 30 7d
+        E 600 99 30 00
+        E 396 99 2f 7f
+        E 541 99 2f 00
+        E 399 99 30 78
+        E 555 99 30 00
+        E 456 99 2f 7f
+        E 527 99 2f 00
+        E 276 99 30 72
+        E 595 99 30 00
+        E 474 99 2f 7f
+        E 548 99 2f 00
+        E 448 99 30 6b
+        E 535 99 30 00
+        E 432 99 2f 77
+        E 510 99 2f 00
+        E 463 99 30 68
+        E 537 99 30 00
+        E 420 99 2f 7d
+        E 516 99 2f 00
+        E 399 99 30 6e
+        E 539 99 30 00
+        E 508 99 2f 7f
+        E 562 99 2f 00
+        E 300 99 30 72
+        E 565 99 30 00
+        E 457 99 2f 7f
+        E 533 99 2f 00
+        E 385 99 30 6c
+        E 553 99 30 00
+        E 390 99 2f 7f
+        E 564 99 2f 00
+        E 355 99 30 6e
+        E 508 99 30 00
+        E 548 99 2f 7f
+        E 522 99 2f 00
+        E 387 99 30 6b
+        E 549 99 30 00
+        E 457 99 2f 7f
+        E 524 99 2f 00
+        E 398 99 30 6c
+        E 551 99 30 00
+        E 475 99 2f 7a
+        E 506 99 2f 00
+        E 447 99 30 75
+        E 509 99 30 00
+        E 393 99 2f 7f
+        E 539 99 2f 00
+        E 458 99 30 6f
+        E 539 99 30 00
+        E 535 99 2f 7f
+        E 523 99 2f 00
+        E 413 99 30 65
+        E 526 99 30 00
+        E 544 99 2f 7f
+        E 526 99 2f 00
+        E 506 99 30 71
+        E 544 99 30 00
+        E 486 99 2f 7f
+        E 453 99 2f 00
+        E 517 99 30 78
+        E 553 99 30 00
+        E 468 99 2f 7f
+        E 516 99 2f 00
+        E 438 99 30 77
+        E 517 99 30 00
+        E 539 99 2f 7f
+        E 509 99 2f 00
+        E 501 99 30 7d
+        E 553 99 30 00
+        E 443 99 2f 7f
+        E 511 99 2f 00
+        E 559 99 30 75
+        E 493 99 30 00
+        E 388 99 2f 7f
+        E 73 b9 04 2c
+        E 61 b9 04 30
+        E 460 99 2f 00
+        E 442 99 30 72
+        E 513 99 30 00
+        E 557 99 2f 7a
+        E 494 99 2f 00
+        E 440 99 30 75
+        E 518 99 30 00
+        E 465 99 2f 7f
+        E 512 99 2f 00
+        E 425 99 30 6e
+        E 516 99 30 00
+        E 554 99 2f 7f
+        E 518 99 2f 00
+        E 418 99 30 6c
+        E 516 99 30 00
+        E 521 99 2f 7f
+        E 550 99 2f 00
+        E 374 99 30 6f
+        E 604 99 30 00
+        E 422 99 2f 7f
+        E 518 99 2f 00
+        E 418 99 30 57
+        E 535 99 30 00
+        E 460 99 2f 7f
+        E 521 99 2f 00
+        E 523 99 30 7d
+        E 547 99 30 00
+        E 522 99 2f 7f
+        E 534 99 2f 00
+        E 523 99 30 7f
+        E 527 99 30 00
+        E 349 99 2f 7f
+        E 487 99 2f 00
+        E 624 99 30 77
+        E 547 99 30 00
+        E 390 99 2f 7f
+        E 548 99 2f 00
+        E 457 99 30 6f
+        E 544 99 30 00
+        E 457 99 2f 7f
+        E 593 99 2f 00
+        E 388 99 30 78
+        E 571 99 30 00
+        E 539 99 2f 7f
+        E 508 99 2f 00
+        E 432 99 30 75
+        E 507 99 30 00
+        E 555 99 2f 7f
+        E 513 99 2f 00
+        E 472 99 30 7b
+        E 511 99 30 00
+        E 416 99 2f 78
+        E 522 99 2f 00
+        E 383 99 30 7b
+        E 490 99 30 00
+        E 580 99 2f 7f
+        E 554 99 2f 00
+        E 479 99 30 7f
+        E 520 99 30 00
+        E 424 99 2f 7b
+        E 514 99 2f 00
+        E 530 99 30 75
+        E 522 99 30 00
+        E 550 99 2f 7f
+        E 519 99 2f 00
+        E 345 99 30 6b
+        E 523 99 30 00
+        E 521 99 2f 7f
+        E 549 99 2f 00
+        E 405 99 30 6e
+        E 531 99 30 00
+        E 483 99 2f 7f
+        E 457 99 2f 00
+        E 586 99 30 7f
+        E 482 99 30 00
+        E 416 99 2f 7f
+        E 566 99 2f 00
+        E 447 99 30 78
+        E 496 99 30 00
+        E 571 99 2f 7d
+        E 491 99 2f 00
+        E 522 99 30 7f
+        E 531 99 30 00
+        E 476 99 2f 71
+        E 479 99 2f 00
+        E 491 99 30 7f
+        E 490 99 30 00
+        E 539 99 2f 7f
+        E 531 99 2f 00
+        E 531 99 30 7f
+        E 520 99 30 00
+        E 376 99 2f 7b
+        E 563 99 2f 00
+        E 551 99 30 7f
+        E 502 99 30 00
+        E 526 99 2f 6c
+        E 544 99 2f 00
+        E 391 99 30 7f
+        E 546 99 30 00
+        E 491 99 2f 7f
+        E 580 99 2f 00
+        E 468 99 30 7a
+        E 512 99 30 00
+        E 466 99 2f 78
+        E 547 99 2f 00
+        E 439 99 30 7f
+        E 556 99 30 00
+        E 504 99 2f 7f
+        E 552 99 2f 00
+        E 374 99 30 7b
+        E 562 99 30 00
+        E 484 99 2f 7f
+        E 512 99 2f 00
+        E 406 99 30 77
+        E 531 99 30 00
+        E 519 99 2f 7f
+        E 552 99 2f 00
+        E 404 99 30 7f
+        E 531 99 30 00
+        E 494 99 2f 7f
+        E 560 99 2f 00
+        E 501 99 30 77
+        E 499 99 30 00
+        E 432 99 2f 7f
+        E 505 99 2f 00
+        E 524 99 30 7d
+        E 544 99 30 00
+        E 517 99 2f 7f
+        E 536 99 2f 00
+        E 579 99 30 7f
+        E 556 99 30 00
+        E 336 99 2f 7f
+        E 536 99 2f 00
+        E 513 99 30 75
+        E 549 99 30 00
+        E 497 99 2f 7f
+        E 556 99 2f 00
+        E 425 99 30 7f
+        E 133 99 30 21
+        E 399 99 30 00
+        E 113 99 30 00
+        E 331 99 2f 68
+        E 534 99 2f 00
+        E 544 99 30 7f
+        E 511 99 30 00
+        E 9160 b0 7b 00
+        CCINTERP 32
+        CHASE_CC_TAKEOFFS 1
+        GUID {C9E123CA-6911-4721-A38C-5C3ABCFDC90B}
+        IGNTEMPO 0 120 4 4
+        SRCCOLOR 51
+      >
+    >
+  >
+  <TRACK {07C89C3D-7131-4815-825E-602F61C32BA7}
+    NAME "Trial 4"
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    VOLPAN 1 0 -1 -1 1
+    MUTESOLO 1 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 -1 -1
+    SEL 1
+    REC 1 5088 1 0 0 0 0 0
+    VU 2
+    TRACKHEIGHT 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {07C89C3D-7131-4815-825E-602F61C32BA7}
+    PERF 0
+    MIDIOUT 42
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 23 51 870 502
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST: ReaControlMIDI (Cockos)" reacontrolmidi.dll 0 "" 1919118692<56535472636D64726561636F6E74726F> ""
+        ZG1jcu5e7f4AAAAAAAAAAOsAAAABAAAAAAAQAA==
+        /////wAAAAAAAAAAAAAAAAkAAAAMAAAAAQAAAP8/AAAAIAAAACAAAAAAAAA6AAAAQzpcVXNlcnNcQWRhbSBMdW9tYVxBcHBEYXRhXFJvYW1pbmdcUkVBUEVSXERhdGFc
+        R00ucmVhYmFuawAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAE1ham9yAA0AAAAxMDIwMzQw
+        NTA2MDcAAQAAAAAAAAAAAAAAAAoAAAANAAAAAQAAAAAAAAAAAAAAAAAAAA==
+        AFByb2dyYW0gMQAQAAAA
+      >
+      FLOATPOS 0 0 0 0
+      FXID {802ECC8E-FA58-4A34-83C0-FCDD233899E2}
+      WAK 0 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 66.0328125
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {A6611124-9C1F-4F76-B641-26094A681978}
+      IID 12
+      NAME "05-Trial 4-Recorded MIDI"
+      VOLPAN 1 0 1 -1
+      SOFFS 0 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {33337E62-5B86-4C74-83B0-A70E750081A5}
+      RECPASS 8
+      <SOURCE MIDI
+        HASDATA 1 960 QN
+        CCINTERP 32
+        POOLEDEVTS {2133E4CD-1367-43E9-A80B-7CD31B321A5B}
+        E 459 99 30 7f
+        E 556 99 30 00
+        E 980 99 30 7f
+        E 498 99 30 00
+        E 396 99 2f 7f
+        E 540 99 2f 00
+        E 433 99 30 72
+        E 524 99 30 00
+        E 453 99 2f 7f
+        E 527 99 2f 00
+        E 542 99 30 7f
+        E 512 99 30 00
+        E 303 99 2f 7f
+        E 535 99 2f 00
+        E 490 99 30 7f
+        E 565 99 30 00
+        E 328 99 2f 7f
+        E 541 99 2f 00
+        E 442 99 30 7f
+        E 541 99 30 00
+        E 436 99 2f 7f
+        E 521 99 2f 00
+        E 463 99 30 75
+        E 473 99 30 00
+        E 446 99 2f 7f
+        E 549 99 2f 00
+        E 559 99 30 66
+        E 498 99 30 00
+        E 281 99 2f 7f
+        E 591 99 2f 00
+        E 446 99 30 6e
+        E 493 99 30 00
+        E 378 99 2f 7f
+        E 557 99 2f 00
+        E 469 99 30 6b
+        E 533 99 30 00
+        E 367 99 2f 7f
+        E 446 99 2f 00
+        E 502 99 30 71
+        E 496 99 30 00
+        E 368 99 2f 7f
+        E 506 99 2f 00
+        E 596 99 30 78
+        E 533 99 30 00
+        E 320 99 2f 7f
+        E 550 99 2f 00
+        E 542 99 30 68
+        E 529 99 30 00
+        E 330 99 2f 7f
+        E 523 99 2f 00
+        E 535 99 30 6b
+        E 535 99 30 00
+        E 356 99 2f 75
+        E 508 99 2f 00
+        E 458 99 30 62
+        E 596 99 30 00
+        E 388 99 2f 7b
+        E 453 99 2f 00
+        E 541 99 30 6e
+        E 511 99 30 00
+        E 364 99 2f 7d
+        E 509 99 2f 00
+        E 557 99 30 72
+        E 506 99 30 00
+        E 468 99 2f 7f
+        E 518 99 2f 00
+        E 420 99 30 72
+        E 520 99 30 00
+        E 397 99 2f 7f
+        E 539 99 2f 00
+        E 543 99 30 75
+        E 528 99 30 00
+        E 351 99 2f 7f
+        E 535 99 2f 00
+        E 535 99 30 68
+        E 517 99 30 00
+        E 398 99 2f 7f
+        E 539 99 2f 00
+        E 497 99 30 59
+        E 554 99 30 00
+        E 349 99 2f 7f
+        E 535 99 2f 00
+        E 579 99 30 7b
+        E 587 99 30 00
+        E 383 99 2f 7f
+        E 457 99 2f 00
+        E 509 99 30 7b
+        E 543 99 30 00
+        E 464 99 2f 7f
+        E 535 99 2f 00
+        E 544 99 30 6e
+        E 508 99 30 00
+        E 364 99 2f 7f
+        E 510 99 2f 00
+        E 575 99 30 77
+        E 564 99 30 00
+        E 361 99 2f 7f
+        E 497 99 2f 00
+        E 535 99 30 7b
+        E 535 99 30 00
+        E 512 99 2f 6b
+        E 544 99 2f 00
+        E 371 99 30 75
+        E 567 99 30 00
+        E 478 99 2f 71
+        E 470 99 2f 00
+        E 473 99 30 6e
+        E 508 99 30 00
+        E 401 99 2f 7f
+        E 552 99 2f 00
+        E 498 99 30 7a
+        E 555 99 30 00
+        E 379 99 2f 71
+        E 558 99 2f 00
+        E 589 99 30 6f
+        E 481 99 30 00
+        E 438 99 2f 72
+        E 542 99 2f 00
+        E 446 99 30 60
+        E 507 99 30 00
+        E 474 99 2f 78
+        E 508 99 2f 00
+        E 548 99 30 7f
+        E 460 99 30 00
+        E 321 99 2f 7b
+        E 564 99 2f 00
+        E 631 99 30 7a
+        E 537 99 30 00
+        E 391 99 2f 7f
+        E 545 99 2f 00
+        E 447 99 30 6f
+        E 552 99 30 00
+        E 348 99 2f 7b
+        E 479 99 2f 00
+        E 516 99 30 77
+        E 551 99 30 00
+        E 448 99 2f 7f
+        E 533 99 2f 00
+        E 448 99 30 7f
+        E 495 99 30 00
+        E 344 99 2f 7f
+        E 523 99 2f 00
+        E 567 99 30 77
+        E 568 99 30 00
+        E 477 99 2f 7f
+        E 510 99 2f 00
+        E 388 99 30 75
+        E 550 99 30 00
+        E 477 99 2f 75
+        E 525 99 2f 00
+        E 432 99 30 68
+        E 502 99 30 00
+        E 505 99 2f 7a
+        E 564 99 2f 00
+        E 420 99 30 7a
+        E 519 99 30 00
+        E 537 99 2f 77
+        E 514 99 2f 00
+        E 481 99 30 7d
+        E 518 99 30 00
+        E 453 99 2f 7f
+        E 600 99 2f 00
+        E 301 99 30 72
+        E 535 99 30 00
+        E 536 99 2f 77
+        E 521 99 2f 00
+        E 433 99 30 47
+        E 548 99 30 00
+        E 369 99 2f 7f
+        E 501 99 2f 00
+        E 577 99 30 6b
+        E 561 99 30 00
+        E 332 99 2f 7f
+        E 541 99 2f 00
+        E 516 99 30 78
+        E 539 99 30 00
+        E 363 99 2f 71
+        E 520 99 2f 00
+        E 544 99 30 72
+        E 503 99 30 00
+        E 375 99 2f 62
+        E 459 99 2f 00
+        E 669 99 30 75
+        E 506 99 30 00
+        E 517 99 2f 78
+        E 537 99 2f 00
+        E 328 99 30 66
+        E 554 99 30 00
+        E 456 99 2f 71
+        E 598 99 2f 00
+        E 395 99 30 6f
+        E 541 99 30 00
+        E 422 99 2f 7b
+        E 535 99 2f 00
+        E 506 99 30 6e
+        E 543 99 30 00
+        E 371 99 2f 77
+        E 502 99 2f 00
+        E 525 99 30 75
+        E 542 99 30 00
+        E 471 99 2f 7b
+        E 465 99 2f 00
+        E 449 99 30 78
+        E 539 99 30 00
+        E 520 99 2f 71
+        E 544 99 2f 00
+        E 403 99 30 72
+        E 25 b9 04 34
+        E 109 b9 04 30
+        E 402 99 30 00
+        E 465 99 2f 77
+        E 520 99 2f 00
+        E 397 99 30 72
+        E 540 99 30 00
+        E 440 99 2f 7a
+        E 516 99 2f 00
+        E 439 99 30 75
+        E 540 99 30 00
+        E 422 99 2f 7f
+        E 124 99 2f 3f
+        E 411 99 2f 00
+        E 115 99 2f 00
+        E 369 99 30 7f
+        E 453 99 30 00
+        E 465 99 2f 72
+        E 524 99 2f 00
+        E 437 99 30 78
+        E 500 99 30 00
+        E 481 99 2f 75
+        E 518 99 2f 00
+        E 541 99 30 7f
+        E 511 99 30 00
+        E 423 99 2f 7d
+        E 512 99 2f 00
+        E 553 99 30 6f
+        E 521 99 30 00
+        E 393 99 2f 77
+        E 543 99 2f 00
+        E 484 99 30 75
+        E 516 99 30 00
+        E 430 99 2f 7f
+        E 505 99 2f 00
+        E 550 99 30 72
+        E 504 99 30 00
+        E 8858 b0 7b 00
+        CCINTERP 32
+        CHASE_CC_TAKEOFFS 1
+        GUID {20260BAF-65D6-4974-843E-CB82E9FBD8AD}
+        IGNTEMPO 0 120 4 4
+        SRCCOLOR 54
+      >
+    >
+  >
+>
