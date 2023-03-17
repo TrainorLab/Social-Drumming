@@ -1,13 +1,14 @@
 ### Social Drumming Analysis ###
 rm(list=ls())
 user <- "SM"
+user <- "AL"
 
 if(user == "SM"){
   data_dir <- "C:\\Users\\mcwee\\OneDrive - McMaster University\\Social Drumming\\REAPER_trial_data\\"
   setwd("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\social_drumming_git\\")
 } else if(user == "AL"){
-  setwd("~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation/Data")
-  data_dir <- ""
+  setwd("~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation")
+  data_dir <- "~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation/Data/"
 } else if(user == "YAS"){
   data_dir <- ""
 }
@@ -30,7 +31,7 @@ library(ggplot2)
 #101_trial 1 bad
 
 
-data <- read.csv(paste0(data_dir, "116_trial1.csv"),stringsAsFactors = T)
+data <- read.csv(paste0(data_dir, "101_trial1.csv"),stringsAsFactors = T)
 names(data) <- c("sel", "mut", "s_ppq",  "e_ppq", "leng", "chan", "pitch", "vel")
 
 # Data Cleaning and Restructuring
@@ -81,8 +82,6 @@ data <- RemoveDoubleHits(data)
 
 which(data$flag_skip == 1)
 sum(data$flag_skip, na.rm = T)
-
-data <- data[c(-6, -24,-25),]
 
 
 data_full <- InsertMissedHits(data)
