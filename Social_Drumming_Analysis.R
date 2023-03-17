@@ -6,6 +6,7 @@ if(user == "SM"){
   data_dir <- "C:\\Users\\mcwee\\OneDrive - McMaster University\\Social Drumming\\REAPER_trial_data\\"
   setwd("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\social_drumming_git\\")
 } else if(user == "AL"){
+  setwd("~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation/Data")
   data_dir <- ""
 } else if(user == "YAS"){
   data_dir <- ""
@@ -13,6 +14,7 @@ if(user == "SM"){
 source("InsertMissedHits.R")
 source("RemoveDoubleHits.R")
 library(tidyverse)
+library(rlang)
 library(zoo)
 library(ggplot2)
 ###TASK###
@@ -27,7 +29,7 @@ library(ggplot2)
 
 #101_trial 1 bad
 
-data <- read.csv(paste0(data_dir, "115_trial2.csv"),stringsAsFactors = T)
+data <- read.csv(paste0(data_dir, "116_trial1.csv"),stringsAsFactors = T)
 names(data) <- c("sel", "mut", "s_ppq",  "e_ppq", "leng", "chan", "pitch", "vel")
 # Data Cleaning and Restructuring
 
@@ -71,6 +73,8 @@ data <- RemoveDoubleHits(data)
 
 which(data$flag_skip == 1)
 sum(data$flag_skip, na.rm = T)
+
+data <- data[c(-6, -24,-25),]
 
 
 data_full <- InsertMissedHits(data)
