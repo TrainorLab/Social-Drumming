@@ -31,7 +31,7 @@ library(dtw)
 #101_trial 1 bad
 
 
-data <- read.csv(paste0(data_dir, "203_trial2.csv"),stringsAsFactors = T)
+data <- read.csv(paste0(data_dir, "203_trial3.csv"),stringsAsFactors = T)
 names(data) <- c("sel", "mut", "s_ppq",  "e_ppq", "leng", "chan", "pitch", "vel")
 
 # Data Cleaning and Restructuring
@@ -84,6 +84,8 @@ data <- data %>%
 #data$missed_hit <- ifelse(data$hit_number_participant == lag(data$hit_number_participant, 1) | data$hit_number_participant == lead(data$hit_number_participant, 1), 0, 1)
 
 data$skip_flag <- ifelse(data$onset_diff_1p > 1.5 & data$onset_diff_1p < 2.5, 1, 0)
+data$double_skip_flag <- ifelse(data$onset_diff_1p > 2.5 & data$onset_diff_1p < 3.5, 1, 0)
+
 
 add_initial_row <- function(data, p, t){
     initial_row <- tibble(participant = p, 
@@ -94,7 +96,10 @@ add_initial_row <- function(data, p, t){
    
    data <- data %>% group_by(participant)
 }
-InsertMissedHit <- function(data){
+InsertMissedHit <- function(data, n_skipped){
+  
+  if(n_skipped == 1){
+  
   skips <- which(data$skip_flag==1)
   new_p <- data[skips[1],]$participant
   
@@ -103,14 +108,42 @@ InsertMissedHit <- function(data){
   new_row1 <- tibble(participant=new_p,
                      onset_diff_1p=data$roll_1p[skips[1] - 1],
                      roll_1p=data$roll_1p[skips[1] - 1])
-  
-  
-  
   data_cut1 <- data_cut1 %>%
     rows_insert(new_row1, by = names(new_row1))
   
   data_til_end <- data[skips[1]:nrow(data),]
   data_full <- rbind(data_cut1, data_til_end)
+  } else if(n_skipped == 2){
+    
+    skips <- which(data$double_skip_flag==1)
+    new_p <- data[skips[1],]$participant
+    
+    data_cut1 <- data[1:(skips[1] - 1),]
+    
+    new_row1 <- tibble(participant=new_p,
+                       onset_diff_1p=data$roll_1p[skips[1] - 1],
+                       roll_1p=data$roll_1p[skips[1] - 1])
+    
+    new_row2 <- tibble(participant=new_p,
+                       onset_diff_1p=new_row1$roll_1p[skips[1] - 1],
+                       roll_1p=data$roll_1p[skips[1] - 1])
+    
+    
+    data_cut1 <- data_cut1 %>%
+      rows_insert(new_row1, by = names(new_row1)) %>%
+      rows_insert(new_row2, by = names(new_row2))
+    
+    data_til_end <- data[skips[1]:nrow(data),]
+    data_full <- rbind(data_cut1, data_til_end)
+    
+    
+    
+    
+    
+  }
+  
+  
+  
 }
 recalc_onsets <- function(data){
   data <- data %>%
@@ -141,11 +174,13 @@ data <- recalc_onsets(data)
 
 
 for(i in 1:sum(data$skip_flag, na.rm = T)){
-  data <- InsertMissedHit(data)
+  data <- InsertMissedHit(data, 1)
   data <- recalc_onsets(data)
 }
 
 
+data <- InsertMissedHit(data, 2)
+data <- recalc_onsets(data)
 
 # data <- InsertMissedHit(data)
 # data <- recalc_onsets(data)
