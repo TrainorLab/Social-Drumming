@@ -31,7 +31,7 @@ library(dtw)
 #101_trial 1 bad
 
 
-data <- read.csv(paste0(data_dir, "203_trial3.csv"),stringsAsFactors = T)
+data <- read.csv(paste0(data_dir, "203_trial4.csv"),stringsAsFactors = T)
 names(data) <- c("sel", "mut", "s_ppq",  "e_ppq", "leng", "chan", "pitch", "vel")
 
 # Data Cleaning and Restructuring
@@ -58,7 +58,8 @@ data <- data %>%
 
 
 #Skip flagging mechanisms
-# data$flag_skip <- ifelse(data$participant + lag(data$participant,1) == 3,0,1)
+data$skip_flag <- ifelse(data$onset_diff_1p > 1.5 & data$onset_diff_1p < 2.5, 1, 0)
+data$double_skip_flag <- ifelse(data$onset_diff_1p > 2.5 & data$onset_diff_1p < 3.5, 1, 0)
 # 
 # 
 # Rolling averages
@@ -81,12 +82,46 @@ data <- data %>%
   group_by(participant) %>%
   mutate(hit_number_participant = seq_along(participant))
 
-#data$missed_hit <- ifelse(data$hit_number_participant == lag(data$hit_number_participant, 1) | data$hit_number_participant == lead(data$hit_number_participant, 1), 0, 1)
-
-data$skip_flag <- ifelse(data$onset_diff_1p > 1.5 & data$onset_diff_1p < 2.5, 1, 0)
-data$double_skip_flag <- ifelse(data$onset_diff_1p > 2.5 & data$onset_diff_1p < 3.5, 1, 0)
 
 
+
+gg_hits <- function(data){
+  data$participant <- as.factor(data$participant)
+  data$hit_number <- 1:nrow(data) 
+  
+  ggplot(data=data, aes(x=hit_number_participant, y=onset_diff_1p, group=participant)) +
+    geom_line(aes(color=participant))+
+    geom_point(aes(color=participant))+
+    geom_vline(xintercept = 15,size=1)
+}
+gg_s <- function(data){
+  data$participant <- as.factor(data$participant)
+  data$hit_number <- 1:nrow(data)
+  
+  ggplot(data=data, aes(x=start_s, y=onset_diff_1p, group=participant)) +
+    geom_line(aes(color=participant))+
+    geom_point(aes(color=participant))+
+    geom_vline(xintercept = 15,size=1)
+}
+recalc_onsets <- function(data){
+  data <- data %>%
+    group_by(participant) %>%
+    mutate(hit_number_participant = seq_along(participant))
+  
+  data <- data %>% 
+    group_by(participant) %>%
+    mutate(start_s = ifelse(is.na(start_s), onset_diff_1p + lag(start_s), start_s))
+  
+  data$onset_diff_2p <- data$start_s - lag(data$start_s, 1)
+  
+  data <- data %>% 
+    group_by(participant) %>%
+    mutate(onset_diff_1p = start_s - lag(start_s, 1))
+  
+  data$skip_flag <- ifelse(data$onset_diff_1p > 1.5 & data$onset_diff_1p < 2.5, 1, 0)
+  
+  return(data)
+}
 add_initial_row <- function(data, p, t){
     initial_row <- tibble(participant = p, 
                         start_s = t)
@@ -113,6 +148,8 @@ InsertMissedHit <- function(data, n_skipped){
   
   data_til_end <- data[skips[1]:nrow(data),]
   data_full <- rbind(data_cut1, data_til_end)
+  
+  
   } else if(n_skipped == 2){
     
     skips <- which(data$double_skip_flag==1)
@@ -124,45 +161,25 @@ InsertMissedHit <- function(data, n_skipped){
                        onset_diff_1p=data$roll_1p[skips[1] - 1],
                        roll_1p=data$roll_1p[skips[1] - 1])
     
-    new_row2 <- tibble(participant=new_p,
-                       onset_diff_1p=new_row1$roll_1p[skips[1] - 1],
-                       roll_1p=data$roll_1p[skips[1] - 1])
-    
-    
     data_cut1 <- data_cut1 %>%
-      rows_insert(new_row1, by = names(new_row1)) %>%
+      rows_insert(new_row1, by = names(new_row1))
+    
+    data_cut1 <- recalc_onsets(data_cut1)
+    
+    new_row2 <- tibble(participant = new_p,
+                       onset_diff_1p = data_cut1$roll_1p[skips[1]],
+                       start_s = data_cut1$roll_1p[skips[1]] + data_cut1$start_s[skips[1]])
+    
+    
+    data_cut1 <- data_cut1 %>% 
       rows_insert(new_row2, by = names(new_row2))
     
     data_til_end <- data[skips[1]:nrow(data),]
     data_full <- rbind(data_cut1, data_til_end)
     
-    
-    
-    
+    data_full <- recalc_onsets(data_full)
     
   }
-  
-  
-  
-}
-recalc_onsets <- function(data){
-  data <- data %>%
-    group_by(participant) %>%
-    mutate(hit_number_participant = seq_along(participant))
-  
-  data <- data %>% 
-    group_by(participant) %>%
-    mutate(start_s = ifelse(is.na(start_s), onset_diff_1p + lag(start_s), start_s))
-  
-  data$onset_diff_2p <- data$start_s - lag(data$start_s, 1)
-  
-  data <- data %>% 
-    group_by(participant) %>%
-    mutate(onset_diff_1p = start_s - lag(start_s, 1))
-  
-  data$skip_flag <- ifelse(data$onset_diff_1p > 1.5 & data$onset_diff_1p < 2.5, 1, 0)
-  
-  return(data)
 }
 align_first_sync_hit <- function(data){
   idx <- which(data$start_s - lag(data$start_s) < .1) - 1
@@ -172,29 +189,22 @@ align_first_sync_hit <- function(data){
 data <- align_first_sync_hit(data)
 data <- recalc_onsets(data)
 
+gg_s(data)
 
-for(i in 1:sum(data$skip_flag, na.rm = T)){
+sk1 <- sum(data$skip_flag, na.rm = T)
+for(i in 1:sk1){
   data <- InsertMissedHit(data, 1)
   data <- recalc_onsets(data)
 }
 
+gg_s(data)
 
-data <- InsertMissedHit(data, 2)
-data <- recalc_onsets(data)
+sk2 <- sum(data$double_skip_flag, na.rm = T)
+for(i in 1:sk2){
+  data <- InsertMissedHit(data, 2)
+  data <- recalc_onsets(data)
+}
 
-# data <- InsertMissedHit(data)
-# data <- recalc_onsets(data)
+p_idx <- which(data$participant == 1)
 
-
-data$participant <- as.factor(data$participant)
-data$hit_number <- 1:nrow(data) 
-
-ggplot(data=data, aes(x=start_s, y=onset_diff_1p, group=participant)) +
-  geom_line(aes(color=participant))+
-  geom_point(aes(color=participant))+
-  geom_vline(xintercept = 15,size=1)
-
-ggplot(data=data, aes(x=hit_number_participant, y=onset_diff_1p, group=participant)) +
-  geom_line(aes(color=participant))+
-  geom_point(aes(color=participant))+
-  geom_vline(xintercept = 15,size=1)
+ccf(data$start_s[p_idx], data$start_s[-p_idx])
