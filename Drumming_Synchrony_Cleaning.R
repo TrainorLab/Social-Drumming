@@ -11,8 +11,8 @@ if(user == "SM"){
 } else if(user == "YAS"){
   data_dir <- ""
 }
-source("InsertMissedHits.R")
-source("RemoveDoubleHits.R")
+#source("InsertMissedHits.R")
+#source("RemoveDoubleHits.R")
 library(tidyverse)
 library(rlang)
 library(zoo)
@@ -78,8 +78,18 @@ InsertMissedHit <- function(data, n_skipped){
     new_row1 <- tibble(participant=new_p,
                        onset_diff_1p=data$roll_1p[skips[1] - 1],
                        roll_1p=data$roll_1p[skips[1] - 1])
-    data_cut1 <- data_cut1 %>%
-      rows_insert(new_row1, by = names(new_row1))
+    
+    if(is.na(new_row1$onset_diff_1p[1])){
+      new_row1$onset_diff_1p[1] <- 1
+    }
+    
+    
+    data_cut1 <- data_cut1 %>% ungroup() %>%
+    add_row(new_row1, .after = nrow(data_cut1)) %>%
+      group_by(participant)
+    
+    # data_cut1 <- data_cut1 %>%
+    #   rows_insert(new_row1, by = names(new_row1))
     
     data_til_end <- data[skips[1]:nrow(data),]
     data_full <- rbind(data_cut1, data_til_end)
@@ -96,6 +106,11 @@ InsertMissedHit <- function(data, n_skipped){
                        onset_diff_1p=data$roll_1p[skips[1] - 1],
                        roll_1p=data$roll_1p[skips[1] - 1])
     
+    if(is.na(new_row1$onset_diff_1p[1])){
+      new_row1$onset_diff_1p[1] <- 1
+    }
+    
+    
     data_cut1 <- data_cut1 %>%
       rows_insert(new_row1, by = names(new_row1))
     
@@ -108,6 +123,9 @@ InsertMissedHit <- function(data, n_skipped){
     
     data_cut1 <- data_cut1 %>% 
       rows_insert(new_row2, by = names(new_row2))
+ 
+    
+    
     
     data_til_end <- data[skips[1]:nrow(data),]
     data_full <- rbind(data_cut1, data_til_end)
@@ -170,7 +188,11 @@ load_data <- function(dyad, trial){
     group_by(participant) %>%
     mutate(hit_number_participant = seq_along(participant))
 }
-
+remove_double_hits <- function(data){
+  data$double_hit_flag <- ifelse(data$onset_diff_1p < .1, 1, 0)
+  idx <- which(data$double_hit_flag == 1)
+  data <- data[-idx,]
+}
 
 ###TASK###
 # 3Put expected pulse for synch condition from kick and snare and deviation
@@ -183,12 +205,15 @@ load_data <- function(dyad, trial){
 # Importing
 
 #101_trial 1 bad
-dyad <- 203
-trial <- 3
+dyad <- 205
+trial <- 1
 
 data <- load_data(dyad, trial)
+data <- remove_double_hits(data)
 data <- align_first_sync_hit(data)
 data <- recalc_onsets(data)
+
+#data <- data[-1,]
 
 gg_s(data)
 
@@ -215,4 +240,12 @@ gg_s(data)
 
 p_idx <- which(data$participant == 1)
 
-ccf(data$start_s[p_idx], data$start_s[-p_idx])
+mean_async <- data %>% group_by(hit_number_participant) %>%
+  mutate(async = start_s[1] - start_s[2])
+mean_async <- mean_async[-seq(1, nrow(mean_async), 2),]
+hist(mean_async$async)
+mean(abs(mean_async$async))
+
+ccf_list <- ccf(data$start_s[p_idx], data$start_s[-p_idx])
+ccf_list[["acf"]][[18]]
+
