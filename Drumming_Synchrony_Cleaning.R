@@ -57,17 +57,4 @@ if(sk2 >= 1){
 }
 gg_s(data)
 
-
-p_idx <- which(data$participant == 1)
-
-mean_async <- data %>% group_by(hit_number_participant) %>%
-  mutate(async = start_s[1] - start_s[2]) %>%
-  filter(all(imputed == 0))
-  
-mean_async <- mean_async[-seq(1, nrow(mean_async), 2),]
-hist(mean_async$async)
-mean(abs(mean_async$async))
-
-ccf_list <- ccf(data$start_s[p_idx], data$start_s[-p_idx])
-ccf_list[["acf"]][[18]]
-
+generate_stats(data)
