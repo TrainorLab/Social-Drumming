@@ -27,7 +27,7 @@ metronome <- tibble(start_s = seq(1,32,1),
 
 # Importing
 dyad <- 203
-trial <- 1
+trial <- 4
 
 data <- load_data(dyad, trial)
 data <- flip_participants(data)

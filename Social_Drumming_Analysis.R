@@ -6,12 +6,15 @@ user <- "SM"
 if(user == "SM"){
   data_dir <- "C:\\Users\\mcwee\\OneDrive - McMaster University\\Social Drumming\\REAPER_trial_data\\"
   setwd("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\social_drumming_git\\")
+  fun_dir <- ("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\social_drumming_git\\functions\\")
 } else if(user == "AL"){
   setwd("~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation")
   data_dir <- "~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation/Data/"
 } else if(user == "YAS"){
   data_dir <- ""
 }
+list.files(fun_dir, full.names = TRUE) %>% walk(source)
+
 source("InsertMissedHits.R")
 source("RemoveDoubleHits.R")
 library(tidyverse)
@@ -32,15 +35,19 @@ library(ggplot2)
 dyad <- 101
 trial <- 2
 
-load_data(dyad, trial)
+data <- load_data(dyad, trial)
+
+gg_s(data)
 
 data <- RemoveDoubleHits(data)
 
-which(data$flag_skip == 1)
-sum(data$flag_skip, na.rm = T)
+which(data$skip_flag == 1)
+sum(data$skip_flag, na.rm = T)
 
 
 data_full <- InsertMissedHits(data)
+
+gg_s(data)
 
 ##Remaining Issues: multiple missed hits in a row
 ## missed hit before a rolling avg is calculated

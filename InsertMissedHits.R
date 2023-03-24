@@ -1,5 +1,5 @@
 InsertMissedHits <- function(data){
-  skips <- which(data$flag_skip==1)
+  skips <- which(data$skip_flag==1)
   p_skip <- (data[skips[1:length(skips)],1])
   new_p <- ifelse(p_skip$participant == 2, 1, 
                   ifelse(p_skip$participant == 1, 2, NA))
