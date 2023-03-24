@@ -31,7 +31,7 @@ library(ggplot2)
 # Importing
 
 #101_trial 1 bad
-dyad <- 104
+dyad <- 106
 trial <- 2
 
 data <- load_data(dyad, trial)
@@ -39,14 +39,15 @@ data <- load_data(dyad, trial)
 gg_s(data)
 
 data <- remove_double_hits(data)
+data <- recalc_onsets(data)
 
 which(data$skip_flag == 1)
 sum(data$skip_flag, na.rm = T)
 
 
-data_full <- InsertMissedHits(data)
+data <- InsertMissedHits(data)
 
-gg_s(data_full)
+gg_s(data)
 
 ##Remaining Issues: multiple missed hits in a row
 ## missed hit before a rolling avg is calculated
