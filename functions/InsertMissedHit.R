@@ -26,7 +26,7 @@ InsertMissedHit <- function(data, n_skipped){
     
     data_til_end <- data[skips[1]:nrow(data),]
     data_full <- rbind(data_cut1, data_til_end)
-    
+    data_full <- recalc_onsets(data_full)
     
   } else if(n_skipped == 2){
     

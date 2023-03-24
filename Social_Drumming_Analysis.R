@@ -1,7 +1,7 @@
 ### Social Drumming Analysis ###
 rm(list=ls())
 user <- "SM"
-user <- "AL"
+#user <- "AL"
 
 if(user == "SM"){
   data_dir <- "C:\\Users\\mcwee\\OneDrive - McMaster University\\Social Drumming\\REAPER_trial_data\\"
@@ -29,54 +29,10 @@ library(ggplot2)
 # Importing
 
 #101_trial 1 bad
+dyad <- 101
+trial <- 2
 
-
-data <- read.csv(paste0(data_dir, "101_trial1.csv"),stringsAsFactors = T)
-names(data) <- c("sel", "mut", "s_ppq",  "e_ppq", "leng", "chan", "pitch", "vel")
-
-# Data Cleaning and Restructuring
-
-# Renaming variables to be readable
-data <- data %>%
-  mutate(s_ppq = (s_ppq/(960*2)),e_ppq = (e_ppq/(960*2))) %>%
-  rename(start_s = s_ppq,end_s = e_ppq) %>%
-  select(-sel, -mut, -chan, -vel)
-
-
-#adding a participant number to each drummer
-data$participant <- ifelse(data$pitch==47,1,2)
-
-
-#onset difference between 2 participants and individual participants
-data$onset_diff_2p <- data$start_s - lag(data$start_s, 1)
-
-data <- data %>% 
-  group_by(participant) %>%
-  mutate(onset_diff_1p = start_s - lag(start_s, 1))
-
-
-#Skip flagging mechanisms
-data$flag_skip <- ifelse(data$participant + lag(data$participant,1) == 3,0,1)
-
-
-# Rolling averages
-data <- data %>% 
-  group_by(participant) %>%
-  mutate(roll_1p = rollmean(onset_diff_1p, k=5, align = "right", fill = NA))
-
-data <- data %>% 
-  ungroup %>%
-  mutate(roll_2p = rollmean(onset_diff_2p, k=5, align = "right", fill = NA))
-
-
-
-# Cleaning pt 2
-data <- data %>%
-  select(-start_s, -end_s, -leng, -pitch)
-
-
-which(data$flag_skip == 1)
-sum(data$flag_skip, na.rm = T)
+load_data(dyad, trial)
 
 data <- RemoveDoubleHits(data)
 

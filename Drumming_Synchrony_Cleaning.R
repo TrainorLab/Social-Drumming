@@ -26,8 +26,8 @@ metronome <- tibble(start_s = seq(1,32,1),
                     participant = rep(3, 32))
 
 # Importing
-dyad <- 206
-trial <- 4
+dyad <- 203
+trial <- 1
 
 data <- load_data(dyad, trial)
 data <- flip_participants(data)
@@ -42,7 +42,6 @@ sk1 <- sum(data$skip_flag, na.rm = T)
 if(sk1 >= 1){
   for(i in 1:sk1){
     data <- InsertMissedHit(data, 1)
-    data <- recalc_onsets(data)
   }
 }
 
@@ -51,9 +50,7 @@ gg_s(data)
 sk2 <- sum(data$double_skip_flag, na.rm = T)
 if(sk2 >= 1){
   for(i in 1:sk2){
-    data <- InsertMissedHit(data, 2)
-    data <- recalc_onsets(data)
-  }
+    data <- InsertMissedHit(data, 2)  }
 }
 gg_s(data)
 
