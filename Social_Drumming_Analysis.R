@@ -16,7 +16,6 @@ if(user == "SM"){
 list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
 source("InsertMissedHits.R")
-source("RemoveDoubleHits.R")
 library(tidyverse)
 library(rlang)
 library(zoo)
@@ -32,14 +31,14 @@ library(ggplot2)
 # Importing
 
 #101_trial 1 bad
-dyad <- 101
+dyad <- 104
 trial <- 2
 
 data <- load_data(dyad, trial)
 
 gg_s(data)
 
-data <- RemoveDoubleHits(data)
+data <- remove_double_hits(data)
 
 which(data$skip_flag == 1)
 sum(data$skip_flag, na.rm = T)
@@ -47,7 +46,7 @@ sum(data$skip_flag, na.rm = T)
 
 data_full <- InsertMissedHits(data)
 
-gg_s(data)
+gg_s(data_full)
 
 ##Remaining Issues: multiple missed hits in a row
 ## missed hit before a rolling avg is calculated
