@@ -46,5 +46,6 @@ load_data <- function(dyad, trial){
   
   data <- data %>%
     group_by(participant) %>%
-    mutate(hit_number_participant = seq_along(participant))
+    mutate(hit_number_participant = seq_along(participant)) %>%
+    mutate(imputed = 0)
 }

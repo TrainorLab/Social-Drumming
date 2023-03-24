@@ -9,7 +9,8 @@ InsertMissedHit <- function(data, n_skipped){
     
     new_row1 <- tibble(participant=new_p,
                        onset_diff_1p=data$roll_1p[skips[1] - 1],
-                       roll_1p=data$roll_1p[skips[1] - 1])
+                       roll_1p=data$roll_1p[skips[1] - 1],
+                       imputed = 1)
     
     if(is.na(new_row1$onset_diff_1p[1])){
       new_row1$onset_diff_1p[1] <- 1
@@ -36,7 +37,8 @@ InsertMissedHit <- function(data, n_skipped){
     
     new_row1 <- tibble(participant=new_p,
                        onset_diff_1p=data$roll_1p[skips[1] - 1],
-                       roll_1p=data$roll_1p[skips[1] - 1])
+                       roll_1p=data$roll_1p[skips[1] - 1],
+                       imputed = 1)
     
     if(is.na(new_row1$onset_diff_1p[1])){
       new_row1$onset_diff_1p[1] <- 1
@@ -50,7 +52,8 @@ InsertMissedHit <- function(data, n_skipped){
     
     new_row2 <- tibble(participant = new_p,
                        onset_diff_1p = data_cut1$roll_1p[skips[1]],
-                       start_s = data_cut1$roll_1p[skips[1]] + data_cut1$start_s[skips[1]])
+                       start_s = data_cut1$roll_1p[skips[1]] + data_cut1$start_s[skips[1]],
+                       imputed = 1)
     
     
     data_cut1 <- data_cut1 %>% 

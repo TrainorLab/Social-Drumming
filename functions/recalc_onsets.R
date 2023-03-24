@@ -14,6 +14,7 @@ recalc_onsets <- function(data){
     mutate(onset_diff_1p = start_s - lag(start_s, 1))
   
   data$skip_flag <- ifelse(data$onset_diff_1p > 1.5 & data$onset_diff_1p < 2.5, 1, 0)
+  data$double_skip_flag <- ifelse(data$onset_diff_1p > 2.5 & data$onset_diff_1p < 3.5, 1, 0)
   
   return(data)
 }

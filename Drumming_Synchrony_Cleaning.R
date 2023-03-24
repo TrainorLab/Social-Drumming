@@ -13,12 +13,12 @@ if(user == "SM"){
   data_dir <- ""
 }
 
-list.files(fun_dir, full.names = TRUE) %>% walk(source)
 library(tidyverse)
 library(rlang)
 library(zoo)
 library(ggplot2)
 library(dtw)
+list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
 ###TASK###
 # 3Put expected pulse for synch condition from kick and snare and deviation
@@ -26,15 +26,15 @@ metronome <- tibble(start_s = seq(1,32,1),
                     participant = rep(3, 32))
 
 # Importing
-dyad <- 201
-trial <- 1
+dyad <- 206
+trial <- 4
 
 data <- load_data(dyad, trial)
 data <- flip_participants(data)
 data <- remove_double_hits(data)
 data <- align_first_sync_hit(data)
+data <- trim_end(data)
 data <- recalc_onsets(data)
-
 
 gg_s(data)
 
@@ -61,7 +61,9 @@ gg_s(data)
 p_idx <- which(data$participant == 1)
 
 mean_async <- data %>% group_by(hit_number_participant) %>%
-  mutate(async = start_s[1] - start_s[2])
+  mutate(async = start_s[1] - start_s[2]) %>%
+  filter(all(imputed == 0))
+  
 mean_async <- mean_async[-seq(1, nrow(mean_async), 2),]
 hist(mean_async$async)
 mean(abs(mean_async$async))
