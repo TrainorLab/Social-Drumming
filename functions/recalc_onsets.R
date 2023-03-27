@@ -1,5 +1,5 @@
 recalc_onsets <- function(data){
-  data <- data %>%
+    data <- data %>%
     group_by(participant) %>%
     mutate(hit_number_participant = seq_along(participant))
   
@@ -11,7 +11,8 @@ recalc_onsets <- function(data){
   
   data <- data %>% 
     group_by(participant) %>%
-    mutate(onset_diff_1p = start_s - lag(start_s, 1))
+    mutate(onset_diff_1p = start_s - lag(start_s, 1)) %>%
+    arrange(start_s)
   
   data$skip_flag <- ifelse(data$onset_diff_1p > 1.5 & data$onset_diff_1p < 2.5, 1, 0)
   data$double_skip_flag <- ifelse(data$onset_diff_1p > 2.5 & data$onset_diff_1p < 3.5, 1, 0)

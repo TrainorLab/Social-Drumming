@@ -38,7 +38,13 @@ InsertMissedHit <- function(data, n_skipped){
     data <- data %>% ungroup() %>%
       add_row(new_row1, .before = (skips[1]))
     
-    data <- recalc_onsets(data)
+    
+    data <- data %>% 
+      group_by(participant) %>%
+      mutate(start_s = ifelse(is.na(start_s), onset_diff_1p + lag(start_s), start_s))
+    
+    
+    #data <- recalc_onsets(data)
     
     new_row2 <- tibble(participant = new_p,
                        onset_diff_1p = data$roll_1p[skips[1]],
