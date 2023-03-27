@@ -10,9 +10,14 @@ generate_stats <- function(data){
   moa <- mean(abs(mean_async$async))
   
   ccf_list <- ccf(data$start_s[p_idx], data$start_s[-p_idx])
-  lag0_corr <- ccf_list[["acf"]][[18]]
+  lag0_corr <- ccf_list[["acf"]][[17]]
   
-  output <- list(moa, lag0_corr)
-  names(output) <- c("Onset Asynchrony", "Lag 0 Cross-Correlation")
+  n_taps <- nrow(data %>% filter(start_s >= 17))
+  
+  #will differ between conditions
+  cont_bpm <- n_taps/2
+  
+  output <- list(moa, lag0_corr, cont_bpm)
+  names(output) <- c("Onset Asynchrony", "Lag 0 Cross-Correlation", "Continuation Phase BPM")
   return(output)
 }
