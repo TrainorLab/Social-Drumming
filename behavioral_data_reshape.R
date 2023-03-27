@@ -4,7 +4,7 @@ library(psych)
 
 
 ##### change to read from google sheets
-x <- read.csv("C:\\Users\\mcwee\\Downloads\\Cooperation_Drumming_2_2_23.csv")
+x <- read.csv("C:\\Users\\mcwee\\Downloads\\Co-operation Drumming.csv")
 
 x <- x %>% filter(!Dyad %in% c(102, 104))
 
@@ -32,12 +32,8 @@ x$condition <- ifelse(x$Dyad < 200, "Alternating",
                       ifelse(x$Dyad >= 200 & x$Dyad < 300, "Synchrony",
                              ifelse(x$Dyad >= 300, "Alone", NA)))
 
-x %>% group_by(condition) %>%
-  summarise(mean_coop1 = mean(Coop_Q1)) 
 
-x %>% group_by(condition) %>%
-  summarise(mean_coop2 = mean(Coop_Q2))
+table(x$condition, x$Coop_Q1)
 
-x %>% group_by(condition) %>%
-  summarise(Likert1 = mean(Likert_Q1))
+table(x$condition, x$Coop_Q2)
 
