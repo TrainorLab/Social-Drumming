@@ -8,11 +8,10 @@ x <- read.csv("C:\\Users\\mcwee\\Downloads\\Co-operation Drumming.csv")
 
 x <- x %>% filter(!Dyad %in% c(102, 104))
 
-x %>% tidyverse::select(Likert_Q1)
-
 ###
 # do median splits on likert scales by cooperation
 ## how good was your partner at drumming
+
 
 
 psych::describe(x)
@@ -26,7 +25,7 @@ mean(x$Coop_Q1)
 mean(x$Coop_Q2)
 
 
-psych::pairs.panels(x %>% select(Likert_Q1, Likert_Q6))
+mixedCor(x %>% select(Likert_Q1:Coop_Q2))
 
 x$condition <- ifelse(x$Dyad < 200, "Alternating", 
                       ifelse(x$Dyad >= 200 & x$Dyad < 300, "Synchrony",

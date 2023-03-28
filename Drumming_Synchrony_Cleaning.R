@@ -20,11 +20,6 @@ library(ggplot2)
 library(dtw)
 list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
-###TASK###
-# 3Put expected pulse for synch condition from kick and snare and deviation
-metronome <- tibble(start_s = seq(1,32,1),
-                    participant = rep(3, 32))
-
 # Importing
 dyad <- 203
 trial <- 4

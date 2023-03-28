@@ -5,7 +5,7 @@ gg_s <- function(data, loess = F){
   gg <- ggplot(data=data, aes(x=start_s, y=onset_diff_1p, group=participant)) +
     geom_line(aes(color=participant))+
     geom_point(aes(color=participant))+
-    geom_vline(xintercept = 15,size=1)+
+    geom_vline(xintercept = 32,size=1)+
     ggtitle(paste0(dyad, " Trial #",  trial))
   
   if(loess == F){
@@ -13,5 +13,8 @@ gg_s <- function(data, loess = F){
   } else {
     return(gg + geom_smooth())
   }
+  
+  # gg + 
+  #   geom_vline(xintercept = measures, linetype = "dashed")
   
 }
