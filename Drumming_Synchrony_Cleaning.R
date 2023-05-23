@@ -22,31 +22,39 @@ list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
 # Importing
 dyad <- 203
-trial <- 4
+trials <- 1:4
 
-data <- load_data(dyad, trial)
-data <- flip_participants(data)
-data <- remove_double_hits(data)
-data <- align_first_sync_hit(data)
-data <- trim_end(data)
-data <- recalc_onsets(data)
+full_data <- list()
 
-gg_s(data)
-
-sk1 <- sum(data$skip_flag, na.rm = T)
-if(sk1 >= 1){
-  for(i in 1:sk1){
-    data <- InsertMissedHit(data, 1)
+for(trial in trials){
+  data <- load_data(dyad, trial)
+  data <- flip_participants(data)
+  data <- remove_double_hits(data)
+  data <- align_first_sync_hit(data)
+  data <- trim_end(data)
+  data <- recalc_onsets(data)
+  
+  gg_s(data)
+  
+  sk1 <- sum(data$skip_flag, na.rm = T)
+  if(sk1 >= 1){
+    for(i in 1:sk1){
+      data <- InsertMissedHit(data, 1)
+    }
   }
+  
+  gg_s(data)
+  
+  sk2 <- sum(data$double_skip_flag, na.rm = T)
+  if(sk2 >= 1){
+    for(i in 1:sk2){
+      data <- InsertMissedHit(data, 2)  }
+  }
+  gg_s(data)
+  
+  x <- generate_stats(data)
+  assign(paste0("trial_", trial), x)
 }
 
-gg_s(data)
+full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
 
-sk2 <- sum(data$double_skip_flag, na.rm = T)
-if(sk2 >= 1){
-  for(i in 1:sk2){
-    data <- InsertMissedHit(data, 2)  }
-}
-gg_s(data)
-
-generate_stats(data)

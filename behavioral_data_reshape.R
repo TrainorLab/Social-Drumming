@@ -25,7 +25,9 @@ mean(x$Coop_Q1)
 mean(x$Coop_Q2)
 
 
-mixedCor(x %>% select(Likert_Q1:Coop_Q2))
+t <- mixedCor(x %>% select(Likert_Q1:Coop_Q2))
+phi(x %>% select(Coop_Q1, Coop_Q2))
+
 
 x$condition <- ifelse(x$Dyad < 200, "Alternating", 
                       ifelse(x$Dyad >= 200 & x$Dyad < 300, "Synchrony",
