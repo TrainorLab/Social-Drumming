@@ -29,7 +29,8 @@ generate_stats <- function(data){
   #will differ between conditions
   cont_bpm <- n_taps/2
   toss <- (any(data$onset_diff_1p > 3, na.rm = T))
-  output <- list(toss, pairwise_asynch, mpa, lag0_corr, cont_bpm)
-  names(output) <- c("Exclude Trial", "Precision: Pairwise Asynchrony", "Accuracy: Onset Asynchrony", "Lag 0 Cross-Correlation", "Continuation Phase BPM")
+  asynchs <- psych::describe(mean_async$async)
+  output <- list(toss, asynchs, pairwise_asynch, mpa, lag0_corr, cont_bpm)
+  names(output) <- c("Exclude Trial", "Describe: Asychronies", "Precision: Pairwise Asynchrony", "Accuracy: Onset Asynchrony", "Lag 0 Cross-Correlation", "Continuation Phase BPM")
   return(output)
 }

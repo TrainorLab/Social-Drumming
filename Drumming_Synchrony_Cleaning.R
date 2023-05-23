@@ -58,3 +58,4 @@ for(trial in trials){
 
 full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
 
+write_rds(full_dyad_data, paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
