@@ -21,41 +21,41 @@ library(dtw)
 list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
 # Importing
+dyads <- 201:212
+dyads <- dyads[-c(2, 5)]
 dyad <- 203
 trials <- 1:4
 
-full_data <- list()
-
-for(trial in trials){
-  data <- load_data(dyad, trial)
-  data <- flip_participants(data)
-  data <- remove_double_hits(data)
-  data <- align_first_sync_hit(data)
-  data <- trim_end(data)
-  data <- recalc_onsets(data)
-  
-  gg_s(data)
-  
-  sk1 <- sum(data$skip_flag, na.rm = T)
-  if(sk1 >= 1){
-    for(i in 1:sk1){
-      data <- InsertMissedHit(data, 1)
+for (dyad in dyads){
+  for(trial in trials){
+    data <- load_data(dyad, trial)
+    data <- flip_participants(data)
+    data <- remove_double_hits(data)
+    data <- align_first_sync_hit(data)
+    data <- trim_end(data)
+    data <- recalc_onsets(data)
+    
+    sk1 <- sum(data$skip_flag, na.rm = T)
+    if(sk1 >= 1){
+      for(i in 1:sk1){
+        data <- InsertMissedHit(data, 1)
+      }
     }
+    
+    sk2 <- sum(data$double_skip_flag, na.rm = T)
+    if(sk2 >= 1){
+      for(i in 1:sk2){
+        data <- InsertMissedHit(data, 2)  }
+    }
+  
+    if(dyad == 203 & trial == 3){
+      data <- remove_hit(data, 1, 76)
+    }
+    
+    x <- generate_stats(data)
+    assign(paste0("trial_", trial), x)
   }
-  
-  gg_s(data)
-  
-  sk2 <- sum(data$double_skip_flag, na.rm = T)
-  if(sk2 >= 1){
-    for(i in 1:sk2){
-      data <- InsertMissedHit(data, 2)  }
-  }
-  gg_s(data)
-  
-  x <- generate_stats(data)
-  assign(paste0("trial_", trial), x)
+
+  full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
+  write_rds(full_dyad_data, paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
 }
-
-full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
-
-write_rds(full_dyad_data, paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
