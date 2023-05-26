@@ -1,9 +1,9 @@
 generate_stats <- function(data, phase = "all"){
   
   if(phase == "cont"){
-    data <- data %>% filter(start_s >= 32)
+    data <- data %>% filter(start_s >= 17)
   } else if(phase == "sync"){
-    data <- data %>% filter(start_s < 32)
+    data <- data %>% filter(start_s < 17)
   } else {}
   
   ### TO-DO
@@ -44,7 +44,7 @@ generate_stats <- function(data, phase = "all"){
   
   # We'll also calculate and plot the CCF of the onset-times of each tapper 
   p_idx <- which(data$participant == 1)
-  ccf_list <- ccf(data$start_s[p_idx], data$start_s[-p_idx], lag.max = 15)
+  ccf_list <- ccf(data$start_s[p_idx], data$start_s[-p_idx], lag.max = 15, na.action = na.pass)
   onsets_plot <- gg_s(data)
   
   # will differ between conditions

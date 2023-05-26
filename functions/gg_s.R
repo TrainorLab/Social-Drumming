@@ -6,7 +6,8 @@ gg_s <- function(data, loess = F){
     geom_line(aes(color=participant))+
     geom_point(aes(color=participant))+
     geom_vline(xintercept = 32,size=1)+
-    ggtitle(paste0(dyad, " Trial #",  trial))
+    ggtitle(paste0(dyad, " Trial #",  trial))+
+    theme_bw()
   
   if(loess == F){
     return(gg)

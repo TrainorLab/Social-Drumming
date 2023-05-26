@@ -22,8 +22,9 @@ list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
 # Importing
 dyads <- 201:212
-dyads <- dyads[-c(2, 5)]
 trials <- 1:4
+# dyad <- 201
+# trial <- 3
 
 for (dyad in dyads){
   for(trial in trials){
@@ -34,24 +35,46 @@ for (dyad in dyads){
     data <- trim_end(data)
     data <- recalc_onsets(data)
     
-    sk1 <- sum(data$skip_flag, na.rm = T)
-    if(sk1 >= 1){
-      for(i in 1:sk1){
-        data <- InsertMissedHit(data, 1)
-      }
-    }
+    gg_s(data)
     
-    sk2 <- sum(data$double_skip_flag, na.rm = T)
-    if(sk2 >= 1){
-      for(i in 1:sk2){
-        data <- InsertMissedHit(data, 2)  }
-    }
-  
+    tryCatch(
+      {
+        data <- clean_all_missed(data)
+        gg_s(data)
+      },
+      error = function(e) {
+        message("An error occurred: ", conditionMessage(e))
+        data <<- NULL
+      },
+      warning = function(w) {
+        # Code to handle warnings if required
+        message("A warning occurred: ", conditionMessage(w))
+        # Additional actions or warning handling if needed
+      }
+    )
+    
+    
     if(dyad == 203 & trial == 3){
       data <- remove_hit(data, 1, 76)
     }
     
-    x <- generate_stats(data)
+    tryCatch(
+      {
+        x <- generate_stats(data)
+      },
+      error = function(e) {
+        message("An error occurred: ", conditionMessage(e))
+        x <<- NULL
+      },
+      warning = function(w) {
+        # Code to handle warnings if required
+        message("A warning occurred: ", conditionMessage(w))
+        # Additional actions or warning handling if needed
+      }
+    )
+    
+  
+    
     assign(paste0("trial_", trial), x)
   }
 
