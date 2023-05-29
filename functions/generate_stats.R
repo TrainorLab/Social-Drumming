@@ -37,23 +37,27 @@ generate_stats <- function(data){
   # AC1 should be negative here 
    
   ITI_1_sync <- data %>% 
+    group_by(hit_number_participant) %>%
+    filter(all(imputed == 0)) %>%
     filter(!is.na(onset_diff_1p) & participant == 1) %>%
-    filter(all(imputed == 0)) %>% 
     filter(start_s < cont_start)
   
   ITI_1_cont <- data %>% 
+    group_by(hit_number_participant) %>%
+    filter(all(imputed == 0)) %>%
     filter(!is.na(onset_diff_1p) & participant == 1) %>%
-    filter(all(imputed == 0)) %>% 
     filter(start_s >= cont_start)
   
   ITI_2_sync <- data %>% 
+    group_by(hit_number_participant) %>%
+    filter(all(imputed == 0)) %>%
     filter(!is.na(onset_diff_1p) & participant == 2) %>%
-    filter(all(imputed == 0))  %>% 
     filter(start_s < cont_start)
   
   ITI_2_cont <- data %>% 
+    group_by(hit_number_participant) %>%
+    filter(all(imputed == 0)) %>%
     filter(!is.na(onset_diff_1p) & participant == 2) %>%
-    filter(all(imputed == 0))  %>% 
     filter(start_s >= cont_start)
   
   p1_ITI_sync_acf <- acf(ITI_1_sync$onset_diff_1p)
@@ -67,7 +71,6 @@ generate_stats <- function(data){
   mpa_sync <- sum(abs(async_sync_phase$async))/nrow(async_sync_phase)
   mpa_cont <- sum(abs(async_cont_phase$async))/nrow(async_cont_phase)
   
-  
   pairwise_async_sync <- sqrt(sum(abs(async_sync_phase$async) - mpa_sync)^2 / (nrow(async_sync_phase)-1))
   pairwise_async_cont <- sqrt(sum(abs(async_cont_phase$async) - mpa_cont)^2 / (nrow(async_cont_phase)-1))
   
@@ -80,6 +83,9 @@ generate_stats <- function(data){
   # will differ between conditions, thus we use cont_start and condition_b
   n_taps <- nrow(data %>% filter(start_s >= cont_start))
   cont_bpm <- n_taps/condition_b
+  if(dyad %in% c(101:105)){
+    cont_bpm <- round(cont_bpm*4/3, 2)
+  }
   
   n_imputed <- sum(data$imputed)
   toss <- (any(data$onset_diff_1p > 3, na.rm = T))
