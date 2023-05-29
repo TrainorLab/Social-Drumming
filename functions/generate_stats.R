@@ -27,8 +27,8 @@ generate_stats <- function(data){
   async_sync_hist <- hist(async_sync_phase$async)
   async_cont_hist <- hist(async_cont_phase$async)
   
-  async_sync_acf <- acf(async_sync_phase$async, na.action = na.pass)
-  async_cont_acf <- acf(async_cont_phase$async, na.action = na.pass)
+  async_sync_acf <- acf(async_sync_phase$async, na.action = na.pass, plot = FALSE)
+  async_cont_acf <- acf(async_cont_phase$async, na.action = na.pass, plot = FALSE)
   
   asyncs_sync <- psych::describe(async_sync_phase$async)
   asyncs_cont <- psych::describe(async_cont_phase$async)
@@ -60,11 +60,11 @@ generate_stats <- function(data){
     filter(!is.na(onset_diff_1p) & participant == 2) %>%
     filter(start_s >= cont_start)
   
-  p1_ITI_sync_acf <- acf(ITI_1_sync$onset_diff_1p)
-  p1_ITI_cont_acf <- acf(ITI_1_cont$onset_diff_1p)
+  p1_ITI_sync_acf <- acf(ITI_1_sync$onset_diff_1p, plot = FALSE)
+  p1_ITI_cont_acf <- acf(ITI_1_cont$onset_diff_1p, plot = FALSE)
   
-  p2_ITI_sync_acf <- acf(ITI_2_sync$onset_diff_1p)
-  p2_ITI_cont_acf <- acf(ITI_2_cont$onset_diff_1p)
+  p2_ITI_sync_acf <- acf(ITI_2_sync$onset_diff_1p, plot = FALSE)
+  p2_ITI_cont_acf <- acf(ITI_2_cont$onset_diff_1p, plot = FALSE)
   
   
   #mean pairwise asynchrony (from onsetsync package documentation)
@@ -83,7 +83,7 @@ generate_stats <- function(data){
   # will differ between conditions, thus we use cont_start and condition_b
   n_taps <- nrow(data %>% filter(start_s >= cont_start))
   cont_bpm <- n_taps/condition_b
-  if(dyad %in% c(101:105)){
+  if(dyad %in% c(101:105, 118:119)){
     cont_bpm <- round(cont_bpm*4/3, 2)
   }
   
