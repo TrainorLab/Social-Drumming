@@ -30,9 +30,11 @@ generate_stats <- function(data, phase = "all"){
   # AC1 should be negative here 
    
   ITI_1 <- data %>% 
-    filter(!is.na(onset_diff_1p) & participant == 1)
+    filter(!is.na(onset_diff_1p) & participant == 1) %>%
+    filter(all(imputed == 0))
   ITI_2 <- data %>% 
-    filter(!is.na(onset_diff_1p) & participant == 2)
+    filter(!is.na(onset_diff_1p) & participant == 2) %>%
+    filter(all(imputed == 0))
   
   p1_ITI_acf <- acf(ITI_1$onset_diff_1p)
   p2_ITI_acf <- acf(ITI_2$onset_diff_1p)
