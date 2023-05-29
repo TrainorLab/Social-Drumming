@@ -2,7 +2,7 @@ remove_double_hits <- function(data){
   if(dyad < 200){
     
     data$double_hit_flag <- data$onset_diff_2p < .15 & (data$participant == lag(data$participant, 1))
-    data <- data %>% filter(double_hit_flag == FALSE)
+    data <- data %>% filter(double_hit_flag == FALSE | is.na(double_hit_flag))
     
   } else if(dyad > 200 & dyad < 300){
 

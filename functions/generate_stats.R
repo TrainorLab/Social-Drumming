@@ -1,9 +1,17 @@
 generate_stats <- function(data, phase = "all"){
   
+  if(dyad <200){
+    cont_start <- 16
+    condition_b <- 1
+  } else if(dyad >200 &  dyad <300){
+    cont_start <- 32
+    condition_b <- 2
+  }
+  
   if(phase == "cont"){
-    data <- data %>% filter(start_s >= 17)
+    data <- data %>% filter(start_s >= cont_start)
   } else if(phase == "sync"){
-    data <- data %>% filter(start_s < 17)
+    data <- data %>% filter(start_s < cont_start)
   } else {}
   
   ### TO-DO
@@ -49,9 +57,10 @@ generate_stats <- function(data, phase = "all"){
   ccf_list <- ccf(data$start_s[p_idx], data$start_s[-p_idx], lag.max = 15, na.action = na.pass)
   onsets_plot <- gg_s(data)
   
-  # will differ between conditions
-  n_taps <- nrow(data %>% filter(start_s >= 17))
-  cont_bpm <- n_taps/2
+  # will differ between conditions, thus we use cont_start and condition_b
+  n_taps <- nrow(data %>% filter(start_s >= cont_start))
+  
+  cont_bpm <- n_taps/condition_b
   n_imputed <- sum(data$imputed)
   toss <- (any(data$onset_diff_1p > 3, na.rm = T))
   raw <- data

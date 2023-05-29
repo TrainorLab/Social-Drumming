@@ -23,7 +23,7 @@ list.files(fun_dir, full.names = TRUE) %>% walk(source)
 # Importing
 dyads <- 201:212
 trials <- 1:4
-# dyad <- 201
+# dyad <- 203
 # trial <- 3
 
 for (dyad in dyads){
@@ -31,7 +31,7 @@ for (dyad in dyads){
     data <- load_data(dyad, trial)
     data <- flip_participants(data)
     data <- remove_double_hits(data)
-    data <- align_first_sync_hit(data)
+    data <- align_first_hit(data)
     data <- trim_end(data)
     data <- recalc_onsets(data)
     
@@ -81,3 +81,4 @@ for (dyad in dyads){
   full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
   write_rds(full_dyad_data, paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
 }
+

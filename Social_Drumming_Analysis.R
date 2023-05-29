@@ -30,138 +30,40 @@ library(ggplot2)
 # Importing
 
 #101_trial 1 bad
-dyad <- 102
-trial <- 2
+dyads <- 101:119
+trials <- 1:4
+dyad <- 104
+trial <- 4
 
-data <- load_data(dyad, trial)
-
-gg_s(data)
-
-data <- remove_double_hits(data)
-data <- trim_end(data)
-data <- recalc_onsets(data)
-data <- data[-nrow(data),]
-
-which(data$skip_flag == 1)
-sum(data$skip_flag, na.rm = T)
-
-
-#data <- InsertMissedHits(data)
-
-gg_s(data, loess = T)
-
-
-
-
-##Remaining Issues: multiple missed hits in a row
-## missed hit before a rolling avg is calculated
-## Recalculate rolling avg?
-## skip flagging mechanism catching double hits: see 108_3, 109_1
-
-
-#Recalculate rolling avgs
-
-######
-
-
-  
-# Flags for speed
-flag_2p <- 2*sd(data$onset_diff_2p, na.rm = T)
-data$flag_2p_fast <- ifelse(data$onset_diff_2p < mean(data$onset_diff_2p,na.rm=T)-flag_2p,1,0)
-data$flag_2p_slow <- ifelse(data$onset_diff_2p > mean(data$onset_diff_2p,na.rm=T)+flag_2p,1,0)
-
-#flag_1p <- 2*sd(data$onset_diff_1p, na.rm = T)
-#data$flag_1p_fast <- ifelse(data$onset_diff_1p < mean(data$onset_diff_1p,na.rm=T)-flag_1p,1,0)
-#data$flag_1p_slow <- ifelse(data$onset_diff_1p > mean(data$onset_diff_1p,na.rm=T)+flag_1p,1,0)
-
-
-# imputing mechanism
-# data$onset_diff_1p_est <- ifelse(data$flag_1p==1,(data$roll_1p + lag(data$onset_diff_1p,1)),data$onset_diff_1p)
-
-data$onset_diff_2p_est1 <- ifelse(data$flag_2p_fast==1,(data$roll_2p + lag(data$onset_diff_2p,1)),data$onset_diff_2p)
-data$onset_diff_2p_est <- ifelse(data$flag_2p_slow==1,(data$roll_2p + lag(data$onset_diff_2p_est1,1)),data$onset_diff_2p_est1)
-
-
-# Basic line plot with points
-data$participant <- as.factor(data$participant)
-data$hit_number <- 1:nrow(data) 
-
-ggplot(data=data, aes(x=hit_number, y=onset_diff_1p_est, group=participant)) +
-  geom_line(aes(color=participant))+
-  geom_point(aes(color=participant))+
-  geom_smooth(data=data_fixed, aes(x=hit_number, y=roll_1p, color=participant),size=2)+
-  geom_vline(xintercept = 15,size=1)
-
-
-ggplot(data=data, aes(x=hit_number, y=onset_diff_2p_est)) +
-  geom_line(aes(group=participant, color=participant))+
-  geom_point(aes(group=participant, color=participant))+
-  geom_smooth(data=data, aes(x=hit_number,y = roll_2p),size=2)+
-  geom_vline(xintercept = 15,size=1)
-
-
-
-
-
-# Pulling data, identifying condition, creating total dataframe ####
-
-# collecting alternating condition from set of files
-data_files = list.files(path = ".", pattern="10") #add|11|12 and so on with more data"
-alt_data   = list()
-
-# adding all files to a list
-for (ii in 1:length(data_files)){
-  temp = read.csv(data_files[ii])
-    alt_data[[ii]] = temp
+for (dyad in dyads){
+  for(trial in trials){
+    
+    data <- load_data(dyad, trial)
+    data <- flip_participants(data)
+    data <- remove_double_hits(data)
+    data <- recalc_onsets(data)
+    data <- align_first_hit(data)
+    data <- trim_end(data)
+    data <- recalc_onsets(data)
+    
+    tryCatch(
+      {
+        x <- generate_stats(data)
+      },
+      error = function(e) {
+        message("An error occurred: ", conditionMessage(e))
+        x <<- NULL
+      },
+      warning = function(w) {
+        # Code to handle warnings if required
+        message("A warning occurred: ", conditionMessage(w))
+        # Additional actions or warning handling if needed
+      }
+    )
+    
+    assign(paste0("trial_", trial), x)
   }
-
-# creating dataframe from the list
-alt_data = alt_data[lapply(alt_data,length)>0]
-alt_data = bind_rows(alt_data)
-alt_data$condition <- 1
-
-
-# collecting synch condition from set of files
-data_files = list.files(path = ".", pattern="20")
-synch_data   = list()
-
-# adding all files to a list
-for (ii in 1:length(data_files)){
-  temp = read.csv(data_files[ii])
-  synch_data[[ii]] = temp
+  
+  full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
+  write_rds(full_dyad_data, paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
 }
-
-# creating dataframe from the list
-synch_data = synch_data[lapply(synch_data,length)>0]
-synch_data = bind_rows(synch_data)
-synch_data$condition <- 2
-
-# collecting alone condition from set of files
-data_files = list.files(path = ".", pattern="30")
-alone_data   = list()
-
-# adding all files to a list
-for (ii in 1:length(data_files)){
-  temp = read.csv(data_files[ii])
-  alone_data[[ii]] = temp
-}
-
-# creating dataframe from the list
-alone_data = alone_data[lapply(alone_data,length)>0]
-alone_data = bind_rows(alone_data)
-alone_data$condition <- 3
-
-#adding all the separate dataframes
-all_data <- rbind(alt_data,synch_data,alone_data)
-
-
-# row_num <- which(data$flag_skip==1)
-# newrow <- tibble(participant=1,
-#                  onset_diff_2p=data$roll_2p[61],
-#                  onset_diff_1p=data$roll_1p[60])
-# 
-# for (i in row_num){
-#   newrow <- tibble(participant=data$participant[i-1],
-#                    )
-#   insertRow(data,newrow,i)
-# }
