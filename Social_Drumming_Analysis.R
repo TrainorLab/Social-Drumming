@@ -15,7 +15,6 @@ if(user == "SM"){
 }
 list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
-source("InsertMissedHits.R")
 library(tidyverse)
 library(rlang)
 library(zoo)
@@ -31,8 +30,8 @@ library(ggplot2)
 # Importing
 
 #101_trial 1 bad
-dyad <- 108
-trial <- 3
+dyad <- 102
+trial <- 2
 
 data <- load_data(dyad, trial)
 
@@ -47,7 +46,7 @@ which(data$skip_flag == 1)
 sum(data$skip_flag, na.rm = T)
 
 
-data <- InsertMissedHits(data)
+#data <- InsertMissedHits(data)
 
 gg_s(data, loess = T)
 
