@@ -23,8 +23,8 @@ list.files(fun_dir, full.names = TRUE) %>% walk(source)
 # Importing
 dyads <- 201:212
 trials <- 1:4
-# dyad <- 203
-# trial <- 3
+# dyad <- 201
+# trial <- 4
 
 for (dyad in dyads){
   for(trial in trials){

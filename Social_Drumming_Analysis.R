@@ -32,8 +32,8 @@ library(ggplot2)
 #101_trial 1 bad
 dyads <- 101:119
 trials <- 1:4
-dyad <- 104
-trial <- 4
+dyad <- 115
+trial <- 1
 
 for (dyad in dyads){
   for(trial in trials){
