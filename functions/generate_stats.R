@@ -21,8 +21,8 @@ generate_stats <- function(data){
   async <- async[-seq(1, nrow(async), 2),]
   # plot their distribution and autocorrelation, Repp & Keller, 2008
   # AC1 should be positive
-  async_sync_phase <- async %>% filter(start_s >= cont_start)
-  async_cont_phase <- async %>% filter(start_s < cont_start)
+  async_sync_phase <- async %>% filter(start_s < cont_start)
+  async_cont_phase <- async %>% filter(start_s >= cont_start)
   
   async_sync_hist <- hist(async_sync_phase$async)
   async_cont_hist <- hist(async_cont_phase$async)
