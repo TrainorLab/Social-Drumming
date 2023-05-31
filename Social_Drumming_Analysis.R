@@ -32,8 +32,8 @@ library(ggplot2)
 #101_trial 1 bad
 dyads <- 101:119
 trials <- 1:4
-dyad <- 115
-trial <- 1
+dyad <- 108
+trial <- 2
 
 for (dyad in dyads){
   for(trial in trials){
@@ -45,6 +45,8 @@ for (dyad in dyads){
     data <- align_first_hit(data)
     data <- trim_end(data)
     data <- recalc_onsets(data)
+    data <- detrend_cont(data)
+    #gg_s(data, detrend = T)
     
     tryCatch(
       {
