@@ -1,0 +1,87 @@
+---
+author: "Sean McWeeny"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    keep_md: false
+params: 
+  dyad: 107
+  trial: 2
+title: "`r paste0('ACFs for Asynchronies and ITIs - Dyad ', params$dyad, ', Trial #', params$trial)`"
+---
+
+
+
+```{r load, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# dyad <- 207
+# trial <- 3
+x <- readRDS(paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", params$dyad, "_output.rds"))
+show_plots <-  x[[params$trial]][["Exclude Trial"]]
+```
+
+
+
+**Below is the onset plot, mapped with the per-person ITI on the y-axis.**
+
+```{r Raw Timeseries Plot, echo=FALSE}
+print(paste0(params$dyad, " - Trial ", params$trial))
+suppressWarnings(plot(x[[params$trial]][["Raw Time Series"]], ))
+```
+
+**To do a quick data quality check, we will look at the histogram of the asynchronies.These values should be almost entirely <.2, and several values >.5 may indicate that our data are not correctly aligned.**
+
+```{r data qual, echo=FALSE}
+plot(x[[params$trial]][["Async Histogram: Synchronization Phase"]], main = "Asynchronies Histogram: Synchronization Phase")
+plot(x[[params$trial]][["Async Histogram: Continuation Phase"]], main = "Asynchronies Histogram: Continuation Phase")
+
+```
+
+
+**We can take the autocorrelation of these ITIs for each subject. We expect the lag-1 autocorrelation (AC1) to be negative.**
+
+```{r ITI ACFs, echo=FALSE}
+plot(x[[params$trial]][["Participant A: ITI ACF - Synchronization Phase"]], main ="Participant A: ITI ACF - Synchronization Phase")
+x[[params$trial]][["Participant A: ITI ACF - Synchronization Phase"]]
+plot(x[[params$trial]][["Participant A: ITI ACF - Continuation Phase"]], main = "Participant A: ITI ACF - Continuation Phase")
+x[[params$trial]][["Participant A: ITI ACF - Continuation Phase"]]
+
+plot(x[[params$trial]][["Participant B: ITI ACF - Synchronization Phase"]], main = "Participant B: ITI ACF - Synchronization Phase")
+x[[params$trial]][["Participant B: ITI ACF - Synchronization Phase"]]
+plot(x[[params$trial]][["Participant B: ITI ACF - Continuation Phase"]],main="Participant B: ITI ACF - Continuation Phase")
+
+x[[params$trial]][["Participant B: ITI ACF - Continuation Phase"]]
+```
+
+**Below, we've plotted the autocorrelation of the asynchronies between the two participants. Here, we expect a positive AC1 value.**
+
+```{r Async ACF, echo=FALSE}
+plot(x[[params$trial]][["Async ACF: Synchronization Phase"]], main = "Async ACF: Synchronization Phase")
+(x[[params$trial]][["Async ACF: Synchronization Phase"]])
+
+plot(x[[params$trial]][["Async ACF: Continuation Phase"]], main = "Async ACF: Continuation Phase")
+(x[[params$trial]][["Async ACF: Continuation Phase"]])
+
+
+```
+
+**We've also generated some summary information that may be useful in assessing accuracy, precision, and overall tempo.**
+
+```{r summary stats,  echo=FALSE}
+print("Continuation Phase BPM")
+x[[params$trial]][["Continuation Phase BPM"]]
+print("Accuracy: Onset Asynchrony - Synchronization Phase")
+x[[params$trial]][["Accuracy: Onset Asynchrony - Synchronization Phase"]]
+print("Accuracy: Onset Asynchrony - Continuation Phase")
+x[[params$trial]][["Accuracy: Onset Asynchrony - Continuation Phase"]]
+
+
+print("Precision: Pairwise Asynchrony - Synchronization Phase")
+x[[params$trial]][["Precision: Pairwise Asynchrony - Synchronization Phase"]]
+print("Precision: Pairwise Asynchrony - Continuation Phase")
+x[[params$trial]][["Precision: Pairwise Asynchrony - Continuation Phase"]]
+
+print("N Imputed")
+x[[params$trial]][["N Imputed"]]
+```
+

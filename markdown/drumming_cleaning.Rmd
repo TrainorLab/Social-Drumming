@@ -1,0 +1,140 @@
+---
+author: "Sean McWeeny"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    keep_md: false
+params: 
+  dyad: 202 
+  trial: 1
+  data_dir: "C:\\Users\\mcwee\\OneDrive - McMaster University\\Social Drumming\\REAPER_trial_data\\"
+title: "`r paste0('Cleaning - Dyad ', params$dyad, ', Trial #', params$trial)`"
+---
+
+```{r setup, include = FALSE, echo = FALSE}
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(rlang)
+library(zoo)
+library(ggplot2)
+
+user <- "SM"
+#user <- "AL"
+
+if(user == "SM"){
+  data_dir <- "C:\\Users\\mcwee\\OneDrive - McMaster University\\Social Drumming\\REAPER_trial_data\\"
+  fun_dir <- ("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\social_drumming_git\\functions\\")
+} else if(user == "AL"){
+  setwd("~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation")
+  data_dir <- "~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation/Data/"
+} else if(user == "YAS"){
+  data_dir <- ""
+}
+list.files(fun_dir, full.names = TRUE) %>% walk(source)
+
+```
+
+```{r load, warning=FALSE, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+local({
+  dyad <- params$dyad
+  trial <- params$trial
+
+  # Code that uses dyad and trial variables, including gg_s() function calls
+  data <- load_data(params$dyad, params$trial)
+  global_data <<- data()
+})
+
+
+```
+
+**The "raw" data has the following format, using onset times (start_s) as the original encoding. Even before the data is in this format, it is recorded in parts per quarter (ppq), which we transform to seconds, and calculate the 1-person (onset_diff_1p) and 2-person onset differences (onset_diff_2p). 1-person onset difference is grouped by participant, and should be around 1.000 for each hit, whereas 2-person onset difference is the time since the last hit, regardless of who it was. "Hit number participant" allows us to align the nth hit of each sequence to compare their asynchronies.**
+
+```{r data frame, echo=FALSE, warning=FALSE}
+
+print(head(data, n =15))
+
+```
+
+
+**Below is the unprocessed onset plot, mapped with the per-person ITI on the y-axis. The black vertical line indicates when the metronome dropped out, and the phase switched from synchronization to continuation.**
+
+```{r Raw Timeseries Plot, echo=FALSE, warning=FALSE}
+print(paste0(params$dyad, " - Trial ", params$trial))
+
+
+# Code that uses dyad and trial variables, including gg_s() function calls
+local({
+  dyad <- params$dyad
+  trial <- params$trial
+  data <- global_data
+  gg_s(data)
+})
+```
+
+**After loading and plotting the raw data, we want to make sure our participants are correctly assigned. Because participants swapped which drum sound they were assigned to for certain trials, these will be conditionally corrected. Here, we will also remove "double" hits, when a participant drummed twice within 150ms. Afterward, we will recalculate the onset differences to ensure our timing variables don't get off.**
+
+```{r flip and remove doubles, echo=TRUE}
+data <- flip_participants(data)
+data <- remove_double_hits(data)
+data <- recalc_onsets(data)
+
+
+gg_s(data)
+```
+
+
+**Once we have removed the double hits, we want to align our sequences, which we do by finding the first hit (after throwing out the first 4 seconds when participants are just coming in) both participants share. We also throw out any data after the end of the continuation phase.**
+
+```{r end and beginning, echo=TRUE}
+data <- align_first_hit(data)
+data <- trim_end(data)
+data <- recalc_onsets(data)
+
+  # Code that uses dyad and trial variables, including gg_s() function calls
+  suppressWarnings(gg_s(data))
+
+```
+
+**An issue arose for the synchrony condition data (dyads 201-299), where the drum machine did not record synchronous input, resulting in many missed hits. These missed hits needed to be added back into the data in order to generate any summary statistics, and the algorithm to do so is shown below.**
+
+**It is somewhat hard to parse, but for each "missed hit event," information about how many missed hits occurred, whose data was missed, and where they were missed, is gathered, and corresponding rows are added into the data. For example, if participant 1 had 3 consecutive missed hits, it would create a row for each missed hit, and use the onset timing of participant 2, since we know they should've been "identical".**
+
+
+```{r missed hit algorithm text, echo=FALSE, eval=TRUE}
+print(add_synchronous_missed_hits)
+
+```
+
+
+**We then loop over the whole trial and fix each missed hit event at a time. Below, are the plots of each missed hit event being imputed one at a time.**
+
+```{r loop cleaning all,  echo=FALSE, eval=TRUE}
+  threshold <- .6
+  
+  idx_og <- which(data$onset_diff_1p > (1 + threshold))
+  
+  for(i in 1:length(idx_og)){
+    idx <- which(data$onset_diff_1p > 1 + threshold)
+    n_missed <- round(data$onset_diff_1p[idx][1]) - 1
+    first_missed <- (which(data$onset_diff_1p > n_missed + threshold) - n_missed)[1]
+    if(data$onset_diff_2p[first_missed] > .8 && data$onset_diff_2p[first_missed-1] >.8 ){
+      first_missed <- first_missed - 1  
+    }
+    data <- add_synchronous_missed_hits(data = data, n_missed = n_missed, where = first_missed, participant = 3 - data$participant[first_missed])
+    data <- recalc_onsets(data)
+    print(paste0("Imputing missed hit event #", i))
+    local({
+      dyad <- params$dyad
+      trial <- params$trial
+      # Code that uses dyad and trial variables, including gg_s() function calls
+      print(suppressWarnings(gg_s(data)))
+})
+    
+  }
+
+```
+
+**We should now have complete and clean data; however, sometimes the sheer number and types of these hits made the data impossible to clean. These should be visually apparent and obvious.**
