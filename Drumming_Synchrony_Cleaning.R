@@ -21,11 +21,12 @@ library(dtw)
 list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
 # Importing
-dyads <- 201:212
+dyads <- c(101:118, 201:212)
 trials <- 1:4
-# dyad <- 201
-# trial <- 4
+#dyad <- 203
+#trial <- 2
 
+start <- Sys.time() 
 for (dyad in dyads){
   for(trial in trials){
     data <- load_data(dyad, trial)
@@ -35,28 +36,47 @@ for (dyad in dyads){
     data <- trim_end(data)
     data <- recalc_onsets(data)
     
-    gg_s(data)
-    
-    tryCatch(
-      {
-        data <- clean_all_missed(data)
-        gg_s(data)
-      },
-      error = function(e) {
-        message("An error occurred: ", conditionMessage(e))
-        data <<- NULL
-      },
-      warning = function(w) {
-        # Code to handle warnings if required
-        message("A warning occurred: ", conditionMessage(w))
-        # Additional actions or warning handling if needed
-      }
-    )
+    if(dyad > 200){
+      
+      tryCatch(
+        {
+          data <- clean_all_missed(data)
+          gg_s(data)
+        },
+        error = function(e) {
+          message("An error occurred: ", conditionMessage(e))
+          data <<- NULL
+        },
+        warning = function(w) {
+          # Code to handle warnings if required
+          message("A warning occurred: ", conditionMessage(w))
+          # Additional actions or warning handling if needed
+        }
+      )
+      
+    } 
     
     
     if(dyad == 203 & trial == 3){
       data <- remove_hit(data, 1, 76)
     }
+    
+    tryCatch(
+      {
+        data <- detrend_cont(data)
+      },
+      error = function(e) {
+        message("An error occurred: ", conditionMessage(e))
+        x <<- NULL
+      },
+      warning = function(w) {
+        # Code to handle warnings if required
+        message("A warning occurred: ", conditionMessage(w))
+        # Additional actions or warning handling if needed
+        data <- detrend_cont(data)
+      }
+    )    
+    
     
     tryCatch(
       {
@@ -70,10 +90,10 @@ for (dyad in dyads){
         # Code to handle warnings if required
         message("A warning occurred: ", conditionMessage(w))
         # Additional actions or warning handling if needed
+        x <- generate_stats(data)
       }
     )
     
-  
     
     assign(paste0("trial_", trial), x)
   }
@@ -81,4 +101,5 @@ for (dyad in dyads){
   full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
   write_rds(full_dyad_data, paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
 }
-
+end <- Sys.time()
+elapsed <- print(end-start)

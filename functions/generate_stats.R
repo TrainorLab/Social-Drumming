@@ -14,7 +14,8 @@ generate_stats <- function(data){
   async <- data %>% group_by(hit_number_participant) %>%
     mutate(async = start_s[1] - start_s[2]) %>%
     mutate(group_hit = (start_s[1]+start_s[2]) / 2) %>%
-    filter(all(imputed == 0))
+    filter(all(imputed == 0)) %>%
+    mutate(async_detrend = start_s_detrend[1] - start_s_detrend[2])
   
   #now we need to remove ever other row, as they are redundant, as we've calculated 
   # the difference between the two rows
@@ -32,6 +33,8 @@ generate_stats <- function(data){
   
   asyncs_sync <- psych::describe(async_sync_phase$async)
   asyncs_cont <- psych::describe(async_cont_phase$async)
+  
+  
   
   # The ITI's of each participant will also have their own time-series and ACF. 
   # AC1 should be negative here 
@@ -74,12 +77,37 @@ generate_stats <- function(data){
   pairwise_async_sync <- sqrt(sum(abs(async_sync_phase$async) - mpa_sync)^2 / (nrow(async_sync_phase)-1))
   pairwise_async_cont <- sqrt(sum(abs(async_cont_phase$async) - mpa_cont)^2 / (nrow(async_cont_phase)-1))
   
+  ####
+  # TRYcATCH needed in case the detrend function doesn't create the correct variables
+  tryCatch(
+    {
+      p1_ITI_detrended <- acf(ITI_1_sync$onset_diff_1p_detrend, na.action = na.pass, plot = FALSE)
+      p2_ITI_detrended <- acf(ITI_2_sync$onset_diff_1p_detrend, na.action = na.pass, plot = FALSE)
+      async_detrend_acf <- acf(async_cont_phase$async_detrend, na.action = na.pass, plot = FALSE)
+      detrended_plot <- gg_s(data, detrend = T)
+    },
+    error = function(e) {
+      message("An error occurred processing the detrended analyses: ", conditionMessage(e))
+      p1_ITI_detrended <- NULL
+      p2_ITI_detrended <- NULL
+      async_detrend_acf <- NULL
+      detrended_plot <- NULL
+    },
+    warning = function(w) {
+      # Code to handle warnings if required
+      message("A warning occurred: ", conditionMessage(w))
+      # Additional actions or warning handling if needed
+      data <- detrend_cont(data)
+    }
+  )    
+  
+  
+  
   
   # We'll also calculate and plot the CCF of the onset-times of each tapper 
   #p_idx <- which(data$participant == 1)
   #ccf_list <- ccf(data$start_s[p_idx], data$start_s[-p_idx], lag.max = 15, na.action = na.pass)
   onsets_plot <- gg_s(data)
-  
   # will differ between conditions, thus we use cont_start and condition_b
   n_taps <- nrow(data %>% filter(start_s >= cont_start))
   cont_bpm <- n_taps/condition_b
@@ -98,7 +126,9 @@ generate_stats <- function(data){
                  async_sync_acf, async_cont_acf, 
                  p1_ITI_sync_acf, p1_ITI_cont_acf,
                  p2_ITI_sync_acf, p2_ITI_cont_acf,
-                 onsets_plot, cont_bpm, n_imputed, raw)
+                 p1_ITI_detrended, p2_ITI_detrended, async_detrend_acf,
+                 onsets_plot, detrended_plot,
+                 cont_bpm, n_imputed, raw)
   names(output) <- c("Exclude Trial", "Asychronies: Synchronization Phase", "Asychronies: Continuation Phase",
                      "Async Histogram: Synchronization Phase", "Async Histogram: Continuation Phase",
                      "Precision: Pairwise Asynchrony - Synchronization Phase", "Precision: Pairwise Asynchrony - Continuation Phase",   
@@ -106,6 +136,8 @@ generate_stats <- function(data){
                      "Async ACF: Synchronization Phase", "Async ACF: Continuation Phase", 
                      "Participant A: ITI ACF - Synchronization Phase", "Participant A: ITI ACF - Continuation Phase", 
                      "Participant B: ITI ACF - Synchronization Phase", "Participant B: ITI ACF - Continuation Phase", 
-                     "Raw Time Series", "Continuation Phase BPM", "N Imputed", "Raw Data")
+                     "Participant A: ITI ACF - Detrended (Cont. Phase)", "Participant B: ITI ACF - Detrended (Cont. Phase)", "Detrended Async ACF: Continuation Phase",
+                     "Raw Time Series", "Detrended Time Series",
+                     "Continuation Phase BPM", "N Imputed", "Raw Data")
   return(output)
 }

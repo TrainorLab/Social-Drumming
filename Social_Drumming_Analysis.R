@@ -32,7 +32,7 @@ library(ggplot2)
 #101_trial 1 bad
 dyads <- 101:119
 trials <- 1:4
-dyad <- 108
+dyad <- 101
 trial <- 2
 
 for (dyad in dyads){
@@ -46,7 +46,7 @@ for (dyad in dyads){
     data <- trim_end(data)
     data <- recalc_onsets(data)
     data <- detrend_cont(data)
-    #gg_s(data, detrend = T)
+    gg_s(data, detrend = T)
     
     tryCatch(
       {
@@ -60,6 +60,7 @@ for (dyad in dyads){
         # Code to handle warnings if required
         message("A warning occurred: ", conditionMessage(w))
         # Additional actions or warning handling if needed
+        x <- generate_stats(data)
       }
     )
     
