@@ -81,8 +81,8 @@ generate_stats <- function(data){
   # TRYcATCH needed in case the detrend function doesn't create the correct variables
   tryCatch(
     {
-      p1_ITI_detrended <- acf(ITI_1_sync$onset_diff_1p_detrend, na.action = na.pass, plot = FALSE)
-      p2_ITI_detrended <- acf(ITI_2_sync$onset_diff_1p_detrend, na.action = na.pass, plot = FALSE)
+      p1_ITI_detrended <- acf(ITI_1_cont$onset_diff_1p_detrend, na.action = na.pass, plot = FALSE)
+      p2_ITI_detrended <- acf(ITI_2_cont$onset_diff_1p_detrend, na.action = na.pass, plot = FALSE)
       async_detrend_acf <- acf(async_cont_phase$async_detrend, na.action = na.pass, plot = FALSE)
       detrended_plot <- gg_s(data, detrend = T)
     },

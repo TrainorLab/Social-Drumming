@@ -21,7 +21,7 @@ library(dtw)
 list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
 # Importing
-dyads <- c(101:118, 201:212)
+dyads <- c(101:119, 201:212)
 trials <- 1:4
 #dyad <- 203
 #trial <- 2
