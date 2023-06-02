@@ -21,18 +21,25 @@ detrend_cont <- function(data, poly = 1){
   
     } else if(dyad >200 &  dyad <300){
     
+      
       data_cont <- data_cont %>% 
         group_by(hit_number_participant) %>%
         mutate(group_hit = (start_s[1]+start_s[2]) / 2)
       
-      temp <- astsa::detrend(data_cont$group_hit[seq(1,length(data_cont$group_hit),2)]) 
-      data_cont$start_s_detrend <- data_cont$start_s - unname(rep(temp, each = 2))
+      if(nrow(data_cont) %% 2 == 1){
+        data_cont <- data_cont[-nrow(data_cont),]
+      }
+      
+      temp <- astsa::detrend(!is.na(data_cont$group_hit[seq(1,length(data_cont$group_hit),2)]))
+      temp <- unname(rep(temp, each = 2))
+      
+      data_cont$start_s_detrend <- data_cont$start_s - temp
       
       data_cont <- data_cont %>% 
+        ungroup() %>%
         mutate(onset_diff_2p_detrend = start_s_detrend - lag(start_s_detrend)) %>%
         group_by(participant) %>%
         mutate(onset_diff_1p_detrend = start_s_detrend - lag(start_s_detrend, 1)) 
-      
   }  
   
   
