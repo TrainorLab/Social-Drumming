@@ -30,7 +30,7 @@ detrend_cont <- function(data, poly = 1){
         data_cont <- data_cont[-nrow(data_cont),]
       }
       
-      temp <- astsa::detrend(!is.na(data_cont$group_hit[seq(1,length(data_cont$group_hit),2)]))
+      temp <- astsa::detrend(data_cont$group_hit[!is.na(data_cont$group_hit[seq(1,length(data_cont$group_hit),2)])])
       temp <- unname(rep(temp, each = 2))
       
       data_cont$start_s_detrend <- data_cont$start_s - temp
