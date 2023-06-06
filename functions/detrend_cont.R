@@ -1,4 +1,4 @@
-detrend_cont <- function(data, poly = 1){
+detrend_cont <- function(data, poly = 1, lowess = FALSE){
   
   if(dyad <200){
     cont_start <- 15.85
@@ -11,7 +11,7 @@ detrend_cont <- function(data, poly = 1){
   
   if(dyad <200){
     data_cont <- data_cont %>% 
-      mutate(onset_diff_2p_detrend = astsa::detrend(onset_diff_2p, order = poly) + onset_diff_2p) %>%
+      mutate(onset_diff_2p_detrend = astsa::detrend(onset_diff_2p, order = poly, lowess = lowess) + onset_diff_2p) %>%
       mutate(start_s_detrend = onset_diff_2p_detrend + lag(start_s)) %>% 
       group_by(participant) %>%
       mutate(onset_diff_1p_detrend = start_s_detrend - lag(start_s_detrend))
@@ -30,10 +30,10 @@ detrend_cont <- function(data, poly = 1){
         data_cont <- data_cont[-nrow(data_cont),]
       }
       
-    temp <- astsa::detrend(data_cont$group_2p_onset_avg[!is.na(data_cont$group_2p_onset_avg[seq(1,length(data_cont$group_2p_onset_avg),2)])])
-    temp <- unname(temp)
-    
-    data_cont$onset_diff_2p_detrend <- data_cont$onset_diff_2p - temp
+    temp <- astsa::detrend(data_cont$group_2p_onset_avg[!is.na(data_cont$group_2p_onset_avg[seq(1,length(data_cont$group_2p_onset_avg),2)])]
+                           ,lowess = lowess)
+
+    data_cont$onset_diff_2p_detrend <- data_cont$onset_diff_2p + unname(temp)
     
     data_cont <- data_cont %>% 
       ungroup() %>%
