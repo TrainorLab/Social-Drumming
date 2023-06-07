@@ -4,7 +4,7 @@ library(psych)
 
 
 ##### change to read from google sheets
-x <- read.csv("C:\\Users\\mcwee\\Downloads\\Co-operation Drumming.csv")
+x <- read.csv("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\Co-operation Drumming.csv")
 
 x <- x %>% filter(!Dyad %in% c(102, 104))
 

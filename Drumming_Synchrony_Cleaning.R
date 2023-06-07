@@ -21,7 +21,7 @@ library(dtw)
 list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
 # Importing
-dyads <- c(101:119, 201:212)
+dyads <- c(101:119, 201:211)
 trials <- 1:4
 dyad <- 104
 trial <- 1
@@ -34,6 +34,7 @@ for (dyad in dyads){
     data <- remove_double_hits(data)
     data <- align_first_hit(data)
     data <- trim_end(data)
+    data <- modify_individual_trial(data)
     data <- recalc_onsets(data)
     
     if(dyad > 200){
