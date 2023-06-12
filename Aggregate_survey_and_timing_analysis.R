@@ -95,7 +95,46 @@ psych::describe(result_df)
 
 
 beh <- read.csv("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\Co-operation Drumming.csv")
-beh <- beh %>% filter(Dyad < 300)
+beh$Dyad <- as.numeric(beh$Dyad)
+beh <- beh %>%
+  mutate(condition = ifelse(Dyad < 200, "Alternating", 
+                            ifelse(Dyad > 200 & Dyad <300, "Synchrony", 
+                                   ifelse(Dyad > 300, "Alone", NA))))
+
+
+
+beh %>% 
+  group_by(condition) %>%
+  summarize(mean_Likert1 = mean(Likert_Q1),
+            mean_Likert2 = mean(Likert_Q2),
+            mean_Likert3 = mean(Likert_Q3),
+            mean_Likert4 = mean(Likert_Q4),
+            mean_Likert5 = mean(Likert_Q5),
+            mean_Likert6 = mean(Likert_Q6))
+
+# beh %>% 
+#   group_by(condition) %>%
+#   summarize(mean_Likert1 = mean(Likert_Q1),
+#             sd_Likert1 = sd(Likert_Q1),
+#             
+#             mean_Likert2 = mean(Likert_Q2),
+#             sd_Likert2 = sd(Likert_Q2),
+#             
+#             mean_Likert3 = mean(Likert_Q3),
+#             sd_Likert3 = sd(Likert_Q3),
+#             
+#             mean_Likert4 = mean(Likert_Q4),
+#             sd_Likert4 = sd(Likert_Q4),
+#             
+#             mean_Likert5 = mean(Likert_Q5),
+#             sd_Likert5 = sd(Likert_Q5),
+#             
+#             mean_Likert6 = mean(Likert_Q6),
+#             sd_Likert6 = sd(Likert_Q6))
+
+
+
+#beh <- beh %>% filter(Dyad < 300)
 
 trial_summary <- readxl::read_xlsx("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\summary_drumming_trials.xlsx")
 
@@ -135,9 +174,26 @@ big_df$ID <- factor(big_df$ID)
 
 
 big_df <- big_df %>%
-  select(ID, Dyad,  ac1_ITI_mean, detrend_ac1_ITI_mean,  Likert_Q1:Likert_Q6, Coop_Q1:Coop_Q2)
+  select(condition, ID, Dyad, ac1_ITI_mean, detrend_ac1_ITI_mean,  Likert_Q1:Likert_Q6, Coop_Q1:Coop_Q2)
 
-pairs.panels(big_df)
+
+## Group differences in raw and detrended ITI AC1 
+big_df %>% 
+  group_by(condition) %>%
+  summarise(mean_ITI_ac1 = mean(ac1_ITI_mean, na.rm =T),
+            sd_ITI_ac1 = sd(ac1_ITI_mean, na.rm =T),
+            mean_detrend_ITI_ac1 = mean(detrend_ac1_ITI_mean, na.rm = T),
+            sd_detrend_ITI_ac1 = sd(detrend_ac1_ITI_mean, na.rm = T))
+
+
+
+psych::pairs.panels(big_df)
+
+
+
+
+
+
 
 library(lme4)
 
