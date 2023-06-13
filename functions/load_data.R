@@ -8,7 +8,7 @@ load_data <- function(dyad, trial){
     data <- data %>%
       mutate(s_ppq = (s_ppq/(960*2)),e_ppq = (e_ppq/(960*2))) %>%
       rename(start_s = s_ppq,end_s = e_ppq) %>%
-      select(-sel, -mut, -chan, -vel)
+      select(-sel, -mut, -chan)
      
     
   } else if(dyad > 200 & dyad < 300){
@@ -16,7 +16,7 @@ load_data <- function(dyad, trial){
     data <- data %>%
       mutate(s_ppq = (s_ppq/(960)),e_ppq = (e_ppq/(960))) %>%
       rename(start_s = s_ppq,end_s = e_ppq) %>%
-      select(-sel, -mut, -chan, -vel)
+      select(-sel, -mut, -chan)
   }
   
   # Data Cleaning and Restructuring
