@@ -8,6 +8,16 @@ generate_stats <- function(data){
     condition_b <- 2
   }
   
+  data <- data %>% 
+    group_by(hit_number_participant) %>%
+    mutate(exclude_IBI = any(imputed == 1)) %>%
+    ungroup() %>%
+    mutate(exclude_IBI2 = dplyr::lag(imputed) == 1 | dplyr::lag(imputed, 2) == 1) %>%
+    group_by(hit_number_participant) %>%
+    mutate(exclude_IBI3 = any(exclude_IBI2) == T) %>%
+    mutate(exclude_IBI = exclude_IBI3) %>%
+    select(-exclude_IBI2, -exclude_IBI3)
+           
   # First, we need to calculate the onset asynchronies, which is just the difference
   # in seconds between the first and second hit for each event. We also calculate the 
   # group/average onset time
@@ -25,8 +35,8 @@ generate_stats <- function(data){
   async_sync_phase <- async %>% filter(start_s < cont_start)
   async_cont_phase <- async %>% filter(start_s >= cont_start)
   
-  async_sync_hist <- hist(async_sync_phase$async)
-  async_cont_hist <- hist(async_cont_phase$async)
+  async_sync_hist <- hist(async_sync_phase$async, plot = FALSE)
+  async_cont_hist <- hist(async_cont_phase$async, plot = FALSE)
   
   async_sync_acf <- acf(async_sync_phase$async, na.action = na.pass, plot = FALSE)
   async_cont_acf <- acf(async_cont_phase$async, na.action = na.pass, plot = FALSE)
@@ -38,28 +48,49 @@ generate_stats <- function(data){
   
   # The ITI's of each participant will also have their own time-series and ACF. 
   # AC1 should be negative here 
+  
+  ITI_2p <- data %>%
+    group_by(hit_number_participant) %>%
+    mutate(group_hit = (start_s[1]+start_s[2]) / 2) %>%
+    ungroup() %>%
+    mutate(group_IBI = group_hit - lag(group_hit)) %>%
+    group_by(hit_number_participant) 
+  ITI_2p <- ITI_2p[seq(1, nrow(ITI_2p), 2),]    
+  
+  ITI_2p_sync <- ITI_2p %>%
+    filter(exclude_IBI == FALSE) %>%
+    filter(start_s < cont_start)
+  
+  ITI_2p_cont <- ITI_2p %>%
+    filter(exclude_IBI == FALSE) %>%
+    filter(start_s >= cont_start)
+
    
   ITI_1_sync <- data %>% 
     group_by(hit_number_participant) %>%
-    filter(all(imputed == 0)) %>%
+    filter(exclude_IBI == FALSE) %>%
+    #filter(all(imputed == 0)) %>%
     filter(!is.na(onset_diff_1p) & participant == 1) %>%
     filter(start_s < cont_start)
   
   ITI_1_cont <- data %>% 
     group_by(hit_number_participant) %>%
-    filter(all(imputed == 0)) %>%
+    filter(exclude_IBI == FALSE) %>%
+    #filter(all(imputed == 0)) %>%
     filter(!is.na(onset_diff_1p) & participant == 1) %>%
     filter(start_s >= cont_start)
   
   ITI_2_sync <- data %>% 
     group_by(hit_number_participant) %>%
-    filter(all(imputed == 0)) %>%
+    filter(exclude_IBI == FALSE) %>%
+    #filter(all(imputed == 0)) %>%
     filter(!is.na(onset_diff_1p) & participant == 2) %>%
     filter(start_s < cont_start)
   
   ITI_2_cont <- data %>% 
     group_by(hit_number_participant) %>%
-    filter(all(imputed == 0)) %>%
+    filter(exclude_IBI == FALSE) %>%
+    #filter(all(imputed == 0)) %>%
     filter(!is.na(onset_diff_1p) & participant == 2) %>%
     filter(start_s >= cont_start)
   
@@ -76,6 +107,23 @@ generate_stats <- function(data){
   
   pairwise_async_sync <- sqrt(sum(abs(async_sync_phase$async) - mpa_sync)^2 / (nrow(async_sync_phase)-1))
   pairwise_async_cont <- sqrt(sum(abs(async_cont_phase$async) - mpa_cont)^2 / (nrow(async_cont_phase)-1))
+  
+  #1p IBI variability person
+  p1_IBI_var_sync <- var(ITI_1_sync$onset_diff_1p)
+  p2_IBI_var_sync <- var(ITI_2_sync$onset_diff_1p)
+  
+  p1_IBI_var_cont <- var(ITI_1_cont$onset_diff_1p)
+  p2_IBI_var_cont <- var(ITI_2_cont$onset_diff_1p)
+  
+  #2p IBI variability
+  if(dyad > 200){
+    IBI_2p_var_sync <- var(ITI_2p_sync$group_IBI - lag(ITI_2p_sync$group_IBI), na.rm = TRUE)
+    IBI_2p_var_cont <- var(ITI_2p_cont$group_IBI - lag(ITI_2p_cont$group_IBI), na.rm = TRUE)
+  } else if (dyad < 200){
+    IBI_2p_var_sync <- var(ITI_2p_sync$onset_diff_2p, na.rm = TRUE)
+    IBI_2p_var_cont <- var(ITI_2p_cont$onset_diff_2p, na.rm = TRUE)
+  }
+  
   
   ####
   # TRYcATCH needed in case the detrend function doesn't create the correct variables
@@ -119,6 +167,14 @@ generate_stats <- function(data){
   toss <- (any(data$onset_diff_1p > 3, na.rm = T))
   raw <- data
   
+  clean_hits <- data %>% 
+    group_by(hit_number_participant) %>%
+    summarise(
+      clean_hits = sum(all(imputed == 0))
+    )
+  clean <- sum(clean_hits$clean_hits)
+  clean_pct <- clean/nrow(clean_hits)
+  
   output <- list(toss, asyncs_sync, asyncs_cont,
                  async_sync_hist, async_cont_hist, 
                  pairwise_async_sync, pairwise_async_cont,
@@ -127,8 +183,10 @@ generate_stats <- function(data){
                  p1_ITI_sync_acf, p1_ITI_cont_acf,
                  p2_ITI_sync_acf, p2_ITI_cont_acf,
                  p1_ITI_detrended, p2_ITI_detrended, async_detrend_acf,
+                 p1_IBI_var_sync, p1_IBI_var_cont, p2_IBI_var_sync, p2_IBI_var_cont,
+                 IBI_2p_var_sync, IBI_2p_var_cont,
                  onsets_plot, detrended_plot,
-                 cont_bpm, n_imputed, raw)
+                 cont_bpm, n_imputed, clean, clean_pct, raw)
   names(output) <- c("Exclude Trial", "Asychronies: Synchronization Phase", "Asychronies: Continuation Phase",
                      "Async Histogram: Synchronization Phase", "Async Histogram: Continuation Phase",
                      "Precision: Pairwise Asynchrony - Synchronization Phase", "Precision: Pairwise Asynchrony - Continuation Phase",   
@@ -137,7 +195,9 @@ generate_stats <- function(data){
                      "Participant A: ITI ACF - Synchronization Phase", "Participant A: ITI ACF - Continuation Phase", 
                      "Participant B: ITI ACF - Synchronization Phase", "Participant B: ITI ACF - Continuation Phase", 
                      "Participant A: ITI ACF - Detrended (Cont. Phase)", "Participant B: ITI ACF - Detrended (Cont. Phase)", "Detrended Async ACF: Continuation Phase",
+                     "Participant A: Tap Variability - Synchronization Phase", "Participant A: Tap Variability - Continuation Phase", "Participant B: Tap Variability - Synchronization Phase", "Participant B: Tap Variability - Continuation Phase",
+                     "Dyadic Tap Variability - Synchronization Phase", "Dyadic Tap Variability - Continuation Phase",
                      "Raw Time Series", "Detrended Time Series",
-                     "Continuation Phase BPM", "N Imputed", "Raw Data")
+                     "Continuation Phase BPM", "N Imputed", "Clean Hits", "Percent Clean", "Raw Data")
   return(output)
 }
