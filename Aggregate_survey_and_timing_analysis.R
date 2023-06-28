@@ -29,6 +29,10 @@ result_df <- data.frame(dyad = numeric(),
                         detrend_ac1_ITI_A = numeric(),
                         detrend_ac1_ITI_B = numeric(),
                         detrend_ac1_async = numeric(),
+                        ITI_var_A = numeric(),
+                        ITI_var_B = numeric(),
+                        ITI_var_2p = numeric(),
+                        
                         stringsAsFactors = FALSE)
 
 # Define the dyads and trials
@@ -43,7 +47,6 @@ for (dyad in dyads) {
       # Read the .Rds file
       x <- readRDS(paste0(output_dir, dyad, "_output.Rds"))
       
-
       # Create a new row for the data frame
       new_row <- data.frame(dyad = dyad,
                             trial = trial,
@@ -54,7 +57,14 @@ for (dyad in dyads) {
                             ac1_async = x[[trial]][["Async ACF: Continuation Phase"]][["acf"]][[2]],
                             detrend_ac1_ITI_A = x[[trial]][["Participant A: ITI ACF - Detrended (Cont. Phase)"]][["acf"]][[2]],
                             detrend_ac1_ITI_B = x[[trial]][["Participant B: ITI ACF - Detrended (Cont. Phase)"]][["acf"]][[2]],
-                            detrend_ac1_async = x[[trial]][["Detrended Async ACF: Continuation Phase"]][["acf"]][[2]])
+                            detrend_ac1_async = x[[trial]][["Detrended Async ACF: Continuation Phase"]][["acf"]][[2]],
+                            ITI_var_A = x[[trial]][["Participant A: Tap Variability - Continuation Phase"]],
+                            ITI_var_B = x[[trial]][["Participant B: Tap Variability - Continuation Phase"]],
+                            ITI_var_2p = x[[trial]][["Dyadic Tap Variability - Continuation Phase"]],
+                            cont_bpm = x[[trial]][["Continuation Phase BPM"]],
+                            n_imputed = x[[trial]][["N Imputed"]],
+                            clean_hits = x[[trial]][["Clean Hits"]],
+                            clean_pct = x[[trial]][["Percent Clean"]])
       
       # Append the new row to the result data frame
       result_df <- rbind(result_df, new_row)
@@ -69,7 +79,14 @@ for (dyad in dyads) {
                             ac1_async = NA,
                             detrend_ac1_ITI_A = NA,
                             detrend_ac1_ITI_B = NA,
-                            detrend_ac1_async = NA)
+                            detrend_ac1_async = NA,
+                            ITI_var_A = NA,
+                            ITI_var_B = NA,
+                            ITI_var_2p = NA,
+                            cont_bpm = NA,
+                            n_imputed = NA,
+                            clean_hits = NA,
+                            clean_pct = NA)
       result_df <- rbind(result_df, new_row)
     }, warning = function(w) {
       message("A warning occurred: ", conditionMessage(w))
@@ -82,7 +99,14 @@ for (dyad in dyads) {
                             ac1_async = NA,
                             detrend_ac1_ITI_A = NA,
                             detrend_ac1_ITI_B = NA,
-                            detrend_ac1_async = NA)
+                            detrend_ac1_async = NA,
+                            ITI_var_A = NA,
+                            ITI_var_B = NA,
+                            ITI_var_2p = NA,
+                            cont_bpm = NA,
+                            n_imputed = NA,
+                            clean_hits = NA,
+                            clean_pct = NA)
       result_df <- rbind(result_df, new_row)
     })
   }
@@ -92,6 +116,7 @@ for (dyad in dyads) {
 rownames(result_df) <- NULL
 
 psych::describe(result_df)
+
 
 
 beh <- read.csv("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\Co-operation Drumming.csv")
@@ -111,24 +136,24 @@ beh %>%
             mean_Likert4 = mean(Likert_Q4),
             mean_Likert5 = mean(Likert_Q5),
             mean_Likert6 = mean(Likert_Q6))
-
-# beh %>% 
+# 
+# beh %>%
 #   group_by(condition) %>%
 #   summarize(mean_Likert1 = mean(Likert_Q1),
 #             sd_Likert1 = sd(Likert_Q1),
-#             
+# 
 #             mean_Likert2 = mean(Likert_Q2),
 #             sd_Likert2 = sd(Likert_Q2),
-#             
+# 
 #             mean_Likert3 = mean(Likert_Q3),
 #             sd_Likert3 = sd(Likert_Q3),
-#             
+# 
 #             mean_Likert4 = mean(Likert_Q4),
 #             sd_Likert4 = sd(Likert_Q4),
-#             
+# 
 #             mean_Likert5 = mean(Likert_Q5),
 #             sd_Likert5 = sd(Likert_Q5),
-#             
+# 
 #             mean_Likert6 = mean(Likert_Q6),
 #             sd_Likert6 = sd(Likert_Q6))
 
@@ -141,6 +166,8 @@ trial_summary <- readxl::read_xlsx("C:\\Users\\mcwee\\Documents\\LIVELab\\Social
 df <- left_join(beh, result_df, by = c("Dyad" = "dyad"))
 df <- left_join(df, trial_summary, by = c("Dyad" = "id", "trial"))
 
+
+
 df <- df %>%
   filter(clean == "Y") %>%
   mutate(desync_events = as.numeric(desync_events))
@@ -149,6 +176,15 @@ df <- df %>%
   mutate(ac1_ITI = ifelse(ID == "A", ac1_ITI_A, ac1_ITI_B)) %>%
   select(-ac1_ITI_A, -ac1_ITI_B) %>%
   mutate(detrend_ac1_ITI = ifelse(ID == "A", detrend_ac1_ITI_A, detrend_ac1_ITI_B)) 
+
+hist(df$clean_pct)
+
+df_pivoted <- df %>%
+  group_by(Dyad, trial) %>%
+  pivot_wider(names_from = ID, values_from = detrend_ac1_ITI, names_prefix = "ITI_", names_glue = "ITI_{ID}") %>%
+  ungroup()
+
+df_pivoted$Dyad
 
 
 summary_df <- df %>%
@@ -161,7 +197,10 @@ summary_df <- df %>%
     ac1_async_mean = mean(ac1_async),
     detrend_ac1_async_mean = mean(detrend_ac1_async),
     ac1_ITI_mean = mean(ac1_ITI),
-    detrend_ac1_ITI_mean = mean(detrend_ac1_ITI)
+    detrend_ac1_ITI_mean = mean(detrend_ac1_ITI),
+    cont_bpm = mean(cont_bpm),
+    n_imputed = mean(n_imputed),
+    clean_hits = mean(clean_hits)
   )
 
 
@@ -172,9 +211,18 @@ big_df$Dyad <- factor(big_df$Dyad)
 big_df$ID <- factor(big_df$ID)
 
 
+big_df$clean_hits
+
+
+
+
+
+
+
+
 
 big_df <- big_df %>%
-  select(condition, ID, Dyad, ac1_ITI_mean, detrend_ac1_ITI_mean,  Likert_Q1:Likert_Q6, Coop_Q1:Coop_Q2)
+  select(condition, ID, Dyad, ac1_ITI_mean, detrend_ac1_ITI_mean, cont_bpm, Likert_Q1:Likert_Q6, Coop_Q1:Coop_Q2)
 
 
 ## Group differences in raw and detrended ITI AC1 
@@ -183,15 +231,24 @@ big_df %>%
   summarise(mean_ITI_ac1 = mean(ac1_ITI_mean, na.rm =T),
             sd_ITI_ac1 = sd(ac1_ITI_mean, na.rm =T),
             mean_detrend_ITI_ac1 = mean(detrend_ac1_ITI_mean, na.rm = T),
-            sd_detrend_ITI_ac1 = sd(detrend_ac1_ITI_mean, na.rm = T))
+            sd_detrend_ITI_ac1 = sd(detrend_ac1_ITI_mean, na.rm = T),
+            mean_cont_bpm = mean(cont_bpm, na.rm = T)
+            )
 
 
 
-psych::pairs.panels(big_df)
 
 
 
+psych::pairs.panels(big_df[,4:ncol(big_df)])
 
+hist(big_df$ac1_ITI_mean)
+hist(big_df$detrend_ac1_ITI_mean)
+
+hist(big_df$detrend_ac1_ITI_mean - big_df$ac1_ITI_mean)
+
+
+big_df$
 
 
 

@@ -23,8 +23,8 @@ list.files(fun_dir, full.names = TRUE) %>% walk(source)
 # Importing
 dyads <- c(101:119, 201:211)
 trials <- 1:4
-dyad <- 104
-trial <- 1
+dyad <- 102
+trial <- 2
 
 start <- Sys.time() 
 for (dyad in dyads){
@@ -36,6 +36,7 @@ for (dyad in dyads){
     data <- trim_end(data)
     data <- modify_individual_trial(data)
     data <- recalc_onsets(data)
+    gg_s(data)
     
     if(dyad > 200){
       
@@ -55,11 +56,6 @@ for (dyad in dyads){
         }
       )
       
-    } 
-    
-    
-    if(dyad == 203 & trial == 3){
-      data <- remove_hit(data, 1, 76)
     }
     
     tryCatch(
@@ -99,8 +95,8 @@ for (dyad in dyads){
     assign(paste0("trial_", trial), x)
   }
 
-  full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
-  write_rds(full_dyad_data, paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
+   full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
+   write_rds(full_dyad_data, paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
 }
 end <- Sys.time()
 elapsed <- print(end-start)

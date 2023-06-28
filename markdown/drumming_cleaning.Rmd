@@ -5,14 +5,14 @@ output:
   html_document:
     keep_md: false
 params: 
-  dyad: 101 
-  trial: 2
+  dyad: 209
+  trial: 1
   data_dir: "C:\\Users\\mcwee\\OneDrive - McMaster University\\Social Drumming\\REAPER_trial_data\\"
 title: "`r paste0('Cleaning - Dyad ', params$dyad, ', Trial #', params$trial)`"
 ---
 
 ```{r setup, include = FALSE, echo = FALSE}
-knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(warning = FALSE, echo = TRUE)
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(rlang)
