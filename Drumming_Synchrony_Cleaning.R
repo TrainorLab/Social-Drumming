@@ -29,6 +29,7 @@ trial <- 2
 start <- Sys.time() 
 for (dyad in dyads){
   for(trial in trials){
+    print(paste0(dyad, ", ", trial))
     data <- load_data(dyad, trial)
     data <- flip_participants(data)
     data <- remove_double_hits(data)

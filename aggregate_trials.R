@@ -44,6 +44,8 @@ for (dyad in dyads) {
   # Iterate over each trial within a tryCatch block
   for (trial in trials) {
     tryCatch({
+      #print observation 
+      print(paste0(dyad, ", ", trial))
       # Read the .Rds file
       x <- readRDS(paste0(output_dir, dyad, "_output.Rds"))
       
@@ -64,7 +66,9 @@ for (dyad in dyads) {
                             cont_bpm = x[[trial]][["Continuation Phase BPM"]],
                             n_imputed = x[[trial]][["N Imputed"]],
                             clean_hits = x[[trial]][["Clean Hits"]],
-                            clean_pct = x[[trial]][["Percent Clean"]])
+                            clean_pct = x[[trial]][["Percent Clean"]],
+                            clean2 = x[[trial]][["Clean Hits (Following removed)"]],
+                            clean2_pct = x[[trial]][["Percent Clean (Following removed)"]])
       
       # Append the new row to the result data frame
       result_df <- rbind(result_df, new_row)
@@ -86,7 +90,10 @@ for (dyad in dyads) {
                             cont_bpm = NA,
                             n_imputed = NA,
                             clean_hits = NA,
-                            clean_pct = NA)
+                            clean_pct = NA,
+                            clean2 = NA,
+                            clean2_pct = NA
+    )
       result_df <- rbind(result_df, new_row)
     }, warning = function(w) {
       message("A warning occurred: ", conditionMessage(w))
@@ -106,7 +113,10 @@ for (dyad in dyads) {
                             cont_bpm = NA,
                             n_imputed = NA,
                             clean_hits = NA,
-                            clean_pct = NA)
+                            clean_pct = NA,
+                            clean2 = NA,
+                            clean2_pct = NA)
+      
       result_df <- rbind(result_df, new_row)
     })
   }
@@ -114,10 +124,6 @@ for (dyad in dyads) {
 
 # Reset row names of the result data frame
 rownames(result_df) <- NULL
-
-psych::describe(result_df)
-
-
 
 beh <- read.csv("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\Co-operation Drumming.csv")
 beh$Dyad <- as.numeric(beh$Dyad)
@@ -127,66 +133,29 @@ beh <- beh %>%
                                    ifelse(Dyad > 300, "Alone", NA))))
 
 
-
-beh %>% 
-  group_by(condition) %>%
-  summarize(mean_Likert1 = mean(Likert_Q1),
-            mean_Likert2 = mean(Likert_Q2),
-            mean_Likert3 = mean(Likert_Q3),
-            mean_Likert4 = mean(Likert_Q4),
-            mean_Likert5 = mean(Likert_Q5),
-            mean_Likert6 = mean(Likert_Q6))
-# 
-# beh %>%
-#   group_by(condition) %>%
-#   summarize(mean_Likert1 = mean(Likert_Q1),
-#             sd_Likert1 = sd(Likert_Q1),
-# 
-#             mean_Likert2 = mean(Likert_Q2),
-#             sd_Likert2 = sd(Likert_Q2),
-# 
-#             mean_Likert3 = mean(Likert_Q3),
-#             sd_Likert3 = sd(Likert_Q3),
-# 
-#             mean_Likert4 = mean(Likert_Q4),
-#             sd_Likert4 = sd(Likert_Q4),
-# 
-#             mean_Likert5 = mean(Likert_Q5),
-#             sd_Likert5 = sd(Likert_Q5),
-# 
-#             mean_Likert6 = mean(Likert_Q6),
-#             sd_Likert6 = sd(Likert_Q6))
-
-
-
-#beh <- beh %>% filter(Dyad < 300)
-
 trial_summary <- readxl::read_xlsx("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\summary_drumming_trials.xlsx")
 
 df <- left_join(beh, result_df, by = c("Dyad" = "dyad"))
 df <- left_join(df, trial_summary, by = c("Dyad" = "id", "trial"))
 
-
-
-df <- df %>%
+df <- df %>% 
   filter(clean == "Y") %>%
-  mutate(desync_events = as.numeric(desync_events))
-
-df <- df %>%
+  mutate(desync_events = as.numeric(desync_events)) %>%
   mutate(ac1_ITI = ifelse(ID == "A", ac1_ITI_A, ac1_ITI_B)) %>%
-  select(-ac1_ITI_A, -ac1_ITI_B) %>%
-  mutate(detrend_ac1_ITI = ifelse(ID == "A", detrend_ac1_ITI_A, detrend_ac1_ITI_B)) 
+  mutate(detrend_ac1_ITI = ifelse(ID == "A", detrend_ac1_ITI_A, detrend_ac1_ITI_B)) %>%
+  mutate(ITI_var_1p = ifelse(ID == "A", ITI_var_A, ITI_var_B)) %>%
+  mutate(log_ITI_var_1p = log(ITI_var_1p)) %>%
+  mutate(log_ITI_var_2p = log(ITI_var_2p)) %>%
+  select(-ITI_var_A, -ITI_var_B, -ac1_ITI_A, -ac1_ITI_B)
 
-hist(df$clean_pct)
+trial_df <- df
 
-df_pivoted <- df %>%
-  group_by(Dyad, trial) %>%
-  pivot_wider(names_from = ID, values_from = detrend_ac1_ITI, names_prefix = "ITI_", names_glue = "ITI_{ID}") %>%
-  ungroup()
-
-df_pivoted$Dyad
-
-
+#####
+# df_pivoted <- df %>%
+#   group_by(Dyad, trial) %>%
+#   pivot_wider(names_from = ID, values_from = detrend_ac1_ITI, names_prefix = "ITI_AC1_", names_glue = "ITI_AC1_{ID}") %>%
+#   ungroup()
+#####
 summary_df <- df %>%
   group_by(Dyad, ID) %>%
   summarize(
@@ -200,83 +169,26 @@ summary_df <- df %>%
     detrend_ac1_ITI_mean = mean(detrend_ac1_ITI),
     cont_bpm = mean(cont_bpm),
     n_imputed = mean(n_imputed),
-    clean_hits = mean(clean_hits)
+    clean_hits = mean(clean_hits),
+    clean_hits2 = mean(clean2),
+    ITI_var_1p = mean(ITI_var_1p),
+    ITI_var_2p = mean(ITI_var_2p),
+    log_ITI_var_1p = mean(log_ITI_var_1p),
+    log_ITI_var_2p = mean(log_ITI_var_2p)
   )
 
 
-big_df <- full_join(summary_df, beh)
-big_df <- big_df %>%
+avg_df <- full_join(summary_df, beh)
+avg_df <- avg_df %>%
   filter(n_clean_trials >= 1)
-big_df$Dyad <- factor(big_df$Dyad)
-big_df$ID <- factor(big_df$ID)
-
-
-big_df$clean_hits
+avg_df$Dyad <- factor(avg_df$Dyad)
+avg_df$ID <- factor(avg_df$ID)
 
 
 
+avg_df <- avg_df %>%
+  select(condition, ID, Dyad, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:log_ITI_var_2p, cont_bpm, Likert_Q1:Likert_Q6, Coop_Q1:Coop_Q2)
 
-
-
-
-
-
-big_df <- big_df %>%
-  select(condition, ID, Dyad, ac1_ITI_mean, detrend_ac1_ITI_mean, cont_bpm, Likert_Q1:Likert_Q6, Coop_Q1:Coop_Q2)
-
-
-## Group differences in raw and detrended ITI AC1 
-big_df %>% 
-  group_by(condition) %>%
-  summarise(mean_ITI_ac1 = mean(ac1_ITI_mean, na.rm =T),
-            sd_ITI_ac1 = sd(ac1_ITI_mean, na.rm =T),
-            mean_detrend_ITI_ac1 = mean(detrend_ac1_ITI_mean, na.rm = T),
-            sd_detrend_ITI_ac1 = sd(detrend_ac1_ITI_mean, na.rm = T),
-            mean_cont_bpm = mean(cont_bpm, na.rm = T)
-            )
-
-
-
-
-
-
-psych::pairs.panels(big_df[,4:ncol(big_df)])
-
-hist(big_df$ac1_ITI_mean)
-hist(big_df$detrend_ac1_ITI_mean)
-
-hist(big_df$detrend_ac1_ITI_mean - big_df$ac1_ITI_mean)
-
-
-big_df$
-
-
-
-library(lme4)
-
-model <- lmer(Likert_Q2 ~ ac1_ITI_mean + (1 | Dyad), data = big_df)
-
-library(sjPlot)
-
-# Assuming your model object is called "model"
-plot_model(model, type = "pred", terms = c("ac1_ITI_mean"), plot.ci = TRUE)
-
-# Assuming your model object is called "model"
-residuals <- residuals(model)
-
-# Histogram
-hist(residuals, main = "Histogram of Residuals")
-
-# Q-Q plot
-qqnorm(residuals)
-qqline(residuals)
-
-
-# Assuming your model object is called "model"
-predicted <- predict(model)
-plot(residuals ~ predicted, main = "Residuals vs. Predicted Values")
-
-# Or, if you have a single predictor variable, ac1_ITI_mean
-plot(residuals ~ big_df$ac1_ITI_mean, main = "Residuals vs. ac1_ITI_mean")
-
-
+write_rds(beh, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.rds")
+write_rds(avg_df, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_avgs_df.rds")
+write_rds(trial_df, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_df.rds")

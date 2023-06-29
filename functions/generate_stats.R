@@ -172,8 +172,14 @@ generate_stats <- function(data){
     summarise(
       clean_hits = sum(all(imputed == 0))
     )
+  clean_hits2 <- data %>%
+    group_by(hit_number_participant) %>%
+    summarise(clean_hits2 = sum(all(exclude_IBI == FALSE)))
   clean <- sum(clean_hits$clean_hits)
   clean_pct <- clean/nrow(clean_hits)
+  clean2 <- sum(clean_hits2$clean_hits2, na.rm = T)
+  clean2_pct <- clean2/nrow(clean_hits2)
+  
   
   output <- list(toss, asyncs_sync, asyncs_cont,
                  async_sync_hist, async_cont_hist, 
@@ -186,7 +192,8 @@ generate_stats <- function(data){
                  p1_IBI_var_sync, p1_IBI_var_cont, p2_IBI_var_sync, p2_IBI_var_cont,
                  IBI_2p_var_sync, IBI_2p_var_cont,
                  onsets_plot, detrended_plot,
-                 cont_bpm, n_imputed, clean, clean_pct, raw)
+                 cont_bpm, n_imputed, clean, clean_pct, 
+                 clean2, clean2_pct, raw)
   names(output) <- c("Exclude Trial", "Asychronies: Synchronization Phase", "Asychronies: Continuation Phase",
                      "Async Histogram: Synchronization Phase", "Async Histogram: Continuation Phase",
                      "Precision: Pairwise Asynchrony - Synchronization Phase", "Precision: Pairwise Asynchrony - Continuation Phase",   
@@ -198,6 +205,8 @@ generate_stats <- function(data){
                      "Participant A: Tap Variability - Synchronization Phase", "Participant A: Tap Variability - Continuation Phase", "Participant B: Tap Variability - Synchronization Phase", "Participant B: Tap Variability - Continuation Phase",
                      "Dyadic Tap Variability - Synchronization Phase", "Dyadic Tap Variability - Continuation Phase",
                      "Raw Time Series", "Detrended Time Series",
-                     "Continuation Phase BPM", "N Imputed", "Clean Hits", "Percent Clean", "Raw Data")
+                     "Continuation Phase BPM", "N Imputed", "Clean Hits", "Percent Clean",
+                     "Clean Hits (Following removed)", "Percent Clean (Following removed)",
+                     "Raw Data")
   return(output)
 }
