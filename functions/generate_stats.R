@@ -52,9 +52,13 @@ generate_stats <- function(data){
   ITI_2p <- data %>%
     group_by(hit_number_participant) %>%
     mutate(group_hit = (start_s[1]+start_s[2]) / 2) %>%
+    mutate(detrend_group_hit = (start_s_detrend[1]+start_s_detrend[2]) / 2 ) %>%
     ungroup() %>%
     mutate(group_IBI = group_hit - lag(group_hit)) %>%
+    mutate(detrend_group_IBI = detrend_group_hit - lag(detrend_group_hit)) %>%
     group_by(hit_number_participant) 
+  
+  
   ITI_2p <- ITI_2p[seq(1, nrow(ITI_2p), 2),]    
   
   ITI_2p_sync <- ITI_2p %>%
@@ -115,13 +119,22 @@ generate_stats <- function(data){
   p1_IBI_var_cont <- var(ITI_1_cont$onset_diff_1p)
   p2_IBI_var_cont <- var(ITI_2_cont$onset_diff_1p)
   
+  #1p ITI variability - detrended
+  p1_detrend_IBI_var_sync <- var(ITI_1_sync$onset_diff_1p_detrend)
+  p2_detrend_IBI_var_sync <- var(ITI_2_sync$onset_diff_1p_detrend)
+  
+  p1_detrend_IBI_var_cont <- var(ITI_1_cont$onset_diff_1p_detrend)
+  p2_detrend_IBI_var_cont <- var(ITI_2_cont$onset_diff_1p_detrend)
+  
   #2p IBI variability
   if(dyad > 200){
     IBI_2p_var_sync <- var(ITI_2p_sync$group_IBI - lag(ITI_2p_sync$group_IBI), na.rm = TRUE)
     IBI_2p_var_cont <- var(ITI_2p_cont$group_IBI - lag(ITI_2p_cont$group_IBI), na.rm = TRUE)
+    IBI_2p_detrend_var_cont <- var(ITI_2p_cont$detrend_group_IBI - lag(ITI_2p_cont$detrend_group_IBI), na.rm = TRUE)
   } else if (dyad < 200){
     IBI_2p_var_sync <- var(ITI_2p_sync$onset_diff_2p, na.rm = TRUE)
     IBI_2p_var_cont <- var(ITI_2p_cont$onset_diff_2p, na.rm = TRUE)
+    IBI_2p_detrend_var_cont <- var(ITI_2p_cont$onset_diff_2p_detrend, na.rm = TRUE)
   }
   
   
@@ -190,7 +203,8 @@ generate_stats <- function(data){
                  p2_ITI_sync_acf, p2_ITI_cont_acf,
                  p1_ITI_detrended, p2_ITI_detrended, async_detrend_acf,
                  p1_IBI_var_sync, p1_IBI_var_cont, p2_IBI_var_sync, p2_IBI_var_cont,
-                 IBI_2p_var_sync, IBI_2p_var_cont,
+                 p1_detrend_IBI_var_sync, p1_detrend_IBI_var_cont, p2_detrend_IBI_var_sync, p2_detrend_IBI_var_cont,
+                 IBI_2p_var_sync, IBI_2p_var_cont, IBI_2p_detrend_var_cont,
                  onsets_plot, detrended_plot,
                  cont_bpm, n_imputed, clean, clean_pct, 
                  clean2, clean2_pct, raw)
@@ -203,7 +217,8 @@ generate_stats <- function(data){
                      "Participant B: ITI ACF - Synchronization Phase", "Participant B: ITI ACF - Continuation Phase", 
                      "Participant A: ITI ACF - Detrended (Cont. Phase)", "Participant B: ITI ACF - Detrended (Cont. Phase)", "Detrended Async ACF: Continuation Phase",
                      "Participant A: Tap Variability - Synchronization Phase", "Participant A: Tap Variability - Continuation Phase", "Participant B: Tap Variability - Synchronization Phase", "Participant B: Tap Variability - Continuation Phase",
-                     "Dyadic Tap Variability - Synchronization Phase", "Dyadic Tap Variability - Continuation Phase",
+                     "Participant A: Detrended Tap Variability - Synchronization Phase", "Participant A: Detrended Tap Variability - Continuation Phase", "Participant B: Detrended Tap Variability - Synchronization Phase", "Participant B: Detrended Tap Variability - Continuation Phase",
+                     "Dyadic Tap Variability - Synchronization Phase", "Dyadic Tap Variability - Continuation Phase", "Dyadic Tap Variability - Detrended Continuation Phase",
                      "Raw Time Series", "Detrended Time Series",
                      "Continuation Phase BPM", "N Imputed", "Clean Hits", "Percent Clean",
                      "Clean Hits (Following removed)", "Percent Clean (Following removed)",
