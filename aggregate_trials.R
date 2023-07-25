@@ -63,6 +63,9 @@ for (dyad in dyads) {
                             ITI_var_A = x[[trial]][["Participant A: Tap Variability - Continuation Phase"]],
                             ITI_var_B = x[[trial]][["Participant B: Tap Variability - Continuation Phase"]],
                             ITI_var_2p = x[[trial]][["Dyadic Tap Variability - Continuation Phase"]],
+                            ITI_var_A_detrend = x[[trial]][["Participant A: Detrended Tap Variability - Continuation Phase"]],
+                            ITI_var_B_detrend = x[[trial]][["Participant B: Detrended Tap Variability - Continuation Phase"]],
+                            ITI_var_2p_detrend = x[[trial]][["Dyadic Tap Variability - Detrended Continuation Phase"]],
                             cont_bpm = x[[trial]][["Continuation Phase BPM"]],
                             n_imputed = x[[trial]][["N Imputed"]],
                             clean_hits = x[[trial]][["Clean Hits"]],
@@ -87,6 +90,9 @@ for (dyad in dyads) {
                             ITI_var_A = NA,
                             ITI_var_B = NA,
                             ITI_var_2p = NA,
+                            ITI_var_A_detrend = NA,
+                            ITI_var_B_detrend = NA,
+                            ITI_var_2p_detrend = NA,
                             cont_bpm = NA,
                             n_imputed = NA,
                             clean_hits = NA,
@@ -110,6 +116,9 @@ for (dyad in dyads) {
                             ITI_var_A = NA,
                             ITI_var_B = NA,
                             ITI_var_2p = NA,
+                            ITI_var_A_detrend = NA,
+                            ITI_var_B_detrend = NA,
+                            ITI_var_2p_detrend = NA,
                             cont_bpm = NA,
                             n_imputed = NA,
                             clean_hits = NA,
@@ -144,8 +153,11 @@ df <- df %>%
   mutate(ac1_ITI = ifelse(ID == "A", ac1_ITI_A, ac1_ITI_B)) %>%
   mutate(detrend_ac1_ITI = ifelse(ID == "A", detrend_ac1_ITI_A, detrend_ac1_ITI_B)) %>%
   mutate(ITI_var_1p = ifelse(ID == "A", ITI_var_A, ITI_var_B)) %>%
+  mutate(ITI_var_1p_detrend = ifelse(ID == "A", ITI_var_A_detrend, ITI_var_B_detrend)) %>%
   mutate(log_ITI_var_1p = log(ITI_var_1p)) %>%
   mutate(log_ITI_var_2p = log(ITI_var_2p)) %>%
+  mutate(log_ITI_var_1p_detrend = log(ITI_var_1p_detrend)) %>%
+  mutate(log_ITI_var_2p_detrend = log(ITI_var_2p_detrend)) %>%
   select(-ITI_var_A, -ITI_var_B, -ac1_ITI_A, -ac1_ITI_B)
 
 trial_df <- df
@@ -174,7 +186,11 @@ summary_df <- df %>%
     ITI_var_1p = mean(ITI_var_1p),
     ITI_var_2p = mean(ITI_var_2p),
     log_ITI_var_1p = mean(log_ITI_var_1p),
-    log_ITI_var_2p = mean(log_ITI_var_2p)
+    log_ITI_var_2p = mean(log_ITI_var_2p),
+    ITI_var_1p_detrend = mean(ITI_var_1p_detrend),
+    ITI_var_2p_detrend = mean(ITI_var_2p_detrend),
+    log_ITI_var_1p_detrend = mean(log_ITI_var_1p_detrend),
+    log_ITI_var_2p_detrend = mean(log_ITI_var_2p_detrend)
   )
 
 
@@ -187,7 +203,7 @@ avg_df$ID <- factor(avg_df$ID)
 
 
 avg_df <- avg_df %>%
-  select(condition, ID, Dyad, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:log_ITI_var_2p, cont_bpm, Likert_Q1:Likert_Q6, Coop_Q1:Coop_Q2)
+  select(condition, ID, Dyad, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:log_ITI_var_2p_detrend, clean_hits, clean_hits2, cont_bpm, Likert_Q1:Likert_Q6, Coop_Q1:Coop_Q2)
 
 write_rds(beh, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.rds")
 write_rds(avg_df, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_avgs_df.rds")
