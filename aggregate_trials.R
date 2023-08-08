@@ -139,8 +139,8 @@ beh$Dyad <- as.numeric(beh$Dyad)
 beh <- beh %>%
   mutate(condition = ifelse(Dyad < 200, "Alternating", 
                             ifelse(Dyad > 200 & Dyad <300, "Synchrony", 
-                                   ifelse(Dyad > 300, "Alone", NA))))
-
+                                   ifelse(Dyad > 300, "Alone", NA)))) %>%
+  mutate(Exclude = Dyad %in% c(102, 104))
 
 trial_summary <- readxl::read_xlsx("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\summary_drumming_trials.xlsx")
 

@@ -9,7 +9,24 @@ trial_df <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\tri
 avg_df <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_avgs_df.rds")
 beh <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.rds")
 
-avg_df %>% group_by(condition) %>%
+beh <- beh %>% filter(Exclude == FALSE)
+
+
+avg_df <- avg_df %>%
+  group_by(Dyad) %>%
+  mutate(ac1_detrend_diff = ifelse(ID == "B", abs(detrend_ac1_ITI_mean[ID == "A"] - detrend_ac1_ITI_mean), abs(detrend_ac1_ITI_mean[ID == "B"] - detrend_ac1_ITI_mean))) %>%
+  ungroup() %>%
+  mutate(ac1_detrend_diff_cat = ifelse(ac1_detrend_diff > median(ac1_detrend_diff), "Large Adaptation Difference", "Small Adaptation Difference")) %>%
+  mutate(ac1_detrend_high_low = ifelse(detrend_ac1_ITI_mean < median(detrend_ac1_ITI_mean), "High Adaptation", "Low Adaptation")) %>%
+  group_by(Dyad)
+
+
+hist(avg_df$ac1_detrend_diff[seq(1, length(avg_df$ac1_detrend_diff), 2)])
+describe(avg_df$ac1_detrend_diff[avg_df$ac1_detrend_diff > 0])
+
+
+
+avg_df %>% ungroup() %>%
   summarize(mean_log_var_1p_ITI = mean(log_ITI_var_1p),
             sd_log_var_1p_ITI = sd(log_ITI_var_1p),
             mean_ac1 = mean(ac1_ITI_mean),
@@ -20,13 +37,26 @@ avg_df %>% group_by(condition) %>%
             sd_log_var_2p_ITI = sd(log_ITI_var_2p))
 
 
-boxplot(avg_df$ac1_ITI_mean)
-boxplot(avg_df$log_ITI_var_1p)
-boxplot(avg_df$detrend_ac1_ITI_mean)
+
+avg_df %>% group_by(condition) %>%
+  summarize(mean_log_var_1p_ITI = mean(log_ITI_var_1p),
+            sd_log_var_1p_ITI = sd(log_ITI_var_1p),
+            mean_log_var_1p_ITI_detrend = mean(log_ITI_var_1p_detrend),
+            sd_log_var_1p_ITI_detrend = sd(log_ITI_var_1p_detrend),
+            mean_ac1 = mean(ac1_ITI_mean),
+            sd_ac1 = sd(ac1_ITI_mean),
+            mean_ac1_detrend = mean(detrend_ac1_ITI_mean),
+            sd_ac1_detrend = sd(detrend_ac1_ITI_mean),
+            mean_log_var_2p_ITI = mean(log_ITI_var_2p),
+            sd_log_var_2p_ITI = sd(log_ITI_var_2p))
+
+
+#boxplot(avg_df$ac1_ITI_mean)
+#boxplot(avg_df$log_ITI_var_1p)
+#boxplot(avg_df$detrend_ac1_ITI_mean)
 hist(avg_df$detrend_ac1_ITI_mean, breaks = seq(-.6, .6, .05))
 
-
-
+trial_df$desync_events
 
 wide_drum_vars <- avg_df %>%
   group_by(Dyad) %>% 
@@ -35,8 +65,20 @@ wide_drum_vars <- avg_df %>%
 
 psych::pairs.panels(wide_drum_vars %>% filter(Dyad != 209))
 
+wide_cors <- lowerCor(wide_drum_vars %>% filter(Dyad != 209) %>% ungroup() %>% select(-Dyad))
+
+corPlot(wide_cors)
 
 
+avg_df_long <- avg_df %>%
+  pivot_longer(cols = starts_with("Likert_Q"),
+               names_to = "Q",
+               values_to = "Likert_Score")
+
+ggplot(avg_df_long, aes(x = Q, y = Likert_Score, fill = ac1_detrend_diff_cat)) +
+  geom_boxplot() +
+  #geom_dotplot(binaxis = 'y', dotsize=.3, stackdir = 'down') +
+  theme_bw()
 
 
 
@@ -56,7 +98,7 @@ beh$condition <- factor(beh$condition)
 
 aov1 <- aov(Likert_Q1 ~ condition, data = beh)
 summary(aov1)
-post1 <- multcomp::glht(aov1, linfct = mcp(condition = "Tukey"))
+post1 <- multcomp::glht(aov1, linfct = multcomp::mcp(condition = "Tukey"))
 summary(post1)
 
 
@@ -68,6 +110,63 @@ beh2 <- beh2 %>%
 
 beh$Likert_Q1 <- as.numeric(beh$Likert_Q1)
 
+wide_beh_vars <- beh %>%
+  group_by(Dyad) %>% 
+  dplyr::select(Dyad, ID, Likert_Q1:Coop_Q2) %>%
+  pivot_wider(names_from = ID, values_from = c(Likert_Q1:Coop_Q2))
+
+wide_beh_cors <- lowerCor(wide_beh_vars %>% ungroup() %>% dplyr::select(-Dyad))
+
+corPlot(wide_beh_cors)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+t.test(detrend_ac1_ITI_mean ~ condition, data = avg_df)
+t.test(ac1_ITI_mean ~ condition, data = avg_df)
+
+t.test(log_ITI_var_1p ~ condition, data = avg_df)
+t.test(log_ITI_var_1p_detrend ~ condition, data = avg_df)
+
+
+ITI_var_model <- lm(log_ITI_var_1p_detrend ~ condition, data = avg_df)
+ITI_var_resid <- resid(ITI_var_model)
+
+plot(avg_df$log_ITI_var_1p_detrend, ITI_var_resid,
+     ylab="Residuals")
+
+hist(ITI_var_resid)
+
+
+
+
+
+
+1/ttestBF(formula = ac1_ITI_mean ~ condition, data = avg_df)
+ttestBF(formula = detrend_ac1_ITI_mean ~ condition, data = avg_df)
+
+1/ttestBF(formula = log_ITI_var_1p ~ condition, data = avg_df)
+ttestBF(formula = log_ITI_var_1p_detrend ~ condition, data = avg_df)
+
+
+
 t.test(formula = Likert_Q1 ~ condition, data = beh2)
 t.test(formula = Likert_Q2 ~ condition, data = beh2)
 t.test(formula = Likert_Q3 ~ condition, data = beh2)
@@ -75,7 +174,7 @@ t.test(formula = Likert_Q4 ~ condition, data = beh2)
 t.test(formula = Likert_Q5 ~ condition, data = beh2)
 t.test(formula = Likert_Q6 ~ condition, data = beh2)
 
-
+#Calculating Bayes factors with R and JASP Jeffrey Stevens
 
 1/ttestBF(formula = Likert_Q1 ~ condition, data = beh2)
 1/ttestBF(formula = Likert_Q2 ~ condition, data = beh2)
