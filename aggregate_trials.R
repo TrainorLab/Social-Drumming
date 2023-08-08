@@ -158,6 +158,10 @@ df <- df %>%
   mutate(log_ITI_var_2p = log(ITI_var_2p)) %>%
   mutate(log_ITI_var_1p_detrend = log(ITI_var_1p_detrend)) %>%
   mutate(log_ITI_var_2p_detrend = log(ITI_var_2p_detrend)) %>%
+  group_by(Dyad) %>%
+  mutate(ac1_detrend_diff = ifelse(ID == "B", abs(detrend_ac1_ITI[ID == "A"] - detrend_ac1_ITI), abs(detrend_ac1_ITI[ID == "B"] - detrend_ac1_ITI))) %>%
+  ungroup() %>%
+  mutate(ac1_detrend_diff_cat = ifelse(ac1_detrend_diff > median(ac1_detrend_diff), "Large Adaptation Difference", "Small Adaptation Difference")) %>%
   select(-ITI_var_A, -ITI_var_B, -ac1_ITI_A, -ac1_ITI_B)
 
 trial_df <- df
@@ -190,20 +194,27 @@ summary_df <- df %>%
     ITI_var_1p_detrend = mean(ITI_var_1p_detrend),
     ITI_var_2p_detrend = mean(ITI_var_2p_detrend),
     log_ITI_var_1p_detrend = mean(log_ITI_var_1p_detrend),
-    log_ITI_var_2p_detrend = mean(log_ITI_var_2p_detrend)
+    log_ITI_var_2p_detrend = mean(log_ITI_var_2p_detrend),
+    n_included_trials = n(),
+    ac1_detrend_diff = mean(ac1_detrend_diff)
   )
 
 
 avg_df <- full_join(summary_df, beh)
 avg_df <- avg_df %>%
-  filter(n_clean_trials >= 1)
+  filter(n_clean_trials >= 1) %>% ungroup() %>%
+  mutate(ac1_detrend_diff_cat = ifelse(ac1_detrend_diff > median(ac1_detrend_diff), "Large Adaptation Difference", "Small Adaptation Difference")) %>%
+  mutate(ac1_detrend_high_low = ifelse(detrend_ac1_ITI_mean < median(detrend_ac1_ITI_mean), "High Adaptation", "Low Adaptation")) %>%
+  group_by(Dyad)
+  
+
+
 avg_df$Dyad <- factor(avg_df$Dyad)
 avg_df$ID <- factor(avg_df$ID)
 
 
-
 avg_df <- avg_df %>%
-  select(condition, ID, Dyad, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:log_ITI_var_2p_detrend, clean_hits, clean_hits2, cont_bpm, Likert_Q1:Likert_Q6, Coop_Q1:Coop_Q2)
+  select(condition, ID, Dyad, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:ac1_detrend_high_low, desyncs, clean_hits, clean_hits2, cont_bpm, Likert_Q1:Exclude)
 
 write_rds(beh, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.rds")
 write_rds(avg_df, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_avgs_df.rds")

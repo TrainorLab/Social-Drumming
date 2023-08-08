@@ -12,18 +12,14 @@ beh <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.r
 beh <- beh %>% filter(Exclude == FALSE)
 
 
-avg_df <- avg_df %>%
-  group_by(Dyad) %>%
-  mutate(ac1_detrend_diff = ifelse(ID == "B", abs(detrend_ac1_ITI_mean[ID == "A"] - detrend_ac1_ITI_mean), abs(detrend_ac1_ITI_mean[ID == "B"] - detrend_ac1_ITI_mean))) %>%
-  ungroup() %>%
-  mutate(ac1_detrend_diff_cat = ifelse(ac1_detrend_diff > median(ac1_detrend_diff), "Large Adaptation Difference", "Small Adaptation Difference")) %>%
-  mutate(ac1_detrend_high_low = ifelse(detrend_ac1_ITI_mean < median(detrend_ac1_ITI_mean), "High Adaptation", "Low Adaptation")) %>%
-  group_by(Dyad)
-
+trial_df$ac1_detrend_diff
+hist(trial_df$ac1_detrend_diff)
 
 hist(avg_df$ac1_detrend_diff[seq(1, length(avg_df$ac1_detrend_diff), 2)])
-describe(avg_df$ac1_detrend_diff[avg_df$ac1_detrend_diff > 0])
 
+
+describe(avg_df$ac1_detrend_diff[avg_df$ac1_detrend_diff > 0])
+describe(trial_df$ac1_detrend_diff)
 
 
 avg_df %>% ungroup() %>%
@@ -55,8 +51,6 @@ avg_df %>% group_by(condition) %>%
 #boxplot(avg_df$log_ITI_var_1p)
 #boxplot(avg_df$detrend_ac1_ITI_mean)
 hist(avg_df$detrend_ac1_ITI_mean, breaks = seq(-.6, .6, .05))
-
-trial_df$desync_events
 
 wide_drum_vars <- avg_df %>%
   group_by(Dyad) %>% 
@@ -185,8 +179,6 @@ t.test(formula = Likert_Q6 ~ condition, data = beh2)
 
 beh2$condition2 <- ifelse(beh2$condition == "Alternating",1, 0)
 
-plot(beh2$Likert_Q1 ~ beh2$condition2)
-
 m <- rethinking::map(
   alist(
     Likert_Q1 ~ dnorm( mu , sigma ) ,
@@ -260,6 +252,13 @@ psych::pairs.panels(
     filter(log_ITI_var_1p < -5)
 )
 
+
+psych::pairs.panels(
+  avg_df %>% select(desyncs, Likert_Q1:Likert_Q6))
+
+
+
+
 boxplot(avg_df$log_ITI_var_1p)
 hist(avg_df$ITI_var_2p)
 
@@ -270,3 +269,4 @@ as.character(avg_df$Dyad[which(avg_df$ITI_var_1p > .01)])
 
 hist(avg_df$log_ITI_var_1p[idx])
 hist(avg_df$log_ITI_var_2p[idx])
+
