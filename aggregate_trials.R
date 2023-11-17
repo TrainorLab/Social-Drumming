@@ -36,7 +36,7 @@ result_df <- data.frame(dyad = numeric(),
                         stringsAsFactors = FALSE)
 
 # Define the dyads and trials
-dyads <- c(101:119, 201:211)
+dyads <- c(101:119, 201:211, 213:219)
 trials <- 1:4
 
 # Iterate over each dyad
@@ -140,7 +140,7 @@ beh <- beh %>%
   mutate(condition = ifelse(Dyad < 200, "Alternating", 
                             ifelse(Dyad > 200 & Dyad <300, "Synchrony", 
                                    ifelse(Dyad > 300, "Alone", NA)))) %>%
-  mutate(Exclude = Dyad %in% c(102, 104))
+  mutate(Exclude = Dyad %in% c(102, 104, 220))
 
 trial_summary <- readxl::read_xlsx("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\summary_drumming_trials.xlsx")
 

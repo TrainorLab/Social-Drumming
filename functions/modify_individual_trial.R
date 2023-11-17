@@ -51,7 +51,7 @@ modify_individual_trial <- function(data){
   
   if(dyad == 210 & trial == 2){
     data <- data %>%
-      filter(start_s >= 32)
+      filter(start_s >= 32 & start_s <= 92)
     data$onset_diff_1p[1] <- NA
     data$onset_diff_2p[1] <- NA
   }
@@ -97,6 +97,51 @@ modify_individual_trial <- function(data){
     data <- recalc_onsets(data)
   }
  
+  if(dyad == 213 & trial == 1){
+    data <- recalc_onsets(data)
+    data <- data %>%
+      filter(start_s > 15.8)
+    data <- recalc_onsets(data)
+  }
+  
+  if(dyad == 214 & trial == 1){
+    data <- recalc_onsets(data)
+    data <- data %>%
+      filter(start_s > 16)
+    data <- recalc_onsets(data)
+  }
+  
+  if(dyad == 217 & trial == 1){
+    data <- recalc_onsets(data)
+    data <- data %>%
+      filter(start_s > 10.9)
+    data <- recalc_onsets(data)
+  }
+  
+  if(dyad == 219 & trial == 1){
+    data <- recalc_onsets(data)
+    data <- data %>%
+      filter(start_s > 14.8)
+    data <- recalc_onsets(data)
+  }
+  
+  if(dyad == 221 & trial == 4){
+    data <- recalc_onsets(data)
+    data <- data %>%
+      filter(vel > 15)
+    data <- recalc_onsets(data)
+  } 
+  
+  if(dyad == 222 & trial == 1){
+    data <- recalc_onsets(data)
+    data <- data %>%
+      filter(start_s > 22)
+    data <- recalc_onsets(data)
+  }
+  
+  
+  
+  
   return(data)
 }
 

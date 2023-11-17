@@ -80,58 +80,6 @@ ggplot(avg_df_long, aes(x = Q, y = Likert_Score, fill = ac1_detrend_diff_cat)) +
 
 
 
-beh %>% 
-  group_by(condition) %>%
-  summarize(mean_Likert1 = mean(Likert_Q1),
-            mean_Likert2 = mean(Likert_Q2),
-            mean_Likert3 = mean(Likert_Q3),
-            mean_Likert4 = mean(Likert_Q4),
-            mean_Likert5 = mean(Likert_Q5),
-            mean_Likert6 = mean(Likert_Q6))
-beh$condition <- factor(beh$condition)
-
-aov1 <- aov(Likert_Q1 ~ condition, data = beh)
-summary(aov1)
-post1 <- multcomp::glht(aov1, linfct = multcomp::mcp(condition = "Tukey"))
-summary(post1)
-
-
-beh2 <- beh  %>% filter(condition != "Alone") 
-new_row <- data.frame(condition = "Synchrony", Likert_Q1 = 5, Likert_Q2 = 5, Likert_Q3 = 5, Likert_Q4 = 5, Likert_Q5 = 5, Likert_Q6 = 5)
-
-beh2 <- beh2 %>%
-  add_row(new_row)
-
-beh$Likert_Q1 <- as.numeric(beh$Likert_Q1)
-
-wide_beh_vars <- beh %>%
-  group_by(Dyad) %>% 
-  dplyr::select(Dyad, ID, Likert_Q1:Coop_Q2) %>%
-  pivot_wider(names_from = ID, values_from = c(Likert_Q1:Coop_Q2))
-
-wide_beh_cors <- lowerCor(wide_beh_vars %>% ungroup() %>% dplyr::select(-Dyad))
-
-corPlot(wide_beh_cors)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 t.test(detrend_ac1_ITI_mean ~ condition, data = avg_df)
 t.test(ac1_ITI_mean ~ condition, data = avg_df)
@@ -161,21 +109,11 @@ ttestBF(formula = log_ITI_var_1p_detrend ~ condition, data = avg_df)
 
 
 
-t.test(formula = Likert_Q1 ~ condition, data = beh2)
-t.test(formula = Likert_Q2 ~ condition, data = beh2)
-t.test(formula = Likert_Q3 ~ condition, data = beh2)
-t.test(formula = Likert_Q4 ~ condition, data = beh2)
-t.test(formula = Likert_Q5 ~ condition, data = beh2)
-t.test(formula = Likert_Q6 ~ condition, data = beh2)
+
 
 #Calculating Bayes factors with R and JASP Jeffrey Stevens
 
-1/ttestBF(formula = Likert_Q1 ~ condition, data = beh2)
-1/ttestBF(formula = Likert_Q2 ~ condition, data = beh2)
-1/ttestBF(formula = Likert_Q3 ~ condition, data = beh2)
-1/ttestBF(formula = Likert_Q4 ~ condition, data = beh2)
-1/ttestBF(formula = Likert_Q5 ~ condition, data = beh2)
-1/ttestBF(formula = Likert_Q6 ~ condition, data = beh2)
+
 
 beh2$condition2 <- ifelse(beh2$condition == "Alternating",1, 0)
 
@@ -205,7 +143,7 @@ m4.3 <- map(
   data=d2 )
 
 
-
+beh$condition <- as.factor(beh$condition)
 
 aovBF1 <- anovaBF(Likert_Q1 ~ condition, data = beh)
 plot(aovBF1)
