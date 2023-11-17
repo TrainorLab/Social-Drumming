@@ -29,9 +29,10 @@ detrend_cont <- function(data, poly = 1, lowess = FALSE){
       if(nrow(data_cont) %% 2 == 1){
         data_cont <- data_cont[-nrow(data_cont),]
       }
-      
-    temp <- astsa::detrend(data_cont$group_2p_onset_avg[!is.na(data_cont$group_2p_onset_avg[seq(1,length(data_cont$group_2p_onset_avg),2)])]
-                           ,lowess = lowess)
+    
+    #lowess argument changed to TRUE from lowess  
+    temp <- astsa::detrend(data_cont$group_2p_onset_avg[!is.na(data_cont$group_2p_onset_avg[seq(1,length(data_cont$group_2p_onset_avg),2)])], 
+                           lowess = TRUE)
 
     data_cont$onset_diff_2p_detrend <- data_cont$onset_diff_2p + unname(temp)
     
