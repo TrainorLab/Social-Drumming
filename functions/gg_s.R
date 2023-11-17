@@ -13,7 +13,8 @@ gg_s <- function(data, detrend = F, loess = F){
       geom_line(aes(color=participant))+
       geom_point(aes(color=participant))+
       geom_vline(xintercept = synch_phase_end, size=1)+
-      ggtitle(paste0(dyad, " Trial #",  trial))+
+      labs(title = paste0(dyad, " Trial #",  trial), x = "Onset Time (s)", y = "Inter-Onset Interval (Per Person)",
+           group = "Participant")+
       theme_bw()
   } else if(detrend == TRUE){
 
@@ -21,7 +22,8 @@ gg_s <- function(data, detrend = F, loess = F){
       geom_line(aes(color=participant))+
       geom_point(aes(color=participant))+
       geom_vline(xintercept = synch_phase_end, size=1)+
-      ggtitle(paste0(dyad, " Trial #",  trial, ": Detrended"))+
+      labs(title = paste0("Detrended:", dyad, " Trial #",  trial), x = "Onset Time (s)", y = "Inter-Onset Interval (Per Person)",
+           group = "Participant")+
       theme_bw()
     
     #grid_plot <- grid.arrange(gg1, gg2, ncol=2)
