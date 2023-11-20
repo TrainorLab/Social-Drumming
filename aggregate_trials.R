@@ -21,6 +21,11 @@ library(ggplot2)
 # Create an empty data frame to store the results
 result_df <- data.frame(dyad = numeric(),
                         trial = numeric(),
+                        valid_metronome = logical(),
+                        mean_met_async_A = numeric(), 
+                        n_met_async_A = numeric(), 
+                        mean_met_async_B = numeric(), 
+                        n_met_async_B = numeric(),
                         pairwise_async = numeric(),
                         onset_async = numeric(),
                         ac1_ITI_A = numeric(),
@@ -36,7 +41,7 @@ result_df <- data.frame(dyad = numeric(),
                         stringsAsFactors = FALSE)
 
 # Define the dyads and trials
-dyads <- c(101:119, 201:211, 213:219)
+dyads <- c(101:122)#, 201:211, 213:222)
 trials <- 1:4
 
 # Iterate over each dyad
@@ -52,6 +57,11 @@ for (dyad in dyads) {
       # Create a new row for the data frame
       new_row <- data.frame(dyad = dyad,
                             trial = trial,
+                            valid_metronome = x[[trial]][["Valid Metronome"]],
+                            mean_met_async_A = x[[trial]][["Mean Metronome Asynchrony: Participant A"]], 
+                            n_met_async_A = x[[trial]][["Metronome Hits: Participant A"]], 
+                            mean_met_async_B = x[[trial]][["Mean Metronome Asynchrony: Participant B"]], 
+                            n_met_async_B = x[[trial]][["Metronome Hits: Participant B"]],
                             pairwise_async = x[[trial]][["Precision: Pairwise Asynchrony - Continuation Phase"]],
                             onset_async = x[[trial]][["Accuracy: Onset Asynchrony - Continuation Phase"]],
                             ac1_ITI_A = x[[trial]][["Participant A: ITI ACF - Continuation Phase"]][["acf"]][[2]],
@@ -79,6 +89,11 @@ for (dyad in dyads) {
       message("An error occurred: ", conditionMessage(e))
       new_row <- data.frame(dyad = dyad,
                             trial = trial,
+                            valid_metronome = NA,
+                            mean_met_async_A = NA, 
+                            n_met_async_A = NA, 
+                            mean_met_async_B = NA, 
+                            n_met_async_B = NA,
                             pairwise_async = NA,
                             onset_async = NA,
                             ac1_ITI_A = NA,
@@ -105,6 +120,11 @@ for (dyad in dyads) {
       message("A warning occurred: ", conditionMessage(w))
       new_row <- data.frame(dyad = dyad,
                             trial = trial,
+                            valid_metronome = NA,
+                            mean_met_async_A = NA, 
+                            n_met_async_A = NA, 
+                            mean_met_async_B = NA, 
+                            n_met_async_B = NA,
                             pairwise_async = NA,
                             onset_async = NA,
                             ac1_ITI_A = NA,
@@ -149,6 +169,7 @@ df <- left_join(df, trial_summary, by = c("Dyad" = "id", "trial"))
 
 df <- df %>% 
   filter(clean == "Y") %>%
+  mutate(mean_met_async = ifelse(ID == "A", mean_met_async_A, mean_met_async_B))
   mutate(desync_events = as.numeric(desync_events)) %>%
   mutate(ac1_ITI = ifelse(ID == "A", ac1_ITI_A, ac1_ITI_B)) %>%
   mutate(detrend_ac1_ITI = ifelse(ID == "A", detrend_ac1_ITI_A, detrend_ac1_ITI_B)) %>%

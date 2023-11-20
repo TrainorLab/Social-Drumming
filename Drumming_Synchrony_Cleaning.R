@@ -29,7 +29,7 @@ dyads <- c(101:122
            #211:222
            )
 trials <- 1:4
-dyad <- 201
+dyad <- 103
 trial <- 3
 
 start <- Sys.time() 
@@ -42,12 +42,12 @@ for (dyad in dyads){
     data <- align_first_hit(data)
     data <- trim_end(data)
     png(filename = paste0(plot_dir, dyad,"_",trial,"_init.png"), width = 720*scale, height = 480*scale, res = 72*scale)
-    print(gg_s(data))
+    print(gg_s(data, title_mod = ": Aligned, Trimmed, Double Hits Remove - First Pass"))
     dev.off()    
     data <- modify_individual_trial(data)
     data <- recalc_onsets(data)
     png(filename = paste0(plot_dir, dyad,"_",trial,"_individual_mod.png"), width = 720*scale, height = 480*scale, res = 72*scale)
-    print(gg_s(data))
+    print(gg_s(data, title_mod = ": Post-Individualized Modification", fixed_scale = T))
     dev.off()
     
     if(dyad > 200){
@@ -69,7 +69,7 @@ for (dyad in dyads){
     
 #    if(exists("data")){
       png(filename = paste0(plot_dir, dyad,"_",trial,"_cleaned_missed_hits.png"), width = 720*scale, height = 480*scale, res = 72*scale)
-      print(gg_s(data))
+      print(gg_s(data, title_mod = ": Fully Cleaned"))
       dev.off()    
 #    }
     tryCatch(

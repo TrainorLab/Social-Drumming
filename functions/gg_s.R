@@ -1,4 +1,4 @@
-gg_s <- function(data, detrend = F, loess = F){
+gg_s <- function(data, title_mod = "", fixed_scale = F, detrend = F, loess = F){
   data$participant <- as.factor(data$participant)
   data$hit_number <- 1:nrow(data)
   
@@ -13,7 +13,7 @@ gg_s <- function(data, detrend = F, loess = F){
       geom_line(aes(color=participant))+
       geom_point(aes(color=participant))+
       geom_vline(xintercept = synch_phase_end, size=1)+
-      labs(title = paste0(dyad, " Trial #",  trial), x = "Onset Time (s)", y = "Inter-Onset Interval (Per Person)",
+      labs(title = paste0(dyad, " Trial #",  trial, title_mod), x = "Onset Time (s)", y = "Inter-Onset Interval (Per Person)",
            group = "Participant")+
       theme_bw()
   } else if(detrend == TRUE){
@@ -29,6 +29,11 @@ gg_s <- function(data, detrend = F, loess = F){
     #grid_plot <- grid.arrange(gg1, gg2, ncol=2)
       }
  
+  if(fixed_scale == T){
+    gg <- gg +
+      ylim(.75, 1.25)
+  }
+  
   if(loess == F){
     return(gg)
   } else {

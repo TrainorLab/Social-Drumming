@@ -8,7 +8,9 @@ generate_stats <- function(data){
     condition_b <- 2
   }
   
-  data <- data %>% 
+  data <- data %>%
+    ungroup() %>%
+    mutate(metronome_click = (round(start_s/.5))*.5) %>%
     group_by(hit_number_participant) %>%
     mutate(exclude_IBI = any(imputed == 1)) %>%
     ungroup() %>%
@@ -17,7 +19,30 @@ generate_stats <- function(data){
     mutate(exclude_IBI3 = any(exclude_IBI2) == T) %>%
     mutate(exclude_IBI = exclude_IBI3) %>%
     select(-exclude_IBI2, -exclude_IBI3)
-           
+    
+  data$metronome_click <- ifelse(data$metronome_click < cont_start, data$metronome_click, NA)
+  
+  if(dyad < 200 & all(data$metronome_click - lag(data$metronome_click) == .5, na.rm = T)){
+    data <- data %>% 
+      mutate(met_async = abs(metronome_click - start_s))
+    valid_metronome <- TRUE
+  } else if(dyad > 200 & dyad < 300 & all(data$metronome_click - lag(data$metronome_click) %in% c(0,1), na.rm = T)){
+    data <- data %>% 
+      mutate(met_async = abs(metronome_click - start_s))
+    valid_metronome <- TRUE
+  } else{
+    valid_metronome <- FALSE
+  }
+     
+  met_async_A <- data %>% filter(participant == 1) 
+  mean_met_async_A <- mean(met_async_A$met_async, na.rm = T)
+  n_met_async_A <- sum((met_async_A$exclude_IBI == F | is.na(met_async_A$exclude_IBI)) & (!is.na(met_async_A$met_async)))
+  
+  met_async_B <- data %>% filter(participant == 2) 
+  mean_met_async_B <- mean(met_async_B$met_async, na.rm = T)
+  n_met_async_B <- sum((met_async_B$exclude_IBI == F | is.na(met_async_B$exclude_IBI)) & (!is.na(met_async_B$met_async)))
+  
+  
   # First, we need to calculate the onset asynchronies, which is just the difference
   # in seconds between the first and second hit for each event. We also calculate the 
   # group/average onset time
@@ -44,8 +69,7 @@ generate_stats <- function(data){
   asyncs_sync <- psych::describe(async_sync_phase$async)
   asyncs_cont <- psych::describe(async_cont_phase$async)
   
-  
-  
+
   # The ITI's of each participant will also have their own time-series and ACF. 
   # AC1 should be negative here 
   
@@ -191,7 +215,9 @@ generate_stats <- function(data){
   clean2_pct <- clean2/nrow(clean_hits2)
   
   
-  output <- list(toss, asyncs_sync, asyncs_cont,
+  output <- list(toss, valid_metronome,
+                 mean_met_async_A, n_met_async_A, mean_met_async_B, n_met_async_B,
+                 asyncs_sync, asyncs_cont,
                  async_sync_hist, async_cont_hist, 
                  pairwise_async_sync, pairwise_async_cont,
                  mpa_sync, mpa_cont,
@@ -205,7 +231,9 @@ generate_stats <- function(data){
                  onsets_plot, detrended_plot,
                  cont_bpm, n_imputed, clean, clean_pct, 
                  clean2, clean2_pct, raw)
-  names(output) <- c("Exclude Trial", "Asychronies: Synchronization Phase", "Asychronies: Continuation Phase",
+  names(output) <- c("Exclude Trial", "Valid Metronome",
+                     "Mean Metronome Asynchrony: Participant A", "Metronome Hits: Participant A", "Mean Metronome Asynchrony: Participant B", "Metronome Hits: Participant B",
+                     "Asychronies: Synchronization Phase", "Asychronies: Continuation Phase",
                      "Async Histogram: Synchronization Phase", "Async Histogram: Continuation Phase",
                      "Precision: Pairwise Asynchrony - Synchronization Phase", "Precision: Pairwise Asynchrony - Continuation Phase",   
                      "Accuracy: Onset Asynchrony - Synchronization Phase", "Accuracy: Onset Asynchrony - Continuation Phase",
