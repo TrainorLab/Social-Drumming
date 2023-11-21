@@ -41,7 +41,7 @@ result_df <- data.frame(dyad = numeric(),
                         stringsAsFactors = FALSE)
 
 # Define the dyads and trials
-dyads <- c(101:122)#, 201:211, 213:222)
+dyads <- c(101:122, 201:211, 213:222)
 trials <- 1:4
 
 # Iterate over each dyad
@@ -169,7 +169,7 @@ df <- left_join(df, trial_summary, by = c("Dyad" = "id", "trial"))
 
 df <- df %>% 
   filter(clean == "Y") %>%
-  mutate(mean_met_async = ifelse(ID == "A", mean_met_async_A, mean_met_async_B))
+  mutate(mean_met_async = ifelse(ID == "A", mean_met_async_A, mean_met_async_B)) %>%
   mutate(desync_events = as.numeric(desync_events)) %>%
   mutate(ac1_ITI = ifelse(ID == "A", ac1_ITI_A, ac1_ITI_B)) %>%
   mutate(detrend_ac1_ITI = ifelse(ID == "A", detrend_ac1_ITI_A, detrend_ac1_ITI_B)) %>%

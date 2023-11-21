@@ -24,13 +24,13 @@ list.files(fun_dir, full.names = TRUE) %>% walk(source)
 scale = 3
 
 # Importing
-dyads <- c(101:122 
-           #201:209,
-           #211:222
+dyads <- c(101:122, 
+           202:209,
+           211:222
            )
 trials <- 1:4
-dyad <- 103
-trial <- 3
+dyad <- 209
+trial <- 2
 
 start <- Sys.time() 
 for (dyad in dyads){
@@ -47,7 +47,7 @@ for (dyad in dyads){
     data <- modify_individual_trial(data)
     data <- recalc_onsets(data)
     png(filename = paste0(plot_dir, dyad,"_",trial,"_individual_mod.png"), width = 720*scale, height = 480*scale, res = 72*scale)
-    print(gg_s(data, title_mod = ": Post-Individualized Modification", fixed_scale = T))
+    print(gg_s(data, title_mod = ": Post-Individualized Modification", fixed_scale = F))
     dev.off()
     
     if(dyad > 200){
@@ -95,7 +95,8 @@ for (dyad in dyads){
       dev.off()
     }
     
-    
+      data <- mark_excluded_ibis(data)
+
     tryCatch(
       {
         x <- generate_stats(data)

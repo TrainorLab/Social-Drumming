@@ -8,44 +8,114 @@ generate_stats <- function(data){
     condition_b <- 2
   }
   
-  data <- data %>%
+  #for some reason, piping this in first made it so that the defining of "async" would break when run as a function
+  #surely has to do with grouping, probably invisible with "Dyad: 
+  data_temp <- data %>%
     ungroup() %>%
-    mutate(metronome_click = (round(start_s/.5))*.5) %>%
-    group_by(hit_number_participant) %>%
-    mutate(exclude_IBI = any(imputed == 1)) %>%
-    ungroup() %>%
-    mutate(exclude_IBI2 = dplyr::lag(imputed) == 1 | dplyr::lag(imputed, 2) == 1) %>%
-    group_by(hit_number_participant) %>%
-    mutate(exclude_IBI3 = any(exclude_IBI2) == T) %>%
-    mutate(exclude_IBI = exclude_IBI3) %>%
-    select(-exclude_IBI2, -exclude_IBI3)
-    
-  data$metronome_click <- ifelse(data$metronome_click < cont_start, data$metronome_click, NA)
+    mutate(metronome_click = (round(start_s/.5))*.5)
   
-  if(dyad < 200 & all(data$metronome_click - lag(data$metronome_click) == .5, na.rm = T)){
-    data <- data %>% 
+  data_temp$metronome_click <- ifelse(data_temp$metronome_click < cont_start, data_temp$metronome_click, NA)
+  
+  if(.GlobalEnv$dyad == 208 & .GlobalEnv$trial == 3){
+    idx <- which(data_temp$metronome_click == 19.5)
+    data_temp$metronome_click[idx] <- 20
+  }
+    
+  
+  
+  test1 <- all(data_temp$metronome_click - lag(data_temp$metronome_click) == .5, na.rm = T)
+  
+  test2 <- as.numeric(data_temp$metronome_click - lag(data_temp$metronome_click))
+  test2 <- all(test2[!is.na(test2)] %in% c(0,1))
+  
+  if(dyad < 200 & test1 == TRUE){
+    data_temp <- data_temp %>% 
       mutate(met_async = abs(metronome_click - start_s))
     valid_metronome <- TRUE
-  } else if(dyad > 200 & dyad < 300 & all(data$metronome_click - lag(data$metronome_click) %in% c(0,1), na.rm = T)){
-    data <- data %>% 
+  } else if(dyad > 200 & dyad < 300 & test2 == T){
+    data_temp <- data_temp %>% 
       mutate(met_async = abs(metronome_click - start_s))
     valid_metronome <- TRUE
   } else{
     valid_metronome <- FALSE
+    data_temp$met_async <- NA
   }
-     
-  met_async_A <- data %>% filter(participant == 1) 
-  mean_met_async_A <- mean(met_async_A$met_async, na.rm = T)
-  n_met_async_A <- sum((met_async_A$exclude_IBI == F | is.na(met_async_A$exclude_IBI)) & (!is.na(met_async_A$met_async)))
   
-  met_async_B <- data %>% filter(participant == 2) 
-  mean_met_async_B <- mean(met_async_B$met_async, na.rm = T)
-  n_met_async_B <- sum((met_async_B$exclude_IBI == F | is.na(met_async_B$exclude_IBI)) & (!is.na(met_async_B$met_async)))
+  tryCatch({
+    met_async_A <- data_temp %>% filter(participant == 1 & imputed == 0 & !is.na(met_async)) 
+    mean_met_async_A <- mean(met_async_A$met_async, na.rm = T)
+    n_met_async_A <- nrow(met_async_A)
+    #sum((met_async_A$exclude_IBI == F | is.na(met_async_A$exclude_IBI)) & (!is.na(met_async_A$met_async)))
+    
+    met_async_B <- data_temp %>% filter(participant == 2  & imputed == 0 & !is.na(met_async)) 
+    mean_met_async_B <- mean(met_async_B$met_async, na.rm = T)
+    n_met_async_B <- nrow(met_async_A)
+    
+  }, 
+  error = function(e){
+    message("An error occurred: ", conditionMessage(e))
+    met_async_A <- NULL
+    mean_met_async_A <- NULL
+    n_met_async_A <- NULL
+    met_async_B <- NULL
+    mean_met_async_B <- NULL
+    n_met_async_B <- NULL 
+    
+  },
+  warning = function(w){
+    message("An warning occurred: ", conditionMessage(w))
+    
+    met_async_A <- data_temp %>% filter(participant == 1 & imputed == 0 & !is.na(met_async)) 
+    mean_met_async_A <- mean(met_async_A$met_async, na.rm = T)
+    n_met_async_A <- nrow(met_async_A)
+
+    met_async_B <- data_temp %>% filter(participant == 2  & imputed == 0 & !is.na(met_async)) 
+    mean_met_async_B <- mean(met_async_B$met_async, na.rm = T)
+    n_met_async_B <- nrow(met_async_A)
+  }
+    )   
+
   
   
-  # First, we need to calculate the onset asynchronies, which is just the difference
-  # in seconds between the first and second hit for each event. We also calculate the 
-  # group/average onset time
+  tryCatch({
+    # First, we need to calculate the onset asynchronies, which is just the difference
+    # in seconds between the first and second hit for each event. We also calculate the 
+    # group/average onset time
+    async <- data %>% group_by(hit_number_participant) %>%
+      mutate(async = start_s[1] - start_s[2]) %>%
+      mutate(group_hit = (start_s[1]+start_s[2]) / 2) %>%
+      filter(all(imputed == 0)) %>%
+      mutate(async_detrend = start_s_detrend[1] - start_s_detrend[2])
+    
+    #now we need to remove ever other row, as they are redundant, as we've calculated 
+    # the difference between the two rows
+    async <- async[-seq(1, nrow(async), 2),]
+    # plot their distribution and autocorrelation, Repp & Keller, 2008
+    # AC1 should be positive
+    async_sync_phase <- async %>% filter(start_s < cont_start)
+    async_cont_phase <- async %>% filter(start_s >= cont_start)
+    
+    async_sync_hist <- hist(async_sync_phase$async, plot = FALSE)
+    async_cont_hist <- hist(async_cont_phase$async, plot = FALSE)
+    
+    async_sync_acf <- acf(async_sync_phase$async, na.action = na.pass, plot = FALSE)
+    async_cont_acf <- acf(async_cont_phase$async, na.action = na.pass, plot = FALSE)
+    
+    asyncs_sync <- psych::describe(async_sync_phase$async)
+    asyncs_cont <- psych::describe(async_cont_phase$async)
+  },
+  error = function(e){
+    message("An error occurred: ", conditionMessage(e))
+    async_sync_hist  <- NULL
+    async_cont_hist  <- NULL
+    async_sync_acf <- NULL
+    async_cont_acf <- NULL
+    asyncs_sync <- NULL
+    asyncs_cont <- NULL
+  },
+  warning = function(w){
+    message("An warning occurred: ", conditionMessage(w))
+  
   async <- data %>% group_by(hit_number_participant) %>%
     mutate(async = start_s[1] - start_s[2]) %>%
     mutate(group_hit = (start_s[1]+start_s[2]) / 2) %>%
@@ -68,6 +138,9 @@ generate_stats <- function(data){
   
   asyncs_sync <- psych::describe(async_sync_phase$async)
   asyncs_cont <- psych::describe(async_cont_phase$async)
+  }
+    )
+  
   
 
   # The ITI's of each participant will also have their own time-series and ACF. 
