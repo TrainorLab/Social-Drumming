@@ -26,8 +26,7 @@ scale = 3
 # Importing
 dyads <- c(101:122, 
            202:209,
-           211:222
-           )
+           211:222)
 trials <- 1:4
 dyad <- 209
 trial <- 2

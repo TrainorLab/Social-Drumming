@@ -44,11 +44,13 @@ generate_stats <- function(data){
   tryCatch({
     met_async_A <- data_temp %>% filter(participant == 1 & imputed == 0 & !is.na(met_async)) 
     mean_met_async_A <- mean(met_async_A$met_async, na.rm = T)
+    var_met_async_A <- var(met_async_A$met_async, na.rm = T)
     n_met_async_A <- nrow(met_async_A)
     #sum((met_async_A$exclude_IBI == F | is.na(met_async_A$exclude_IBI)) & (!is.na(met_async_A$met_async)))
     
     met_async_B <- data_temp %>% filter(participant == 2  & imputed == 0 & !is.na(met_async)) 
     mean_met_async_B <- mean(met_async_B$met_async, na.rm = T)
+    var_met_async_B <- var(met_async_B$met_async, na.rm = T)
     n_met_async_B <- nrow(met_async_A)
     
   }, 
@@ -56,9 +58,11 @@ generate_stats <- function(data){
     message("An error occurred: ", conditionMessage(e))
     met_async_A <- NULL
     mean_met_async_A <- NULL
+    var_met_async_A <- NULL
     n_met_async_A <- NULL
     met_async_B <- NULL
     mean_met_async_B <- NULL
+    var_met_async_B <- NULL
     n_met_async_B <- NULL 
     
   },
@@ -67,10 +71,12 @@ generate_stats <- function(data){
     
     met_async_A <- data_temp %>% filter(participant == 1 & imputed == 0 & !is.na(met_async)) 
     mean_met_async_A <- mean(met_async_A$met_async, na.rm = T)
+    var_met_async_A <- var(met_async_A$met_async, na.rm = T)
     n_met_async_A <- nrow(met_async_A)
 
     met_async_B <- data_temp %>% filter(participant == 2  & imputed == 0 & !is.na(met_async)) 
     mean_met_async_B <- mean(met_async_B$met_async, na.rm = T)
+    var_met_async_B <- var(met_async_B$met_async, na.rm = T)
     n_met_async_B <- nrow(met_async_A)
   }
     )   
@@ -289,7 +295,8 @@ generate_stats <- function(data){
   
   
   output <- list(toss, valid_metronome,
-                 mean_met_async_A, n_met_async_A, mean_met_async_B, n_met_async_B,
+                 mean_met_async_A, var_met_async_A, n_met_async_A, 
+                 mean_met_async_B, var_met_async_B, n_met_async_B,
                  asyncs_sync, asyncs_cont,
                  async_sync_hist, async_cont_hist, 
                  pairwise_async_sync, pairwise_async_cont,
@@ -305,7 +312,8 @@ generate_stats <- function(data){
                  cont_bpm, n_imputed, clean, clean_pct, 
                  clean2, clean2_pct, raw)
   names(output) <- c("Exclude Trial", "Valid Metronome",
-                     "Mean Metronome Asynchrony: Participant A", "Metronome Hits: Participant A", "Mean Metronome Asynchrony: Participant B", "Metronome Hits: Participant B",
+                     "Mean Metronome Asynchrony: Participant A", "Variance of Metronome Asynchronies: Participant A", "Metronome Hits: Participant A", 
+                     "Mean Metronome Asynchrony: Participant B", "Variance of Metronome Asynchronies: Participant B", "Metronome Hits: Participant B",
                      "Asychronies: Synchronization Phase", "Asychronies: Continuation Phase",
                      "Async Histogram: Synchronization Phase", "Async Histogram: Continuation Phase",
                      "Precision: Pairwise Asynchrony - Synchronization Phase", "Precision: Pairwise Asynchrony - Continuation Phase",   
