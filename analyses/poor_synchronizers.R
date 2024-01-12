@@ -25,10 +25,21 @@ dev.off()
 wide_met_async <- trial_df %>% select(Dyad, ID, trial, condition, mean_met_async) %>%
   pivot_wider(names_from = ID, values_from = mean_met_async)
 
+wide_met_async2<- trial_df %>% select(Dyad, ID, trial, condition, mean_met_async2) %>%
+  pivot_wider(names_from = ID, values_from = mean_met_async2)
+
+wide_met_async$dtx_fix <- ifelse(wide_met_async$Dyad > 212, "After", "Before")
+wide_met_async2$dtx_fix <- ifelse(wide_met_async2$Dyad > 212, "After", "Before")
+
+
 cor.test(wide_met_async$A, wide_met_async$B, use = "pairwise.complete.obs")
 
 wide_met_async_alt <- wide_met_async %>% filter(Dyad < 200)
 wide_met_async_sync <- wide_met_async %>% filter(Dyad > 200)
+
+wide_met_async_alt2 <- wide_met_async2 %>% filter(Dyad < 200)
+wide_met_async_sync2 <- wide_met_async2 %>% filter(Dyad > 200)
+
 
 cor.test(wide_met_async_alt$A, wide_met_async_alt$B, use = "pairwise.complete.obs")
 cor.test(wide_met_async_sync$A, wide_met_async_sync$B, use = "pairwise.complete.obs")
@@ -42,8 +53,49 @@ ggplot(data = wide_met_async, aes(x = A, y = B, colour = condition)) +
 dev.off()
 
 
-wide_met_async$residual <- wide_met_async$B - wide_met_async$A
+ggplot(data = wide_met_async2, aes(x = A, y = B, colour = condition)) +
+  geom_point() +
+  #  geom_smooth(method = "lm", se = T) +
+  labs(title = "Correlation Between Asynchronies per Trial: 10 Metronome Hits / Person", x="Participant A", y = "Participant B") + 
+  theme_bw()
 
+
+t1 <- avg_df$mean_mean_met_async2[avg_df$condition == "Synchrony" & as.numeric(as.character(avg_df$Dyad)) >= 213]
+t2 <- avg_df$mean_mean_met_async2[avg_df$condition == "Alternating"]
+
+t.test(t1, t2)
+
+
+
+ggplot(data = wide_met_async, aes(x = A, y = B, colour = condition)) +
+  geom_point() +
+  #  geom_smooth(method = "lm", se = T) +
+  labs(title = "Correlation Between Asynchronies per Trial", x="Participant A", y = "Participant B") + 
+  theme_bw()
+
+
+
+
+png(filename = paste0(plot_dir, "scatter_paired_met_asynchronies_dtx_fix.png"), width = 480*scale, height = 480*scale, res = 72*scale)
+ggplot(data = wide_met_async_sync, aes(x=A,y=B,colour = dtx_fix)) +
+  scale_color_brewer(type = "qual", palette = 2) +
+  geom_point() +
+  theme_bw() +
+  labs(title = "Synchrony Group: Before and After DTX Setting Change")
+dev.off()
+
+
+ggplot(data = wide_met_async_sync2, aes(x=A,y=B,colour = dtx_fix)) +
+  scale_color_brewer(type = "qual", palette = 2) +
+  geom_point() +
+  theme_bw() +
+  labs(title = "Synchrony Group: Before and After DTX Setting Change")
+
+
+
+
+
+wide_met_async$residual <- wide_met_async$B - wide_met_async$A
 
 ggplot(data = wide_met_async, aes(x = A, y = B, colour = condition)) +
   geom_point() +
@@ -54,7 +106,7 @@ ggplot(data = wide_met_async, aes(x = A, y = B, colour = condition)) +
   geom_segment(aes(xend = A, yend  = B - residual, colour = condition)) 
 
 
-
+print(trial_df %>% select(n_met_async_A, Dyad, trial, valid_metronome), n = 276)
     
     
 
