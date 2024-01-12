@@ -58,10 +58,12 @@ for (dyad in dyads) {
       new_row <- data.frame(dyad = dyad,
                             trial = trial,
                             valid_metronome = x[[trial]][["Valid Metronome"]],
-                            mean_met_async_A = x[[trial]][["Mean Metronome Asynchrony: Participant A"]], 
+                            mean_met_async_A = x[[trial]][["Mean Metronome Asynchrony: Participant A"]],
+                            mean_met_async_A2 = x[[trial]][["Mean Metronome Asynchrony: Participant A (10 Hits)"]],
                             var_met_async_A = x[[trial]][["Variance of Metronome Asynchronies: Participant A"]], 
                             n_met_async_A = x[[trial]][["Metronome Hits: Participant A"]], 
                             mean_met_async_B = x[[trial]][["Mean Metronome Asynchrony: Participant B"]],
+                            mean_met_async_B2 = x[[trial]][["Mean Metronome Asynchrony: Participant B (10 Hits)"]],
                             var_met_async_B = x[[trial]][["Variance of Metronome Asynchronies: Participant B"]],
                             n_met_async_B = x[[trial]][["Metronome Hits: Participant B"]],
                             pairwise_async = x[[trial]][["Precision: Pairwise Asynchrony - Continuation Phase"]],
@@ -93,9 +95,11 @@ for (dyad in dyads) {
                             trial = trial,
                             valid_metronome = NA,
                             mean_met_async_A = NA,
+                            mean_met_async_A2 = NA,
                             var_met_async_A = NA,
                             n_met_async_A = NA, 
                             mean_met_async_B = NA,
+                            mean_met_async_B2 = NA,
                             var_met_async_B = NA,
                             n_met_async_B = NA,
                             pairwise_async = NA,
@@ -126,9 +130,11 @@ for (dyad in dyads) {
                             trial = trial,
                             valid_metronome = NA,
                             mean_met_async_A = NA,
+                            mean_met_async_A2 = NA,
                             var_met_async_A = NA,
                             n_met_async_A = NA, 
                             mean_met_async_B = NA,
+                            mean_met_async_B2 = NA,
                             var_met_async_B = NA,
                             n_met_async_B = NA,
                             pairwise_async = NA,
@@ -176,6 +182,7 @@ df <- left_join(df, trial_summary, by = c("Dyad" = "id", "trial"))
 df <- df %>% 
   filter(clean == "Y") %>%
   mutate(mean_met_async = ifelse(ID == "A", mean_met_async_A, mean_met_async_B)) %>%
+  mutate(mean_met_async2 = ifelse(ID == "A", mean_met_async_A2, mean_met_async_B2)) %>%
   mutate(var_met_async = ifelse(ID == "A", var_met_async_A, var_met_async_B)) %>%
   mutate(desync_events = as.numeric(desync_events)) %>%
   mutate(ac1_ITI = ifelse(ID == "A", ac1_ITI_A, ac1_ITI_B)) %>%
@@ -205,6 +212,7 @@ summary_df <- df %>%
   summarize(
     n_clean_trials = n(),
     mean_mean_met_async = mean(mean_met_async),
+    mean_mean_met_async2 = mean(mean_met_async2),
     mean_var_met_async = mean(var_met_async),
     desyncs = sum(desync_events, na.rm = T),
     pairwise_async_mean = mean(pairwise_async),
@@ -244,7 +252,7 @@ avg_df$ID <- factor(avg_df$ID)
 
 
 avg_df <- avg_df %>%
-  select(condition, ID, Dyad, mean_mean_met_async, mean_var_met_async, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:ac1_detrend_high_low, desyncs, clean_hits, clean_hits2, cont_bpm, Likert_Q1:Exclude)
+  select(condition, ID, Dyad, mean_mean_met_async, mean_mean_met_async2, mean_var_met_async, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:ac1_detrend_high_low, desyncs, clean_hits, clean_hits2, cont_bpm, Likert_Q1:Exclude)
 
 write_rds(beh, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.rds")
 write_rds(avg_df, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_avgs_df.rds")
