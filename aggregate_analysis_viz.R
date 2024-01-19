@@ -10,17 +10,26 @@ avg_df <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial
 beh <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.rds")
 
 beh <- beh %>% filter(Exclude == FALSE)
+trial_df <- trial_df %>% filter(Exclude == FALSE)
+avg_df <- avg_df %>% filter(Exclude == FALSE)
 
+trial_df %>% ungroup %>% count(condition)
+avg_df %>% ungroup %>% count(condition)
 
-trial_df$ac1_detrend_diff
-hist(trial_df$ac1_detrend_diff)
+#First, let's look at metronome asynchronies
+#met_async2 is with the first 10 valid hits
+#units are in sec, so .043 = 43 ms
+hist(avg_df$mean_mean_met_async2)
+hist(trial_df$mean_met_async2)
+mean(avg_df$mean_mean_met_async2, na.rm = T)
+sd(avg_df$mean_mean_met_async2, na.rm = T)
 
-hist(avg_df$ac1_detrend_diff[seq(1, length(avg_df$ac1_detrend_diff), 2)])
+wide_met_async2 <- trial_df %>% select(Dyad, ID, trial, condition, mean_met_async2) %>%
+  pivot_wider(names_from = ID, values_from = mean_met_async2)
 
+rmcorr::rmcorr(dataset = wide_met_async2, participant = factor(Dyad), measure1 = A, measure2 = B)
 
-describe(avg_df$ac1_detrend_diff[avg_df$ac1_detrend_diff > 0])
-describe(trial_df$ac1_detrend_diff)
-
+#ac1 and ac1_detrend are continuation phase only
 
 avg_df %>% ungroup() %>%
   summarize(mean_log_var_1p_ITI = mean(log_ITI_var_1p),

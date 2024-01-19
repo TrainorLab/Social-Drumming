@@ -166,7 +166,8 @@ for (dyad in dyads) {
 # Reset row names of the result data frame
 rownames(result_df) <- NULL
 
-beh <- read.csv("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\Co-operation Drumming.csv")
+#beh <- read.csv("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\Co-operation Drumming.csv")
+beh <- read.csv("C:\\Users\\mcwee\\OneDrive - McMaster University\\LIVELab\\Social_Drumming\\Drumming_behavior_1_12_24.csv")
 beh$Dyad <- as.numeric(beh$Dyad)
 beh <- beh %>%
   mutate(condition = ifelse(Dyad < 200, "Alternating", 

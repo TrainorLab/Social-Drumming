@@ -5,6 +5,17 @@ beh <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.r
 
 beh <- beh %>% filter(Exclude == FALSE)
 
+trial_df$ac1_detrend_diff
+hist(trial_df$ac1_detrend_diff)
+
+hist(avg_df$ac1_detrend_diff[seq(1, length(avg_df$ac1_detrend_diff), 2)])
+
+describe(avg_df$ac1_detrend_diff[avg_df$ac1_detrend_diff > 0])
+describe(trial_df$ac1_detrend_diff)
+
+
+
+
 
 plot_dir <- "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\good_syncers_plots\\"
 
