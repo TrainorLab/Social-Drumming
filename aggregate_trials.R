@@ -1,14 +1,14 @@
 rm(list=ls())
 user <- "SM"
 
+output_dir <- "X:\\Sean M\\Social_Drumming\\beh_sync_output\\"
+
 if(user == "SM"){
-  output_dir <- "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\"
   setwd("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\social_drumming_git\\")
 } else if(user == "AL"){
   setwd("~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation")
-  data_dir <- "~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation/Data/"
 } else if(user == "YAS"){
-  data_dir <- ""
+  
 }
 
 library(tidyverse)
@@ -167,7 +167,7 @@ for (dyad in dyads) {
 rownames(result_df) <- NULL
 
 #beh <- read.csv("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\Co-operation Drumming.csv")
-beh <- read.csv("C:\\Users\\mcwee\\OneDrive - McMaster University\\LIVELab\\Social_Drumming\\Drumming_behavior_1_12_24.csv")
+beh <- read.csv("X:\\Sean M\\Social_Drumming\\Drumming_behavior_1_12_24.csv")
 beh$Dyad <- as.numeric(beh$Dyad)
 beh <- beh %>%
   mutate(condition = ifelse(Dyad < 200, "Alternating", 
@@ -175,7 +175,7 @@ beh <- beh %>%
                                    ifelse(Dyad > 300, "Alone", NA)))) %>%
   mutate(Exclude = Dyad %in% c(102, 104, 220))
 
-trial_summary <- readxl::read_xlsx("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\summary_drumming_trials.xlsx")
+trial_summary <- readxl::read_xlsx("X:\\Sean M\\Social_Drumming\\summary_drumming_trials.xlsx")
 
 df <- left_join(beh, result_df, by = c("Dyad" = "dyad"))
 df <- left_join(df, trial_summary, by = c("Dyad" = "id", "trial"))
@@ -255,6 +255,6 @@ avg_df$ID <- factor(avg_df$ID)
 avg_df <- avg_df %>%
   select(condition, ID, Dyad, mean_mean_met_async, mean_mean_met_async2, mean_var_met_async, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:ac1_detrend_high_low, desyncs, clean_hits, clean_hits2, cont_bpm, Likert_Q1:Exclude)
 
-write_rds(beh, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.rds")
-write_rds(avg_df, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_avgs_df.rds")
-write_rds(trial_df, "C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_df.rds")
+write_rds(beh, "X:\\Sean M\\Social_Drumming\\beh_df.rds")
+write_rds(avg_df, "X:\\Sean M\\Social_Drumming\\trial_avgs_df.rds")
+write_rds(trial_df, "X:\\Sean M\\Social_Drumming\\trial_df.rds")

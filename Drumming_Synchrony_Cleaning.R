@@ -1,17 +1,17 @@
 rm(list=ls())
 user <- "SM"
 #user <- "AL"
+data_dir <- "X:\\Sean M\\Social_Drumming\\REAPER_trial_data\\"
 
 if(user == "SM"){
-  data_dir <- "C:\\Users\\mcwee\\OneDrive - McMaster University\\Social Drumming\\REAPER_trial_data\\"
   setwd("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\social_drumming_git\\")
   fun_dir <- paste0(getwd(), "/functions")
-  plot_dir <- paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\trial_plots\\")
+  plot_dir <- paste0("X:\\Sean M\\Social_Drumming\\beh_sync_output\\trial_plots\\")
 } else if(user == "AL"){
   setwd("~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation")
-  data_dir <- "~/McMaster/Third Year/PNB 3QQ3/Drumming and Cooperation/Data/"
+  
 } else if(user == "YAS"){
-  data_dir <- ""
+  
 }
 
 library(tidyverse)
@@ -28,7 +28,7 @@ dyads <- c(101:122,
            202:209,
            211:222)
 trials <- 1:4
-dyad <- 209
+dyad <- 203
 trial <- 2
 
 start <- Sys.time() 
@@ -116,7 +116,7 @@ for (dyad in dyads){
   }
 
    full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
-   write_rds(full_dyad_data, paste0("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
+   write_rds(full_dyad_data, paste0("X:\\Sean M\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
 }
 end <- Sys.time()
 elapsed <- print(end-start)

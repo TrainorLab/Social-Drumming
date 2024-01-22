@@ -10,9 +10,9 @@ library(rmcorr)
 library(rstan)
 library(rstanarm)
 rm(list = ls())
-trial_df <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_df.rds")
-avg_df <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\trial_avgs_df.rds")
-beh <- read_rds("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\beh_df.rds")
+trial_df <- read_rds("X:\\Sean M\\Social_Drumming\\trial_df.rds")
+avg_df <- read_rds("X:\\Sean M\\Social_Drumming\\trial_avgs_df.rds")
+beh <- read_rds("X:\\Sean M\\Social_Drumming\\beh_df.rds")
 
 beh <- beh %>% filter(Exclude == FALSE)
 
