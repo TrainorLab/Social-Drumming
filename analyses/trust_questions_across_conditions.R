@@ -29,14 +29,49 @@ beh_dyad_avg <- beh %>%
   filter(ID == "A") %>%
   select(Dyad, condition, dyad_Likert_Q1:dyad_Likert_Q6)
 
-beh_dyad_avg %>% 
+tbl1 <- beh_dyad_avg %>% 
   group_by(condition) %>%
   summarize(mean_Likert1 = mean(dyad_Likert_Q1),
             mean_Likert2 = mean(dyad_Likert_Q2),
             mean_Likert3 = mean(dyad_Likert_Q3),
             mean_Likert4 = mean(dyad_Likert_Q4),
             mean_Likert5 = mean(dyad_Likert_Q5),
-            mean_Likert6 = mean(dyad_Likert_Q6))
+            mean_Likert6 = mean(dyad_Likert_Q6)) %>%
+  mutate(across(2:7, round, 2))
+
+
+
+tbl1_SD <- beh_dyad_avg %>% 
+  group_by(condition) %>%
+  summarize(sd_Likert1 = sd(dyad_Likert_Q1),
+            sd_Likert2 = sd(dyad_Likert_Q2),
+            sd_Likert3 = sd(dyad_Likert_Q3),
+            sd_Likert4 = sd(dyad_Likert_Q4),
+            sd_Likert5 = sd(dyad_Likert_Q5),
+            sd_Likert6 = sd(dyad_Likert_Q6)) %>%
+  mutate(across(2:7, round, 2))
+
+zz <- data.frame()
+i = 3
+j = 1
+for(i in 1:3){
+  for(j in 1:6){
+    zz[i,j] <- paste0(sprintf("%.2f",tbl1[i,j+1]), " (", sprintf("%.2f",tbl1_SD[i,j+1]), ")")
+  }
+}
+
+zz <- c(tbl1[,1], zz)
+
+
+names(zz) <- c("Condition", "Unit", "Same Team", "Trust Before", "Similar", "Cooperated", "Happy")
+
+print(nice_table(zz), preview = "docx")
+
+
+#apa.1way.table(iv = condition, dv = dyad_Likert_Q1, data = beh_dyad_avg, filename = "table_test.doc")
+
+
+
 
 #####
 beh_contingency <- beh %>% select(Coop_Q1, Coop_Q2, condition) %>%
@@ -45,7 +80,6 @@ beh_contingency <- beh %>% select(Coop_Q1, Coop_Q2, condition) %>%
                           timepoint == "Coop_Q2" ~ "Post"))
 
 table(beh_contingency$time, beh_contingency$condition, beh_contingency$Coop)
-
 
 
 ##### We're going to run into non-independence issues, but let's first look to see how correlated the dyads' scores are
