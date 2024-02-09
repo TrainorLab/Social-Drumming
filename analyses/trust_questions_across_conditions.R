@@ -16,7 +16,7 @@ beh <- read_rds("X:\\Sean M\\Social_Drumming\\beh_df.rds")
 
 beh <- beh %>% filter(Exclude == FALSE)
 
-
+#averaging within dyad for statistical simplicity
 beh_dyad_avg <- beh %>%
   group_by(Dyad) %>%
   mutate(dyad_Likert_Q1 = mean(Likert_Q1),
@@ -44,7 +44,6 @@ beh_contingency <- beh %>% select(Coop_Q1, Coop_Q2, condition) %>%
   mutate(time = case_when(timepoint == "Coop_Q1" ~ "Pre",
                           timepoint == "Coop_Q2" ~ "Post"))
 
-beh_contingency
 table(beh_contingency$time, beh_contingency$condition, beh_contingency$Coop)
 
 
@@ -55,12 +54,31 @@ wide_beh_vars <- beh %>%
   group_by(Dyad) %>% 
   dplyr::select(Dyad, ID, Likert_Q1:Coop_Q2) %>%
   pivot_wider(names_from = ID, values_from = c(Likert_Q1:Coop_Q2))
-wide_beh_cors <- lowerCor(wide_beh_vars %>% ungroup() %>% dplyr::select(-Dyad))
+wide_beh_cors <- cor(wide_beh_vars %>% ungroup() %>% dplyr::select(-Dyad, -starts_with("Coop")))
+
+# beh$fullID <- paste(as.character(beh$Dyad), beh$ID)
+
+# rm_cormat_likert <- rmcorr::rmcorr_mat(dataset = beh,
+                                     # participant = "Dyad", variables = c(names(beh)[str_detect(names(beh),"Like")], "Coop_Q1", "Coop_Q2"))
+
+# temp <- beh %>% mutate(across(starts_with("Coop"), ~ case_match(., "T" ~ 1, "A" ~ 0))) 
+# temp <- beh %>% mutate(across(starts_with("Coop"), ~ case_match(., "T" ~ 5, "A" ~ -2))) 
+
+
+rm_cormat_likert <- rmcorr::rmcorr_mat(dataset = beh,
+                                       participant = "Dyad", variables = c(names(beh)[str_detect(names(beh),"Like")]))
+
+rmcorr("Likert_Q1", "Likert_Q2", participant = "Dyad", dataset = beh)
+
+scale = 3
+png("C:\\Users\\mcwee\\Documents\\LIVELab\\NeuroMusic23\\plots\\rm_cor.png", width = 800*scale, height = 480*scale, res = 72*scale)
+corPlot(rm_cormat_likert$matrix, labels = c("Unit", "Same Team", "Trust Before", "Similar", "Cooperated", "Happy"),
+        main = "Correlations among Likert Items")
+dev.off()
 
 corPlot(wide_beh_cors)
 
-
-
+wide_beh_vars
 
 beh$Likert_Q1 <- as.numeric(beh$Likert_Q1)
 beh$Likert_Q2 <- as.numeric(beh$Likert_Q2)
@@ -73,7 +91,7 @@ beh$Coop_Q2 <- ifelse(beh$Coop_Q2 == "A", 0, 1)
 beh$Dyad <- as.factor(beh$Dyad)
 beh$condition <- as.factor(beh$condition)
 
-beh$Likert_Q1_std <- (beh$Likert_Q1 - mean(beh$Likert_Q1))/sd(beh$Likert_Q1)
+#beh$Likert_Q1_std <- (beh$Likert_Q1 - mean(beh$Likert_Q1))/sd(beh$Likert_Q1)
 
 df_pp <- beh %>% select(Likert_Q1:Coop_Q2)
 pairs.panels(df_pp)
@@ -121,7 +139,7 @@ mean_se_plot <- mean_se_plot %>% ungroup() %>%
 
 #####
 ggplot(data = beh_long, aes(x = condition, y = Likert_Score, fill = condition)) +
-  geom_boxplot() + 
+  geom_violin() + 
 #  geom_point() +
   facet_wrap(~Q)
 
@@ -236,6 +254,8 @@ anova(null.lme4, lme4)
 anova(null.lme5, lme5)
 anova(null.lme6, lme6)
 #####
+# Top paragraph of "Statistical Approach"
+### Messed around with flipping the IV/DV starting at line 314 (Flipped IV/DV)
 coop1_lme1 <- lmer(data = beh, Likert_Q1 ~ as.factor(Coop_Q1) + (1 | Dyad))
 coop2_lme1 <- lmer(data = beh, Likert_Q1 ~ as.factor(Coop_Q2) + (1 | Dyad))
 coop1_lme2 <- lmer(data = beh, Likert_Q2 ~ as.factor(Coop_Q1) + (1 | Dyad))
@@ -248,7 +268,6 @@ coop1_lme5 <- lmer(data = beh, Likert_Q5 ~ as.factor(Coop_Q1) + (1 | Dyad))
 coop2_lme5 <- lmer(data = beh, Likert_Q5 ~ as.factor(Coop_Q2) + (1 | Dyad))
 coop1_lme6 <- lmer(data = beh, Likert_Q6 ~ as.factor(Coop_Q1) + (1 | Dyad))
 coop2_lme6 <- lmer(data = beh, Likert_Q6 ~ as.factor(Coop_Q2) + (1 | Dyad))
-
 
 anova(null.lme1, coop1_lme1)
 anova(null.lme1, coop2_lme1)
@@ -267,6 +286,91 @@ anova(null.lme5, coop2_lme5)
 
 anova(null.lme6, coop1_lme6)
 anova(null.lme6, coop2_lme6)
+
+
+
+
+##### Mixed Effects Models to handle non-independence assumptions
+#####
+null.lme1 <- lmer(data = beh, Likert_Q1 ~ (1 | Dyad))
+lme1 <- lmer(data = beh, Likert_Q1 ~ condition + (1 | Dyad))
+summary(lme1)
+
+null.lme2 <- lmer(data = beh, Likert_Q2 ~ (1 | Dyad))
+lme2 <- lmer(data = beh, Likert_Q2 ~ condition + (1 | Dyad))
+summary(lme2)
+
+null.lme3 <- lmer(data = beh, Likert_Q3 ~ (1 | Dyad))
+lme3 <- lmer(data = beh, Likert_Q3 ~ condition + (1 | Dyad))
+summary(lme3)
+
+null.lme4 <- lmer(data = beh, Likert_Q4 ~ (1 | Dyad))
+lme4 <- lmer(data = beh, Likert_Q4 ~ condition + (1 | Dyad))
+summary(lme4)
+
+null.lme5 <- lmer(data = beh, Likert_Q5 ~ (1 | Dyad))
+lme5 <- lmer(data = beh, Likert_Q5 ~ condition + (1 | Dyad))
+summary(lme5)
+
+null.lme6 <- lmer(data = beh, Likert_Q6 ~ (1 | Dyad))
+lme6 <- lmer(data = beh, Likert_Q6 ~ condition + (1 | Dyad))
+summary(lme6)
+#####
+##### Model Comparison for lme 
+#####
+anova(null.lme1, lme1)
+anova(null.lme2, lme2)
+anova(null.lme3, lme3)
+anova(null.lme4, lme4)
+anova(null.lme5, lme5)
+anova(null.lme6, lme6)
+#####
+# Flipped IV/DV
+coop1_lme1 <- lmer(data = beh, Coop_Q1 ~ Likert_Q1 + (1 | Dyad))
+coop1_lme2 <- lmer(data = beh, Coop_Q1 ~ Likert_Q2 + (1 | Dyad))
+coop1_lme3 <- lmer(data = beh, Coop_Q1 ~ Likert_Q3 + (1 | Dyad))
+coop1_lme4 <- lmer(data = beh, Coop_Q1 ~ Likert_Q4 + (1 | Dyad))
+coop1_lme5 <- lmer(data = beh, Coop_Q1 ~ Likert_Q5 + (1 | Dyad))
+coop1_lme6 <- lmer(data = beh, Coop_Q1 ~ Likert_Q6 + (1 | Dyad))
+
+coop2_lme1 <- lmer(data = beh, Coop_Q2 ~ Likert_Q1 + (1 | Dyad))
+coop2_lme2 <- lmer(data = beh, Coop_Q2 ~ Likert_Q2 + (1 | Dyad))
+coop2_lme3 <- lmer(data = beh, Coop_Q2 ~ Likert_Q3 + (1 | Dyad))
+coop2_lme4 <- lmer(data = beh, Coop_Q2 ~ Likert_Q4 + (1 | Dyad))
+coop2_lme5 <- lmer(data = beh, Coop_Q2 ~ Likert_Q5 + (1 | Dyad))
+coop2_lme6 <- lmer(data = beh, Coop_Q2 ~ Likert_Q6 + (1 | Dyad))
+
+
+null.coop1 <- lmer(data = beh, Coop_Q1 ~ (1 | Dyad))
+
+null.coop2 <- lmer(data = beh, Coop_Q2 ~ (1 | Dyad))
+
+
+anova(null.coop1, coop1_lme1)
+anova(null.coop2, coop2_lme1)
+
+anova(null.coop1, coop1_lme2)
+anova(null.coop2, coop2_lme2)
+
+anova(null.coop1, coop1_lme3)
+anova(null.coop2, coop2_lme3)
+
+anova(null.coop1, coop1_lme4)
+anova(null.coop2, coop2_lme4)
+
+anova(null.coop1, coop1_lme5)
+anova(null.coop2, coop2_lme5)
+
+anova(null.coop1, coop1_lme6)
+anova(null.coop2, coop2_lme6)
+
+
+
+
+
+
+
+
 
 
 
