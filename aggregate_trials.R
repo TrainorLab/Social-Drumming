@@ -253,7 +253,7 @@ avg_df$ID <- factor(avg_df$ID)
 
 
 avg_df <- avg_df %>%
-  select(condition, ID, Dyad, mean_mean_met_async, mean_mean_met_async2, mean_var_met_async, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:ac1_detrend_high_low, desyncs, clean_hits, clean_hits2, cont_bpm, Likert_Q1:Exclude)
+  select(condition, ID, Dyad, ac1_async_mean, mean_mean_met_async, mean_mean_met_async2, mean_var_met_async, ac1_ITI_mean, detrend_ac1_ITI_mean, ITI_var_1p:ac1_detrend_high_low, desyncs, clean_hits, clean_hits2, cont_bpm, Likert_Q1:Exclude)
 
 write_rds(beh, "X:\\Sean M\\Social_Drumming\\beh_df.rds")
 write_rds(avg_df, "X:\\Sean M\\Social_Drumming\\trial_avgs_df.rds")

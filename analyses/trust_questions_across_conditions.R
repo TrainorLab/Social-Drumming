@@ -235,19 +235,19 @@ summary(dyad.post6)
 
 ##### Bayesian t-tests collapsing across dyads
 #####
-q1_tt_bayes <- ttestBF(formula = dyad_Likert_Q1 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
-q2_tt_bayes <- ttestBF(formula = dyad_Likert_Q2 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
-q3_tt_bayes <- ttestBF(formula = dyad_Likert_Q3 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
-q4_tt_bayes <- ttestBF(formula = dyad_Likert_Q4 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
-q5_tt_bayes <- ttestBF(formula = dyad_Likert_Q5 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
-q6_tt_bayes <- ttestBF(formula = dyad_Likert_Q6 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
-
-1/q1_tt_bayes
-1/q2_tt_bayes
-1/q3_tt_bayes
-1/q4_tt_bayes
-1/q5_tt_bayes
-1/q6_tt_bayes
+# q1_tt_bayes <- ttestBF(formula = dyad_Likert_Q1 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
+# q2_tt_bayes <- ttestBF(formula = dyad_Likert_Q2 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
+# q3_tt_bayes <- ttestBF(formula = dyad_Likert_Q3 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
+# q4_tt_bayes <- ttestBF(formula = dyad_Likert_Q4 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
+# q5_tt_bayes <- ttestBF(formula = dyad_Likert_Q5 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
+# q6_tt_bayes <- ttestBF(formula = dyad_Likert_Q6 ~ condition, data = beh_dyad_avg %>% filter(condition != "Alone"))
+# 
+# 1/q1_tt_bayes
+# 1/q2_tt_bayes
+# 1/q3_tt_bayes
+# 1/q4_tt_bayes
+# 1/q5_tt_bayes
+# 1/q6_tt_bayes
 
 
 #####
@@ -415,6 +415,19 @@ anova(null.coop2, coop2_lme6)
 # Bayes Time
 
 beh2 <- beh %>% filter(condition != "Alone")
+
+full_formula <- brmsformula(Likert_Q1 ~ 1 + condition + (1 | Dyad))
+null_formula <- brmsformula(Likert_Q1 ~ 1 + (1 | Dyad))
+
+priors <- c(prior(normal(5, 1), class="Intercept"),
+            prior(normal(0,.5), class = "b"),
+            prior(exponential(1), class = "sigma"))
+
+full_model1 <- brm(full_formula, data = beh2, priors = priors, warmup = 500, chains = 4, cores = 4)
+null_model1 <- brm(null_formula, data = beh2, warmup = 50, iter = 200, chains = 4, cores = 4)
+
+
+
 
 
 stan_q1 <- stan_lmer(Likert_Q1 ~ condition + (1 | Dyad),

@@ -29,6 +29,12 @@ wide_met_async2 <- trial_df %>% select(Dyad, ID, trial, condition, mean_met_asyn
 
 rmcorr::rmcorr(dataset = wide_met_async2, participant = factor(Dyad), measure1 = A, measure2 = B)
 
+#next, a one-off to quantify the AC1 of synchrony condition for prior literature comparison
+ac1 <- avg_df %>% filter(condition == "Synchrony") %>%  ungroup() %>%
+  summarize(avg_async_AC1 = mean(ac1_async_mean))
+
+mean(ac1$avg_async_AC1)
+
 #ac1 and ac1_detrend are continuation phase only
 
 avg_df %>% ungroup() %>%
