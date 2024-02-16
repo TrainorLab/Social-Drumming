@@ -65,7 +65,7 @@ zz <- c(tbl1[,1], zz)
 
 names(zz) <- c("Condition", "Unit", "Same Team", "Trust Before", "Similar", "Cooperated", "Happy")
 
-print(nice_table(zz), preview = "docx")
+print(rempsyc::nice_table(zz), preview = "docx")
 
 
 #apa.1way.table(iv = condition, dv = dyad_Likert_Q1, data = beh_dyad_avg, filename = "table_test.doc")
@@ -111,8 +111,6 @@ corPlot(rm_cormat_likert$matrix, labels = c("Unit", "Same Team", "Trust Before",
 dev.off()
 
 corPlot(wide_beh_cors)
-
-wide_beh_vars
 
 beh$Likert_Q1 <- as.numeric(beh$Likert_Q1)
 beh$Likert_Q2 <- as.numeric(beh$Likert_Q2)
@@ -400,45 +398,133 @@ anova(null.coop2, coop2_lme6)
 
 
 
+# Ordinal Regression Time
+beh2 <- beh %>% filter(condition != "Alone")
+
+shapiro_list <- apply(beh2 %>% select(starts_with("Like")), MARGIN = 2, FUN = shapiro.test)
 
 
+beh2 %>% mutate(Likert_Q1 = factor(Likert_Q1)) %>% 
+  ggplot(aes(x = Likert_Q1)) + 
+  geom_bar() +
+  scale_y_continuous(expand = expansion(mult = c(0,.05)))
 
 
+brm_probit1 <- brm(data = beh2, 
+                   family = cumulative(probit),
+                   Likert_Q1 ~ 1,
+                   prior(normal(0, 4), class = Intercept),
+                   iter = 3000, warmup = 1000, chains = 4, cores = 4,
+                   seed = 23)
 
+print(brm_probit1)
+draws <- as_draws_df(brm_probit1)
+draws %>%
+  select(.draw, `b_Intercept[1]`:`b_Intercept[6]`)
 
+cumulativemodelfit <- function(formula, data, links=c("logit", "probit", "cloglog", "cauchit"),
+                               thresholds=c("flexible", "equidistant"), verbose=TRUE) {
+  names(links) <- links
+  names(thresholds) <- thresholds
+  llks <- outer(links, thresholds,
+                Vectorize(function(link, threshold)
+                  # catch error for responses with 2 levels
+                  tryCatch(ordinal::clm(formula, data=data, link=link, threshold=threshold)$logLik,
+                           error = function(e) NA)))
+  print(llks)
+  if (verbose) {
+    bestfit <- which.max(llks)
+    cat("\nThe best link function is ", links[bestfit %% length(links)], " with a ",
+        thresholds[1 + bestfit %/% length(thresholds)], " threshold (logLik ", llks[bestfit],
+        ")\n", sep="")
+  }
+  invisible(llks)
+}
 
-
+cumulativemodelfit(as.factor(Likert_Q1) ~ 1 + (1 |Dyad), data = beh2)
 
 
 
 
 # Bayes Time
 
-beh2 <- beh %>% filter(condition != "Alone")
 
 full_formula <- brmsformula(Likert_Q1 ~ 1 + condition + (1 | Dyad))
+ind_formula <- brmsformula(Likert_Q1 ~ 1 + condition)
 null_formula <- brmsformula(Likert_Q1 ~ 1 + (1 | Dyad))
 
-priors <- c(prior(normal(5, 1), class="Intercept"),
-            prior(normal(0,.5), class = "b"),
-            prior(exponential(1), class = "sigma"))
-
-full_model1 <- brm(full_formula, data = beh2, priors = priors, warmup = 500, chains = 4, cores = 4)
-null_model1 <- brm(null_formula, data = beh2, warmup = 50, iter = 200, chains = 4, cores = 4)
+# student-t arg1 is df, usually 3 to allow for sufficient tail thickness
+null_priors <- c(prior(normal(5, 1), class="Intercept"),
+                 prior(student_t(3, 1, 2.5), class = "sigma"))
 
 
+full_priors <- c(null_priors, 
+                 prior(student_t(3, 0, 1), class = "b"))
+
+
+full_logit_priors <- c(prior(student_t(3, 0, 1), class = "b"))
 
 
 
-stan_q1 <- stan_lmer(Likert_Q1 ~ condition + (1 | Dyad),
-                     data = beh2, chains = 4, cores = 4)
 
-stan_q1_null <- stan_lmer(Likert_Q1 ~ (1 | Dyad),
-          data = beh2, chains = 4, cores = 4)
+full_model1 <- brm(full_formula, data = beh2, prior = full_priors, warmup = 500, iter = 2000, chains = 4, cores = 4)
+
+full_model_logit_1 <- brm(full_formula, data = beh2, family=cumulative("logit"), 
+                          warmup = 500, iter = 2000, chains = 4, cores = 4)
+
+plot(full_model1)
+
+prior_summary(full_model1)
+posterior_summary(full_model1)
+
+null_model1 <- brm(null_formula, data = beh2, prior = null_priors, warmup = 500, iter = 2000, chains = 4, cores = 4)
+
+ind_model1 <- brm(ind_formula, data = beh2, prior = full_priors, warmup = 500, iter = 2000, chains = 4, cores = 4)
+posterior_summary(ind_model1)
+brms:::plot.brmsfit(ind_model1)
 
 
-loo_stan_q1 <- loo(stan_q1, k_threshold = 0.7)
-loo_stan_q1_null <- loo(stan_q1_null, k_threshold = 0.7)
+brms::loo(full_model1)
+
+
+
+
+loo_brm_q1_full <- loo(full_model1, pointwise = TRUE)
+loo_brm_q1_ind <- loo(ind_model1, pointwise = TRUE)
+loo_brm_q1_null <- loo(null_model1, pointwise = TRUE)
+
+
+ggplot(data = beh_long %>% filter(Dyad < 300), aes(x = Likert_Score)) +
+  geom_histogram(bins = 7) +
+  facet_wrap(~Q) +
+  theme_bw()
+
+
+
+brms::pp_check(full_model1)
+
+
+
+
+loo::loo_compare(loo_brm_q1_full, loo_brm_q1_ind, loo_brm_q1_null)
+
+
+
+
+
+
+
+
+
+# stan_q1 <- stan_lmer(Likert_Q1 ~ condition + (1 | Dyad),
+#                      data = beh2, chains = 4, cores = 4)
+# 
+# stan_q1_null <- stan_lmer(Likert_Q1 ~ (1 | Dyad),
+#           data = beh2, chains = 4, cores = 4)
+# 
+# 
+# loo_stan_q1 <- loo(stan_q1, k_threshold = 0.7)
+# loo_stan_q1_null <- loo(stan_q1_null, k_threshold = 0.7)
 
 
 
