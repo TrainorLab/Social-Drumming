@@ -11,10 +11,15 @@ detrend_cont <- function(data, poly = 1, lowess = FALSE){
   
   if(dyad <200){
     data_cont <- data_cont %>% 
-      mutate(onset_diff_2p_detrend = astsa::detrend(onset_diff_2p, order = poly, lowess = lowess) + onset_diff_2p) %>%
-      mutate(start_s_detrend = onset_diff_2p_detrend + lag(start_s)) %>% 
-      group_by(participant) %>%
-      mutate(onset_diff_1p_detrend = start_s_detrend - lag(start_s_detrend))
+      ungroup() 
+      
+      mod <- lm(data = data_cont, onset_diff_2p ~ poly(start_s, poly))
+      
+      data_cont <- data_cont %>% 
+        mutate(onset_diff_2p_detrend = mean(onset_diff_2p) + mod$residuals) %>%
+        mutate(start_s_detrend = onset_diff_2p_detrend + lag(start_s)) %>% 
+        group_by(participant) %>%
+        mutate(onset_diff_1p_detrend = start_s_detrend - lag(start_s_detrend))
     
     #data_cont$start_s_detrend[2] <- data_cont$start_s_detrend[3] - data_cont$onset_diff_2p_detrend[3]
     #data_cont$start_s_detrend[1] <- data_cont$start_s_detrend[2] - data_cont$onset_diff_2p_detrend[2]
@@ -30,19 +35,38 @@ detrend_cont <- function(data, poly = 1, lowess = FALSE){
         data_cont <- data_cont[-nrow(data_cont),]
       }
     
-    #lowess argument changed to TRUE from lowess  
-    temp <- astsa::detrend(data_cont$group_2p_onset_avg[!is.na(data_cont$group_2p_onset_avg[seq(1,length(data_cont$group_2p_onset_avg),2)])], 
-                           lowess = TRUE)
-    
-    data_cont$onset_diff_2p_detrend <- data_cont$onset_diff_2p + unname(temp)
-    
-    
-    data_cont <- data_cont %>% 
-      ungroup() %>%
-      mutate(start_s_detrend = onset_diff_2p_detrend + lag(start_s)) %>% 
-      group_by(participant) %>%
-      mutate(onset_diff_1p_detrend = start_s_detrend - lag(start_s_detrend))
+      p1_onset_diff <- data_cont %>% filter(participant == 2) %>% select(onset_diff_1p, start_s)
+      p2_onset_diff <- data_cont %>% filter(participant == 1) %>% select(onset_diff_1p, start_s)
       
+      mod1 <- lm(data = p1_onset_diff, onset_diff_1p ~ poly(start_s, poly))
+      mod2 <- lm(data = p2_onset_diff, onset_diff_1p ~ poly(start_s, poly))
+      
+      p1_onset_diff$onset_diff_1p_detrend <-  mean(p1_onset_diff$onset_diff_1p) + mod1$residuals
+      p2_onset_diff$onset_diff_1p_detrend <-  mean(p2_onset_diff$onset_diff_1p) + mod2$residuals
+      
+      temp <- bind_rows(p1_onset_diff, p2_onset_diff) 
+      
+      data_cont <- full_join(data_cont, temp, by = c("hit_number_participant", "onset_diff_1p", "start_s"))
+      
+      
+    data_cont <- data_cont %>%
+      ungroup() %>%
+      group_by(participant) %>%
+      mutate(start_s_detrend = onset_diff_1p_detrend + lag(start_s)) %>% 
+      ungroup() %>%
+      mutate(onset_diff_2p_detrend = start_s_detrend - lag(start_s_detrend))
+      
+      # ggplot(data = data_cont, aes(x = start_s, y = onset_diff_1p, color = as.factor(participant))) +
+      #   geom_point() +
+      #   geom_line() +
+      #   theme_bw()
+      # 
+      # ggplot(data = data_cont, aes(x = start_s_detrend, y = onset_diff_1p_detrend, color = as.factor(participant))) +
+      #   geom_point() +
+      #   geom_line() +
+      #   theme_bw()
+      # 
+      # 
   }  
   
   
