@@ -1,14 +1,14 @@
 library(readr)
 library(psych)
 library(tidyverse)
-library(rethinking)
-library(bayestestR)
-library(BayesFactor)
+#library(rethinking)
+#library(bayestestR)
+#library(BayesFactor)
 library(lme4)
 library(brms)
-library(rmcorr)
-library(rstan)
-library(rstanarm)
+#library(rmcorr)
+#library(rstan)
+#library(rstanarm)
 rm(list = ls())
 trial_df <- read_rds("X:\\Sean M\\Social_Drumming\\trial_df.rds")
 avg_df <- read_rds("X:\\Sean M\\Social_Drumming\\trial_avgs_df.rds")
@@ -141,6 +141,12 @@ dev.off()
 #####
 beh_long <- beh %>% 
   pivot_longer(names_to = "Q", values_to = "Likert_Score", cols = c("Likert_Q1", "Likert_Q2", "Likert_Q3", "Likert_Q4", "Likert_Q5", "Likert_Q6"))
+
+
+ggplot(data = beh_long %>% filter(Dyad < 300), aes(x = Likert_Score)) +
+  geom_histogram(bins = 7) +
+  facet_wrap(~Q) +
+  theme_bw()
 
 
 #grouped for plotting mean/se
@@ -397,9 +403,94 @@ anova(null.coop1, coop1_lme6)
 anova(null.coop2, coop2_lme6)
 
 
-
-# Ordinal Regression Time
+# Bayes time
 beh2 <- beh %>% filter(condition != "Alone")
+
+
+# student-t arg1 is df, usually 3 to allow for sufficient tail thickness
+# https://paul-buerkner.github.io/brms/reference/set_prior.html
+
+beh2$Likert_Q4 <- as.integer(ifelse(beh2$Likert_Q4 == 4.5, 4, beh2$Likert_Q4))
+beh2$Likert_Q1 <- beh2$Likert_Q1 - 1
+
+
+
+
+
+tic <- Sys.time()
+fit_q3 <-
+  brm(data = beh2,
+      family = cumulative(probit),
+      Likert_Q3 ~ 1,
+      prior(normal(0, 4), class = Intercept))
+toc <- Sys.time()
+toc - tic
+
+plot(fit_q3)
+summary(fit_q3)
+
+
+tic <- Sys.time()
+fit_q2 <-
+  brm(data = beh2,
+      family = cumulative(probit),
+      Likert_Q2 ~ 1,
+      prior(normal(0, 4), class = Intercept))
+toc <- Sys.time()
+toc - tic
+
+
+
+draws <- brms::as_draws_df(fit_q2)
+
+
+
+
+
+
+
+
+
+null_priors <- c(prior(normal(4, 1), class="Intercept"),
+                 prior(student_t(3, 1, 2.5), class = "sigma"),
+                 prior(student_t(3,0, 1) , class = "sd"))
+
+
+full_priors <- c(null_priors, 
+                 prior(student_t(3, 0, 1), class = "b"))
+
+
+
+q4_full_formula <- brmsformula(Likert_Q4 ~ 1 + condition + (1 | Dyad))
+q4_null_formula <- brmsformula(Likert_Q4 ~ 1 + (1 | Dyad))
+
+
+q4_full_model <- brm(q4_full_formula, data = beh2, prior = full_priors,
+                     warmup = 2000, iter = 4000, chains = 4, cores = 4, save_pars=save_pars(all=TRUE) )
+q4_null_model <- brm(q4_null_formula, data = beh2, prior = null_priors, 
+                     warmup = 2000, iter = 4000, chains = 4, cores = 4, save_pars=save_pars(all=TRUE) )
+
+posterior_summary(q4_full_model)
+summary(q4_full_model)
+plot(q4_full_model)
+pp_check(q4_full_model)
+
+
+posterior_summary(q4_null_model)
+summary(q4_null_model)
+plot(q4_null_model)
+pp_check(q4_full_model)
+
+q4_full_loo <- brms::loo(q4_full_model, pointwise = T)
+q4_full_loo$pointwise
+
+q4_null_loo <- brms::loo(q4_null_model, pointwise = T)
+q4_null_loo$pointwise
+
+
+brms::loo_compare(q4_full_loo, q4_null_loo)
+brms::bayes_factor(q4_full_model, q4_null_model)
+
 
 shapiro_list <- apply(beh2 %>% select(starts_with("Like")), MARGIN = 2, FUN = shapiro.test)
 
@@ -453,13 +544,6 @@ full_formula <- brmsformula(Likert_Q1 ~ 1 + condition + (1 | Dyad))
 ind_formula <- brmsformula(Likert_Q1 ~ 1 + condition)
 null_formula <- brmsformula(Likert_Q1 ~ 1 + (1 | Dyad))
 
-# student-t arg1 is df, usually 3 to allow for sufficient tail thickness
-null_priors <- c(prior(normal(5, 1), class="Intercept"),
-                 prior(student_t(3, 1, 2.5), class = "sigma"))
-
-
-full_priors <- c(null_priors, 
-                 prior(student_t(3, 0, 1), class = "b"))
 
 
 full_logit_priors <- c(prior(student_t(3, 0, 1), class = "b"))
@@ -494,10 +578,6 @@ loo_brm_q1_ind <- loo(ind_model1, pointwise = TRUE)
 loo_brm_q1_null <- loo(null_model1, pointwise = TRUE)
 
 
-ggplot(data = beh_long %>% filter(Dyad < 300), aes(x = Likert_Score)) +
-  geom_histogram(bins = 7) +
-  facet_wrap(~Q) +
-  theme_bw()
 
 
 
