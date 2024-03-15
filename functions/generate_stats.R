@@ -113,6 +113,7 @@ generate_stats <- function(data){
     asyncs_cont <- psych::describe(async_cont_phase$async)
   },
   error = function(e){
+    # Error log - 110.1 and 110.3 didn't have clean sync phase
     message("An error occurred: ", conditionMessage(e))
     async_sync_hist  <- NULL
     async_cont_hist  <- NULL
@@ -211,8 +212,9 @@ generate_stats <- function(data){
     p2_ITI_sync_acf <- NULL
   }
   
-  p2_ITI_cont_acf <- acf(ITI_2_cont$onset_diff_1p, plot = FALSE)
   p1_ITI_cont_acf <- acf(ITI_1_cont$onset_diff_1p, plot = FALSE)  
+  p2_ITI_cont_acf <- acf(ITI_2_cont$onset_diff_1p, plot = FALSE)
+  
   
   #mean pairwise asynchrony (from onsetsync package documentation)
   mpa_sync <- sum(abs(async_sync_phase$async))/nrow(async_sync_phase)

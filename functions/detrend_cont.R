@@ -10,14 +10,22 @@ detrend_cont <- function(data, poly = 1, lowess = FALSE){
   
   
   if(dyad <200){
-    data_cont <- data_cont %>% 
-      ungroup()
     
-    p1_onset_diff <- data_cont %>% filter(participant == 1) %>% select(onset_diff_1p, start_s, hit_number_participant)
-    p2_onset_diff <- data_cont %>% filter(participant == 2) %>% select(onset_diff_1p, start_s, hit_number_participant)
+    # Warning message for 110.1 - removed chunk at beginning caused detrend to break
+    if(any(is.na(data_cont$onset_diff_1p))){
+      print("Warning: Removing NAs present in Onset Diff 1p")
+    }
+    data_cont <- data_cont %>% 
+      ungroup() %>%
+      filter(!is.na(onset_diff_1p))
+    
+
+    p1_onset_diff <- data_cont %>% filter(participant == 1) %>% select(onset_diff_1p, start_s, participant, hit_number_participant)
+    p2_onset_diff <- data_cont %>% filter(participant == 2) %>% select(onset_diff_1p, start_s, participant, hit_number_participant)
     
     mod1 <- lm(data = p1_onset_diff, onset_diff_1p ~ poly(start_s, poly))
     mod2 <- lm(data = p2_onset_diff, onset_diff_1p ~ poly(start_s, poly))
+    
     
     p1_onset_diff$onset_diff_1p_detrend <-  mean(p1_onset_diff$onset_diff_1p) + mod1$residuals
     p2_onset_diff$onset_diff_1p_detrend <-  mean(p2_onset_diff$onset_diff_1p) + mod2$residuals
@@ -26,7 +34,7 @@ detrend_cont <- function(data, poly = 1, lowess = FALSE){
     
     temp <- bind_rows(p1_onset_diff, p2_onset_diff) 
     
-    data_cont <- full_join(data_cont, temp, by = c("hit_number_participant", "onset_diff_1p", "start_s"))
+    data_cont <- full_join(data_cont, temp, by = c("hit_number_participant", "onset_diff_1p", "participant", "start_s"))
     
       
     data_cont <- data_cont %>%
@@ -57,8 +65,8 @@ detrend_cont <- function(data, poly = 1, lowess = FALSE){
         data_cont <- data_cont[-nrow(data_cont),]
       }
     
-      p1_onset_diff <- data_cont %>% filter(participant == 1) %>% select(onset_diff_1p, start_s)
-      p2_onset_diff <- data_cont %>% filter(participant == 2) %>% select(onset_diff_1p, start_s)
+      p1_onset_diff <- data_cont %>% filter(participant == 1) %>% select(onset_diff_1p, start_s, participant, hit_number_participant)
+      p2_onset_diff <- data_cont %>% filter(participant == 2) %>% select(onset_diff_1p, start_s, participant, hit_number_participant)
       
       mod1 <- lm(data = p1_onset_diff, onset_diff_1p ~ poly(start_s, poly))
       mod2 <- lm(data = p2_onset_diff, onset_diff_1p ~ poly(start_s, poly))
@@ -68,7 +76,7 @@ detrend_cont <- function(data, poly = 1, lowess = FALSE){
       
       temp <- bind_rows(p1_onset_diff, p2_onset_diff) 
       
-      data_cont <- full_join(data_cont, temp, by = c("hit_number_participant", "onset_diff_1p", "start_s"))
+      data_cont <- full_join(data_cont, temp, by = c("hit_number_participant", "participant", "onset_diff_1p", "start_s"))
       
       
     data_cont <- data_cont %>%
