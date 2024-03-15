@@ -11,15 +11,37 @@ detrend_cont <- function(data, poly = 1, lowess = FALSE){
   
   if(dyad <200){
     data_cont <- data_cont %>% 
-      ungroup() 
+      ungroup()
+    
+    p1_onset_diff <- data_cont %>% filter(participant == 1) %>% select(onset_diff_1p, start_s, hit_number_participant)
+    p2_onset_diff <- data_cont %>% filter(participant == 2) %>% select(onset_diff_1p, start_s, hit_number_participant)
+    
+    mod1 <- lm(data = p1_onset_diff, onset_diff_1p ~ poly(start_s, poly))
+    mod2 <- lm(data = p2_onset_diff, onset_diff_1p ~ poly(start_s, poly))
+    
+    p1_onset_diff$onset_diff_1p_detrend <-  mean(p1_onset_diff$onset_diff_1p) + mod1$residuals
+    p2_onset_diff$onset_diff_1p_detrend <-  mean(p2_onset_diff$onset_diff_1p) + mod2$residuals
+    
+    
+    
+    temp <- bind_rows(p1_onset_diff, p2_onset_diff) 
+    
+    data_cont <- full_join(data_cont, temp, by = c("hit_number_participant", "onset_diff_1p", "start_s"))
+    
       
-      mod <- lm(data = data_cont, onset_diff_2p ~ poly(start_s, poly))
-      
-      data_cont <- data_cont %>% 
-        mutate(onset_diff_2p_detrend = mean(onset_diff_2p) + mod$residuals) %>%
-        mutate(start_s_detrend = onset_diff_2p_detrend + lag(start_s)) %>% 
-        group_by(participant) %>%
-        mutate(onset_diff_1p_detrend = start_s_detrend - lag(start_s_detrend))
+    data_cont <- data_cont %>%
+      ungroup() %>%
+      group_by(participant) %>%
+      mutate(start_s_detrend = onset_diff_1p_detrend + lag(start_s)) %>% 
+      ungroup() %>%
+      mutate(onset_diff_2p_detrend = start_s_detrend - lag(start_s_detrend))
+    
+    #mod <- lm(data = data_cont, onset_diff_2p ~ poly(start_s, poly))
+      # data_cont <- data_cont %>% 
+      #   mutate(onset_diff_2p_detrend = mean(onset_diff_2p) + mod$residuals) %>%
+      #   mutate(start_s_detrend = onset_diff_2p_detrend + lag(start_s)) %>% 
+      #   group_by(participant) %>%
+      #   mutate(onset_diff_1p_detrend = start_s_detrend - lag(start_s_detrend))
     
     #data_cont$start_s_detrend[2] <- data_cont$start_s_detrend[3] - data_cont$onset_diff_2p_detrend[3]
     #data_cont$start_s_detrend[1] <- data_cont$start_s_detrend[2] - data_cont$onset_diff_2p_detrend[2]
@@ -35,8 +57,8 @@ detrend_cont <- function(data, poly = 1, lowess = FALSE){
         data_cont <- data_cont[-nrow(data_cont),]
       }
     
-      p1_onset_diff <- data_cont %>% filter(participant == 2) %>% select(onset_diff_1p, start_s)
-      p2_onset_diff <- data_cont %>% filter(participant == 1) %>% select(onset_diff_1p, start_s)
+      p1_onset_diff <- data_cont %>% filter(participant == 1) %>% select(onset_diff_1p, start_s)
+      p2_onset_diff <- data_cont %>% filter(participant == 2) %>% select(onset_diff_1p, start_s)
       
       mod1 <- lm(data = p1_onset_diff, onset_diff_1p ~ poly(start_s, poly))
       mod2 <- lm(data = p2_onset_diff, onset_diff_1p ~ poly(start_s, poly))
