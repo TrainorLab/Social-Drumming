@@ -4,7 +4,7 @@ user <- "SM"
 data_dir <- "X:\\Sean M\\Social_Drumming\\REAPER_trial_data\\"
 
 if(user == "SM"){
-  setwd("C:\\Users\\mcwee\\Documents\\LIVELab\\Social_Drumming\\social_drumming_git\\")
+  setwd("C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\social_drumming_git\\")
   fun_dir <- paste0(getwd(), "/functions")
   plot_dir <- paste0("X:\\Sean M\\Social_Drumming\\beh_sync_output\\trial_plots\\")
 } else if(user == "AL"){
@@ -18,18 +18,20 @@ library(tidyverse)
 library(rlang)
 library(zoo)
 library(ggplot2)
-library(dtw)
+#library(dtw)
 list.files(fun_dir, full.names = TRUE) %>% walk(source)
 
-scale = 3
+scale = 1
 
 # Importing
 dyads <- c(101:122, 
            202:209,
            211:222)
 trials <- 1:4
-dyad <- 203
-trial <- 2
+dyad <- 202
+trial <- 1
+
+generate_plots <- F
 
 start <- Sys.time() 
 for (dyad in dyads){
@@ -40,14 +42,18 @@ for (dyad in dyads){
     data <- remove_double_hits(data)
     data <- align_first_hit(data)
     data <- trim_end(data)
-    png(filename = paste0(plot_dir, dyad,"_",trial,"_init.png"), width = 720*scale, height = 480*scale, res = 72*scale)
-    print(gg_s(data, title_mod = ": Aligned, Trimmed, Double Hits Remove - First Pass"))
-    dev.off()    
+    if(generate_plots == T){
+      png(filename = paste0(plot_dir, dyad,"_",trial,"_init.png"), width = 720*scale, height = 480*scale, res = 72*scale)
+      print(gg_s(data, title_mod = ": Aligned, Trimmed, Double Hits Remove - First Pass"))
+      dev.off()
+    }
     data <- modify_individual_trial(data)
     data <- recalc_onsets(data)
-    png(filename = paste0(plot_dir, dyad,"_",trial,"_individual_mod.png"), width = 720*scale, height = 480*scale, res = 72*scale)
-    print(gg_s(data, title_mod = ": Post-Individualized Modification", fixed_scale = F))
-    dev.off()
+    if(generate_plots == T){
+      png(filename = paste0(plot_dir, dyad,"_",trial,"_individual_mod.png"), width = 720*scale, height = 480*scale, res = 72*scale)
+      print(gg_s(data, title_mod = ": Post-Individualized Modification", fixed_scale = F))
+      dev.off()
+    }
     
     if(dyad > 200){
       tryCatch(
@@ -66,14 +72,17 @@ for (dyad in dyads){
       )
     }
     
-#    if(exists("data")){
+    if(generate_plots == T){
       png(filename = paste0(plot_dir, dyad,"_",trial,"_cleaned_missed_hits.png"), width = 720*scale, height = 480*scale, res = 72*scale)
       print(gg_s(data, title_mod = ": Fully Cleaned"))
       dev.off()    
-#    }
+    }
+    
     tryCatch(
       {
         data <- detrend_cont(data)
+        data <- desynch_flag(data)
+        
       },
       error = function(e) {
         message("An error occurred: ", conditionMessage(e))
@@ -84,11 +93,13 @@ for (dyad in dyads){
         message("A warning occurred: ", conditionMessage(w))
         # Additional actions or warning handling if needed
         data <- detrend_cont(data)
+        data <- desynch_flag(data)
+        
       }
     )
     
      
-    if("onset_diff_1p_detrend" %in% colnames(data)){
+    if("onset_diff_1p_detrend" %in% colnames(data) & generate_plots == T){
       png(filename = paste0(plot_dir, dyad,"_",trial,"_detrend.png"), width = 720*scale, height = 480*scale, res = 72*scale)
       print(gg_s(data, detrend = T))
       dev.off()
@@ -116,7 +127,9 @@ for (dyad in dyads){
   }
 
    full_dyad_data <- list(trial_1, trial_2, trial_3, trial_4)
-   write_rds(full_dyad_data, paste0("X:\\Sean M\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
+   #write_rds(full_dyad_data, paste0("X:\\Sean M\\Social_Drumming\\beh_sync_output\\", dyad, "_output.rds"))
+   write_rds(full_dyad_data, paste0("C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\temp_output\\", dyad, "_output.rds"))
+  
 }
 end <- Sys.time()
 elapsed <- print(end-start)
