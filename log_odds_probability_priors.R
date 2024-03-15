@@ -58,13 +58,15 @@ dev.off()
 
 
 
-lo <- seq(-3, 3, length.out = 1000)
+lo <- seq(-4, 4, length.out = 1000)
 probs <- p(lo)
 o <- odds(probs)
 
-plot(probs, lo)
-abline(a = 0, b = 0)
-abline(v = .5)
+png("C:\\Users\\Sean\\OneDrive - McMaster University\\LIVELab\\Social_Drumming\\Manuscript\\probability_logodds.png", width = 480*scale, height = 480*scale, res = 72*scale)
+plot(probs, lo, type = "l", lwd = 4, xlab = "Probability", ylab = "Log-Odds", main = "Log-Odds vs. Probability")
+abline(a = 0, b = 0, lty = 2)
+abline(v = .5, lty = 2)
+dev.off()
 
 s <- 1.68
 m <- 3.47

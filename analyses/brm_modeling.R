@@ -44,35 +44,7 @@ dev.off()
 
 
 
-### Function for plotting theta cutoff values 
-plot_ordinal <- function(model){
-  draws <- brms::as_draws_df(model) %>%
-    select(.draw, `b_Intercept[1]`:`b_Intercept[5]`)
-  
-  means <-
-    draws %>% 
-    summarise_at(vars(`b_Intercept[1]`:`b_Intercept[5]`), mean) %>% 
-    pivot_longer(everything(),
-                 values_to = "mean")
-  
-  
-  draws %>% 
-    pivot_longer(-.draw, values_to = "threshold") %>% 
-    group_by(.draw) %>% 
-    mutate(theta_bar = mean(threshold)) %>% 
-    
-    # finally we plot
-    ggplot(aes(x = threshold, y = theta_bar, color = name)) +
-    geom_vline(data = means,
-               aes(xintercept = mean, color = name),
-               linetype = 2) +
-    geom_point(alpha = 1/10) +
-    scale_color_brewer(palette = "Set1") +
-    ylab("mean threshold") +
-    theme(legend.position = "none")
-  
-  
-}
+
 #####
 # default prior - for all theta cutoffs, written out explicitly
 #priors <- prior(normal(0, 4), class="Intercept")
@@ -104,11 +76,11 @@ priors <- c(prior(normal(-1, 2), coef = 1, class="Intercept"),
 
 fit2_q1 <-
   brm(data = beh2,
-      family = cumulative(probit),
+      family = cumulative(logit),
       Likert_Q1 ~ 1 + (1 | Dyad),
       prior = priors, save_pars = save_pars(all = TRUE),
-      seed = 42, warmup = 1000, iter = 12000, cores = 4, chains = 4, control = list(adapt_delta = .95),
-      file = ".\\brms_fits\\fit2_q1.rds")
+      seed = 42, warmup = 1000, iter = 12000, cores = 4, chains = 4, control = list(adapt_delta = .95))
+      #file = ".\\brms_fits\\fit2_q1.rds")
 
 
 # pp_check(fit2_q1, type = "ecdf_overlay", ndraws = 50)
@@ -134,11 +106,12 @@ fit3_q1 <-
 
 # plot_ordinal(fit_q1)
 # plot_ordinal(fit2_q1)
-# plot_ordinal(fit3_q1)
+plot_ordinal(fit3_q1) +
+  theme_bw()
 
 # loo_q1 <- loo(fit_q1)
-# loo2_q1 <- loo(fit2_q1)
-# loo3_q1 <- loo(fit3_q1)
+loo2_q1 <- loo(fit2_q1)
+loo3_q1 <- loo(fit3_q1)
 # 
 # loo_compare(loo2_q1, loo3_q1)
 # #bf_q1 <- brms::bayes_factor(fit3_q1, fit_q1)
@@ -201,8 +174,8 @@ fit3_q2 <-
 # plot_ordinal(fit3_q2)
 
 # loo_q2 <- loo(fit_q2)
-# loo2_q2 <- loo(fit2_q2, moment_match = T)
-# loo3_q2 <- loo(fit3_q2, moment_match = T)
+loo2_q2 <- loo(fit2_q2, moment_match = T)
+loo3_q2 <- loo(fit3_q2, moment_match = T)
 # 
 # loo_compare(loo2_q2, loo3_q2)
 # (bf_q2 <- brms::bayes_factor(fit3_q2, fit2_q2))
@@ -265,8 +238,8 @@ fit3_q3 <-
 # # plot_ordinal(fit3_q3)
 # # 
 # # loo_q3 <- loo(fit_q3)
-# loo2_q3 <- loo(fit2_q3, moment_match = T)
-# loo3_q3 <- loo(fit3_q3, moment_match = T)
+loo2_q3 <- loo(fit2_q3, moment_match = T)
+loo3_q3 <- loo(fit3_q3, moment_match = T)
 # 
 # loo_compare(loo2_q3, loo3_q3)
 # (bf_q3 <- brms::bayes_factor(fit3_q3, fit2_q3))
@@ -332,8 +305,8 @@ fit3_q4 <-
 # plot_ordinal(fit3_q4)
 # 
 # loo_q4 <- loo(fit_q4)
-# loo2_q4 <- loo(fit2_q4, moment_match = T)
-# loo3_q4 <- loo(fit3_q4, moment_match = T)
+loo2_q4 <- loo(fit2_q4, moment_match = T)
+loo3_q4 <- loo(fit3_q4, moment_match = T)
 # 
 # loo_compare(loo2_q4, loo3_q4)
 
@@ -401,8 +374,8 @@ fit3_q5 <-
 # plot_ordinal(fit3_q5)
 # 
 # loo_q5 <- loo(fit_q5)
-# loo2_q5 <- loo(fit2_q5, moment_match = T)
-# loo3_q5 <- loo(fit3_q5, moment_match = T)
+loo2_q5 <- loo(fit2_q5, moment_match = T)
+loo3_q5 <- loo(fit3_q5, moment_match = T)
 # 
 # loo_compare(loo2_q5, loo3_q5)
 
@@ -457,16 +430,26 @@ toc-tic
 # plot_ordinal(fit3_q6)
 # 
 # loo_q6 <- loo(fit_q6, moment_match = T)
-# loo2_q6 <- loo(fit2_q6,)
-# loo3_q6 <- loo(fit3_q6, moment_match = T)
+loo2_q6 <- loo(fit2_q6, moment_match = T)
+loo3_q6 <- loo(fit3_q6, moment_match = T)
 # 
 # loo_compare(loo2_q6, loo3_q6)
 # brms::bayes_factor(fit3_q6, fit2_q6)
 
-###########
-
-
-
+# loos <- ls()[str_detect(ls(), "loo")]
+# 
+# for(looi in 1:length(loos)){
+#   saveRDS(get(loos[looi]), paste0("C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\loo\\", loos[looi],".rds"))
+# }
+# 
+# ###########
+# 
+# loo_compare(loo2_q1, loo3_q1)
+# loo_compare(loo2_q2, loo3_q2)
+# loo_compare(loo2_q3, loo3_q3)
+# loo_compare(loo2_q4, loo3_q4)
+# loo_compare(loo2_q5, loo3_q5)
+# loo_compare(loo2_q6, loo3_q6)
 ########
 
 
