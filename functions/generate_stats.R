@@ -124,28 +124,28 @@ generate_stats <- function(data){
   warning = function(w){
     message("An warning occurred: ", conditionMessage(w))
   
-  async <- data %>% group_by(hit_number_participant) %>%
-    mutate(async = start_s[1] - start_s[2]) %>%
-    mutate(group_hit = (start_s[1]+start_s[2]) / 2) %>%
-    filter(all(imputed == 0)) %>%
-    mutate(async_detrend = start_s_detrend[1] - start_s_detrend[2])
-  
-  #now we need to remove ever other row, as they are redundant, as we've calculated 
-  # the difference between the two rows
-  async <- async[-seq(1, nrow(async), 2),]
-  # plot their distribution and autocorrelation, Repp & Keller, 2008
-  # AC1 should be positive
-  async_sync_phase <- async %>% filter(start_s < cont_start)
-  async_cont_phase <- async %>% filter(start_s >= cont_start)
-  
-  async_sync_hist <- hist(async_sync_phase$async, plot = FALSE)
-  async_cont_hist <- hist(async_cont_phase$async, plot = FALSE)
-  
-  async_sync_acf <- acf(async_sync_phase$async, na.action = na.pass, plot = FALSE)
-  async_cont_acf <- acf(async_cont_phase$async, na.action = na.pass, plot = FALSE)
-  
-  asyncs_sync <- psych::describe(async_sync_phase$async)
-  asyncs_cont <- psych::describe(async_cont_phase$async)
+    async <- data %>% group_by(hit_number_participant) %>%
+      mutate(async = start_s[1] - start_s[2]) %>%
+      mutate(group_hit = (start_s[1]+start_s[2]) / 2) %>%
+      filter(all(imputed == 0)) %>%
+      mutate(async_detrend = start_s_detrend[1] - start_s_detrend[2])
+    
+    #now we need to remove ever other row, as they are redundant, as we've calculated 
+    # the difference between the two rows
+    async <- async[-seq(1, nrow(async), 2),]
+    # plot their distribution and autocorrelation, Repp & Keller, 2008
+    # AC1 should be positive
+    async_sync_phase <- async %>% filter(start_s < cont_start)
+    async_cont_phase <- async %>% filter(start_s >= cont_start)
+    
+    async_sync_hist <- hist(async_sync_phase$async, plot = FALSE)
+    async_cont_hist <- hist(async_cont_phase$async, plot = FALSE)
+    
+    async_sync_acf <- acf(async_sync_phase$async, na.action = na.pass, plot = FALSE)
+    async_cont_acf <- acf(async_cont_phase$async, na.action = na.pass, plot = FALSE)
+    
+    asyncs_sync <- psych::describe(async_sync_phase$async)
+    asyncs_cont <- psych::describe(async_cont_phase$async)
   }
     )
   
@@ -203,12 +203,16 @@ generate_stats <- function(data){
     filter(!is.na(onset_diff_1p) & participant == 2) %>%
     filter(start_s >= cont_start)
   
-  p1_ITI_sync_acf <- acf(ITI_1_sync$onset_diff_1p, plot = FALSE)
-  p1_ITI_cont_acf <- acf(ITI_1_cont$onset_diff_1p, plot = FALSE)
+  if(nrow(ITI_1_sync) >= 2 & nrow(ITI_2_sync)  >= 2){
+    p1_ITI_sync_acf <- acf(ITI_1_sync$onset_diff_1p, plot = FALSE)
+    p2_ITI_sync_acf <- acf(ITI_2_sync$onset_diff_1p, plot = FALSE)
+  } else {
+    p1_ITI_sync_acf <- NULL
+    p2_ITI_sync_acf <- NULL
+  }
   
-  p2_ITI_sync_acf <- acf(ITI_2_sync$onset_diff_1p, plot = FALSE)
   p2_ITI_cont_acf <- acf(ITI_2_cont$onset_diff_1p, plot = FALSE)
-  
+  p1_ITI_cont_acf <- acf(ITI_1_cont$onset_diff_1p, plot = FALSE)  
   
   #mean pairwise asynchrony (from onsetsync package documentation)
   mpa_sync <- sum(abs(async_sync_phase$async))/nrow(async_sync_phase)
@@ -294,6 +298,7 @@ generate_stats <- function(data){
   clean_pct <- clean/nrow(clean_hits)
   clean2 <- sum(clean_hits2$clean_hits2, na.rm = T)
   clean2_pct <- clean2/nrow(clean_hits2)
+  desynch <- ifelse(any(data$desynch == T, na.rm = T), T, F)
   
   
   output <- list(toss, valid_metronome,
