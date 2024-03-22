@@ -4,13 +4,14 @@ desynch_flag <- function(data){
                                 T, F)
   
   
-  data$desynch_flag2 <- ifelse (data$onset_diff_1p_detrend > median(data$onset_diff_1p_detrend, na.rm = T)+4*sd(data$onset_diff_1p_detrend, na.rm = T) |
-                                data$onset_diff_1p_detrend < median(data$onset_diff_1p_detrend, na.rm = T)-4*sd(data$onset_diff_1p_detrend, na.rm = T),
+  data$desynch_flag2 <- ifelse (data$onset_diff_1p_detrend > median(data$onset_diff_1p_detrend, na.rm = T)+6*sd(data$onset_diff_1p_detrend, na.rm = T) |
+                                data$onset_diff_1p_detrend < median(data$onset_diff_1p_detrend, na.rm = T)-6*sd(data$onset_diff_1p_detrend, na.rm = T),
                                 T, F)
   
   data$desynch_flag3 <- ifelse (data$onset_diff_1p_detrend > median(data$onset_diff_1p_detrend, na.rm = T)+5*sd(data$onset_diff_1p_detrend, na.rm = T) |
                                 data$onset_diff_1p_detrend < median(data$onset_diff_1p_detrend, na.rm = T)-5*sd(data$onset_diff_1p_detrend, na.rm = T),
                                 T, F)
+  
   
   data$desynch <- ifelse(data$desynch_flag1 == T |
                          data$desynch_flag2 == T |

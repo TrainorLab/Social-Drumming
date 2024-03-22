@@ -85,7 +85,8 @@ for (dyad in dyads) {
                             clean_hits = x[[trial]][["Clean Hits"]],
                             clean_pct = x[[trial]][["Percent Clean"]],
                             clean2 = x[[trial]][["Clean Hits (Following removed)"]],
-                            clean2_pct = x[[trial]][["Percent Clean (Following removed)"]])
+                            clean2_pct = x[[trial]][["Percent Clean (Following removed)"]],
+                            desync_6sd = any(x[[trial]][["Raw Data"]]$desynch_flag2 == T, na.rm = T))
       
       # Append the new row to the result data frame
       result_df <- rbind(result_df, new_row)
@@ -121,7 +122,8 @@ for (dyad in dyads) {
                             clean_hits = NA,
                             clean_pct = NA,
                             clean2 = NA,
-                            clean2_pct = NA
+                            clean2_pct = NA,
+                            desync_6sd = NA
     )
       result_df <- rbind(result_df, new_row)
     }, warning = function(w) {
@@ -156,7 +158,8 @@ for (dyad in dyads) {
                             clean_hits = NA,
                             clean_pct = NA,
                             clean2 = NA,
-                            clean2_pct = NA)
+                            clean2_pct = NA,
+                            desync_6sd = NA)
       
       result_df <- rbind(result_df, new_row)
     })
@@ -199,6 +202,9 @@ df <- df %>%
   ungroup() %>%
   mutate(ac1_detrend_diff_cat = ifelse(ac1_detrend_diff > median(ac1_detrend_diff), "Large Adaptation Difference", "Small Adaptation Difference")) %>%
   select(-ITI_var_A, -ITI_var_B, -ac1_ITI_A, -ac1_ITI_B, -mean_met_async_A, -mean_met_async_B, -var_met_async_A, -var_met_async_B)
+
+## MANUALLY ADDING 217.1 AND 121.3 TO DESYNC NOT CAUGHT BY ALGORITHM
+df$desync_6sd_plus <- ifelse((df$Dyad == 121 & df$trial == 3) | (df$Dyad == 217 & df$trial == 1),  TRUE,  df$desync_6sd) 
 
 trial_df <- df
 
