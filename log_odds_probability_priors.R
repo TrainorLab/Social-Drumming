@@ -110,3 +110,9 @@ text(1.9, .05, "Large Effect")
 dev.off()
 
 diff(pnorm(c(-1.9, 1.9), sd = 1))
+
+
+set.seed(42)
+beta_prior <- rnorm(n, mean = 0, sd = 3)
+
+diff(pnorm(c(-1.9, 1.9), sd = 3))

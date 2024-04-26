@@ -76,7 +76,7 @@ priors <- c(prior(normal(-1, 2), coef = 1, class="Intercept"),
 
 fit2_q1 <-
   brm(data = beh2,
-      family = cumulative(logit),
+      family = cumulative(probit),
       Likert_Q1 ~ 1 + (1 | Dyad),
       prior = priors, save_pars = save_pars(all = TRUE),
       seed = 42, warmup = 1000, iter = 12000, cores = 4, chains = 4, control = list(adapt_delta = .95))

@@ -5,8 +5,11 @@ library(modelsummary)
 library(sjPlot)
 rds_files <- list.files(path = "C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\", pattern = "\\.rds$", full.names = TRUE)
 bfp_files <- list.files(path = "C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\BFp\\", pattern = "\\.rds$", full.names = TRUE)
-# rds_files <- list.files(path = "C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\alone_condition\\", pattern = "\\.rds$", full.names = TRUE)
+alone_rds_files <- list.files(path = "C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\alone_condition\\", pattern = "\\.rds$", full.names = TRUE)
 # rds_files <- list.files(path = "C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\4k_draws\\", pattern = "\\.rds$", full.names = TRUE)
+bfp_files <- list.files(path = "C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\alone_condition\\BFp\\", pattern = "\\.rds$", full.names = TRUE)
+
+loo_files <- list.files(path = "C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\loo\\", pattern = "\\.rds$", full.names = TRUE)
 scale <- 3
 
 ### Function for plotting theta cutoff values - only works with same number of parameters 
@@ -51,16 +54,151 @@ read_and_assign_rds <- function(file_path) {
   assign(variable_name, data, envir = .GlobalEnv)
 }
 walk(rds_files, read_and_assign_rds)
+walk(alone_rds_files, read_and_assign_rds)
 walk(bfp_files, read_and_assign_rds)
+walk(loo_files, read_and_assign_rds)
 
 models <- ls()[str_detect(ls(), "fit")]
-alone_models <- ls()[str_detect(ls(), "fit_alone")]
+length(models)
+rm(loo_files)
+loos <- ls()[str_detect(ls(), "loo")]
+length(loos)
+
+# alone_models <- ls()[str_detect(ls(), "fit_alone")]
 
 
-for(i in 1:length(models)){
-  print(get(models[i]))
-  readline()
-}
+# for(i in 1:length(models)){
+#   print(get(models[i]))
+#   readline()
+# }
+
+#Table 3
+prior_summary(fit3_alone_q1_normal12)
+fit3_alone_q1_normal12
+fit3_alone_q2_normal12
+fit3_alone_q3_normal12
+fit3_alone_q4_normal12
+fit3_alone_q5_normal12
+fit3_alone_q6_normal12
+
+#Table 4
+prior_summary(fit3_alone_q1_narrow)
+fit3_alone_q1_narrow
+fit3_alone_q2_narrow
+fit3_alone_q3_narrow
+fit3_alone_q4_narrow
+fit3_alone_q5_narrow
+fit3_alone_q6_narrow
+
+#Table 5
+loo_compare(loo2_alone_q1, loo3_alone_q1_normal12)
+loo_compare(loo2_alone_q2, loo3_alone_q2_normal12)
+loo_compare(loo2_alone_q3, loo3_alone_q3_normal12)
+loo_compare(loo2_alone_q4, loo3_alone_q4_normal12)
+loo_compare(loo2_alone_q5, loo3_alone_q5_normal12)
+loo_compare(loo2_alone_q6, loo3_alone_q6_normal12)
+
+loo_compare(loo2_alone_q1, loo3_alone_q1_narrow)
+loo_compare(loo2_alone_q2, loo3_alone_q2_narrow)
+loo_compare(loo2_alone_q3, loo3_alone_q3_narrow)
+loo_compare(loo2_alone_q4, loo3_alone_q4_narrow)
+loo_compare(loo2_alone_q5, loo3_alone_q5_narrow)
+loo_compare(loo2_alone_q6, loo3_alone_q6_narrow)
+
+##
+library(bayestestR)
+# bfp_q1_alone_12 <- bayestestR::bayesfactor_parameters(fit3_alone_q1_normal12, prior = fit3_alone_q1_prioronly, null = 0)
+# bfp_q2_alone_12 <- bayestestR::bayesfactor_parameters(fit3_alone_q2_normal12, prior = fit3_alone_q2_prioronly, null = 0)
+# bfp_q3_alone_12 <- bayestestR::bayesfactor_parameters(fit3_alone_q3_normal12, prior = fit3_alone_q3_prioronly, null = 0)
+# bfp_q4_alone_12 <- bayestestR::bayesfactor_parameters(fit3_alone_q4_normal12, prior = fit3_alone_q4_prioronly, null = 0)
+# bfp_q5_alone_12 <- bayestestR::bayesfactor_parameters(fit3_alone_q5_normal12, prior = fit3_alone_q5_prioronly, null = 0)
+# bfp_q6_alone_12 <- bayestestR::bayesfactor_parameters(fit3_alone_q6_normal12, prior = fit3_alone_q6_prioronly, null = 0)
+# bfps <- c("bfp_q1_alone_12", "bfp_q2_alone_12", "bfp_q3_alone_12", "bfp_q4_alone_12", "bfp_q5_alone_12", "bfp_q6_alone_12")
+# 
+# for(i in 1:6){
+#   saveRDS(get(bfps[i]), paste0("C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\BFp\\", bfps[i],".rds"))
+# }
+
+# bfp_q1_alone_02 <- bayestestR::bayesfactor_parameters(fit3_alone_q1_narrow, prior = fit3_alone_q1_prioronly, null = 0)
+# bfp_q2_alone_02 <- bayestestR::bayesfactor_parameters(fit3_alone_q2_narrow, prior = fit3_alone_q2_prioronly, null = 0)
+# bfp_q3_alone_02 <- bayestestR::bayesfactor_parameters(fit3_alone_q3_narrow, prior = fit3_alone_q3_prioronly, null = 0)
+# bfp_q4_alone_02 <- bayestestR::bayesfactor_parameters(fit3_alone_q4_narrow, prior = fit3_alone_q4_prioronly, null = 0)
+# bfp_q5_alone_02 <- bayestestR::bayesfactor_parameters(fit3_alone_q5_narrow, prior = fit3_alone_q5_prioronly, null = 0)
+# bfp_q6_alone_02 <- bayestestR::bayesfactor_parameters(fit3_alone_q6_narrow, prior = fit3_alone_q6_prioronly, null = 0)
+# bfps <- c("bfp_q1_alone_02", "bfp_q2_alone_02", "bfp_q3_alone_02", "bfp_q4_alone_02", "bfp_q5_alone_02", "bfp_q6_alone_02")
+# 
+# for(i in 1:6){
+#   saveRDS(get(bfps[i]), paste0("C:\\Users\\Sean\\Documents\\LIVELab\\Social_Drumming\\brms_fits\\BFp\\", bfps[i],".rds"))
+# }
+
+bfp_q1_alone_12
+bfp_q2_alone_12
+bfp_q3_alone_12
+bfp_q4_alone_12
+bfp_q5_alone_12
+bfp_q6_alone_12
+
+bfp_q1_alone_02
+bfp_q2_alone_02
+bfp_q3_alone_02
+bfp_q4_alone_02
+bfp_q5_alone_02
+bfp_q6_alone_02
+
+
+
+# 
+# summary(fit3_alone_q1_normal12)$fixed[7:8,1]
+# summary(fit3_alone_q1_wide)$fixed[7:8,1]
+# summary(fit3_alone_q1)$fixed[7:8,1]
+
+#Table 5
+fit3_q1
+fit3_q2
+fit3_q3
+fit3_q4
+fit3_q5
+fit3_q6
+
+bfp_q1
+bfp_q2
+bfp_q3
+bfp_q4
+bfp_q5
+bfp_q6
+
+## LOO Compare
+loo_compare(loo2_q1, loo3_q1)
+loo_compare(loo2_q2, loo3_q2)
+loo_compare(loo2_q3, loo3_q3)
+loo_compare(loo2_q4, loo3_q4)
+loo_compare(loo2_q5, loo3_q5)
+loo_compare(loo2_q6, loo3_q6)
+
+loo_compare(loo2_q1, loo3_q1_narrow)
+loo_compare(loo2_q2, loo3_q2_narrow)
+loo_compare(loo2_q3, loo3_q3_narrow)
+loo_compare(loo2_q4, loo3_q4_narrow)
+loo_compare(loo2_q5, loo3_q5_narrow)
+loo_compare(loo2_q6, loo3_q6_narrow)
+
+
+# BF 
+bfp_q1_narrow
+bfp_q2_narrow
+bfp_q3_narrow
+bfp_q4_narrow
+bfp_q5_narrow
+bfp_q6_narrow
+
+fit3_q1_narrow
+fit3_q2_narrow
+fit3_q3_narrow
+fit3_q4_narrow
+fit3_q5_narrow
+fit3_q6_narrow
+
+
 
 
 #Bayes Factor Calculations with bayestestR
@@ -88,6 +226,7 @@ bfm_q4 <- bayestestR::bayesfactor_models(fit2_q4, fit3_q4)
 bfm_q5 <- bayestestR::bayesfactor_models(fit2_q5, fit3_q5)
 bfm_q6 <- bayestestR::bayesfactor_models(fit2_q6, fit3_q6)
 
+rm(bfp_files)
 bfps <- ls()[str_detect(ls(), "bfp")]
 BFp <- c()
 

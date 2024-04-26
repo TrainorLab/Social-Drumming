@@ -37,8 +37,7 @@ tbl1 <- beh_dyad_avg %>%
             mean_Likert4 = mean(dyad_Likert_Q4),
             mean_Likert5 = mean(dyad_Likert_Q5),
             mean_Likert6 = mean(dyad_Likert_Q6)) %>%
-  mutate(across(2:7, round, 2))
-
+  mutate(across(2:7, \(x) round(x, 2)))
 
 
 tbl1_SD <- beh_dyad_avg %>% 
